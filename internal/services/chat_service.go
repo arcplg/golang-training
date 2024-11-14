@@ -227,6 +227,9 @@ func (c *ChatAppServiceServer) ChatWithUserStream(stream grpc.BidiStreamingServe
 			if err := c.sendMessageToClients(msg); err != nil {
 				return err
 			}
+		case <-stream.Context().Done():
+			log.Println("Chat stream calling done!")
+			return nil
 		}
 	}
 }

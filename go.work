@@ -2,10 +2,12 @@ go 1.23.2
 
 use (
 	./example/hello
-	./hello
-	./web-service-gin
-	./generics
 	./fuzz
+	./generics
 	./gowiki
+	./hello
+	./shape
 	./tour
+	./web-service-gin
+	./imageRoom
 )

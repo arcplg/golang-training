@@ -7,4 +7,5 @@ use (
 	./generics
 	./fuzz
 	./gowiki
+	./tour
 )

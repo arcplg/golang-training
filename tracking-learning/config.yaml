@@ -1,0 +1,10 @@
+firebase:
+  serviceAccountKeyPath: "resources/key/serviceAccountKey.json"
+app:
+  port: 8080
+  debug: true
+database:
+  host: "localhost"
+  port: 3306
+  user: "root"
+  password: "password"

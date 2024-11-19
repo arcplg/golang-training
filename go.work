@@ -10,4 +10,5 @@ use (
 	./tour
 	./web-service-gin
 	./imageRoom
+	./tracking-learning
 )

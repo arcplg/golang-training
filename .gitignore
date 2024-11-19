@@ -1,0 +1,5 @@
+# Node dependencies
+/to-do-app/frontend/node_modules
+/to-do-app/frontend/.nuxt
+# Nuxt dev/build outputs
+/to-do-app/frontend/.output

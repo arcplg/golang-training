@@ -1,6 +1,7 @@
 package server
 
 import (
+	question "learning-tracking/internal/controller"
 	"net/http"
 
 	"github.com/gin-contrib/cors"
@@ -11,20 +12,14 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173"}, // Add your frontend URL
+		AllowOrigins:     []string{"http://localhost:5173"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowHeaders:     []string{"Accept", "Authorization", "Content-Type"},
-		AllowCredentials: true, // Enable cookies/auth
+		AllowCredentials: true,
 	}))
 
-	r.GET("/", s.HelloWorldHandler)
+	questionHandler := question.NewHandler()
+	r.GET("/question", questionHandler.GetQuestions)
 
 	return r
-}
-
-func (s *Server) HelloWorldHandler(c *gin.Context) {
-	resp := make(map[string]string)
-	resp["message"] = "Hello World"
-
-	c.JSON(http.StatusOK, resp)
 }

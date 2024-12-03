@@ -1,0 +1,36 @@
+services:
+  app:
+    image: golang:1.23.2
+    working_dir: /app
+    volumes:
+      - ./:/app
+    # command: ["sh", "-c", "go build -o main cmd/api/main.go"]
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    networks:
+      - intranet
+
+  mongo:
+    image: mongo:6.0
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - intranet
+
+  redis:
+    image: redis:latest
+    volumes:
+      - redis_data:/data
+    networks:
+      - intranet
+networks:
+  intranet:
+    driver: bridge
+volumes:
+  mongo_data:
+  redis_data:

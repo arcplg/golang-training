@@ -9,17 +9,20 @@ import (
 )
 
 func (s *Server) RegisterRoutes() http.Handler {
-	r := gin.Default()
+	router := gin.Default()
 
-	r.Use(cors.New(cors.Config{
+	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:5173"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowHeaders:     []string{"Accept", "Authorization", "Content-Type"},
 		AllowCredentials: true,
 	}))
 
-	questionHandler := question.NewHandler()
-	r.GET("/question", questionHandler.GetQuestions)
+	api := router.Group("/api")
 
-	return r
+	questionHandler := question.NewHandler()
+	api.GET("/question", questionHandler.List)
+	api.GET("/question/:id", questionHandler.Detail)
+
+	return router
 }

@@ -6,17 +6,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type UserHandler struct{}
+type QuestionHandler struct{}
 
-func NewHandler() *UserHandler {
-	return &UserHandler{}
+func NewHandler() *QuestionHandler {
+	return &QuestionHandler{}
 }
 
-func (h *UserHandler) GetQuestions(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"message": "User API - GetQuestion"})
+func (h *QuestionHandler) List(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"message": "List API - List"})
 }
 
-func (h *UserHandler) Register(router *gin.RouterGroup) {
-	userGroup := router.Group("/question")
-	userGroup.GET("/:id", h.GetQuestions)
+func (h *QuestionHandler) Detail(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"message": "Detail API - Detail"})
 }

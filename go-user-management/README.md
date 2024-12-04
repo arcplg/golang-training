@@ -1,4 +1,6 @@
 # USER CRUD DEMO
 
-### go run .
-### access http://localhost:8080
+```
+run cli: go run .
+access link: http://localhost:8080
+```

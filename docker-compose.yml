@@ -21,9 +21,25 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+      - mongo-init:/docker-entrypoint-initdb.d
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
     networks:
       - intranet
-
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongodb-express
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongo
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+      ME_CONFIG_MONGODB_SERVER: mongo
+    networks:
+      - intranet
   redis:
     image: redis:latest
     volumes:
@@ -35,4 +51,5 @@ networks:
     driver: bridge
 volumes:
   mongo_data:
+  mongo-init:
   redis_data:

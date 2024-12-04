@@ -1,7 +1,7 @@
 package server
 
 import (
-	question "learning-tracking/internal/controller"
+	question "learning-server/internal/controller"
 	"net/http"
 
 	"github.com/gin-contrib/cors"

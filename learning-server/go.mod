@@ -1,4 +1,4 @@
-module learning-tracking
+module learning-server
 
 go 1.23.2
 

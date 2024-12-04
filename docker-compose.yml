@@ -1,10 +1,12 @@
 services:
   app:
-    image: golang:1.23.2
-    working_dir: /app
+    build:
+      context: learning-server
+      target: builder
+    working_dir: /app/learning-server
+    command: "make watch"
     volumes:
       - ./:/app
-    # command: ["sh", "-c", "go build -o main cmd/api/main.go"]
     ports:
       - "8080:8080"
     depends_on:

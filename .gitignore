@@ -3,3 +3,4 @@
 /to-do-app/frontend/.nuxt
 # Nuxt dev/build outputs
 /to-do-app/frontend/.output
+/to-do-app/frontend/public

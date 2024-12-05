@@ -35,20 +35,20 @@
                                     <p class="mb-0 fs-4 px-3 d-inline-block bg-body text-dark z-index-5 position-relative">or sign in with</p>
                                     <span class="border-top w-100 position-absolute top-50 start-50 translate-middle"></span>
                                 </div>
-                                <form>
+                                <form @submit.prevent="registerUser">
                                     <div class="mb-3">
-                                        <label for="exampleInputUsername" class="form-label">Username</label>
-                                        <input type="email" class="form-control" id="exampleInputUsername" aria-describedby="userNameHelp">
+                                        <label for="exampleInputUsername" class="form-label">User name</label>
+                                        <input type="text" class="form-control" id="inputUsername" v-model="user.username" aria-describedby="userNameHelp">
                                     </div>
                                     <div class="mb-3">
                                         <label for="exampleInputEmail1" class="form-label">Email</label>
-                                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                                        <input type="email" class="form-control" id="inputEmail" v-model="user.email" aria-describedby="emailHelp">
                                     </div>
                                     <div class="mb-4">
                                         <label for="exampleInputPassword1" class="form-label">Password</label>
-                                        <input type="password" class="form-control" id="exampleInputPassword1">
+                                        <input type="password" class="form-control" id="inputPassword" v-model="user.password">
                                     </div>
-                                    <a href="#" class="btn btn-primary w-100 py-8 mb-4 rounded-2">Register account</a>
+                                    <button type="submit" class="btn btn-primary w-100 py-8 mb-4 rounded-2">Register account</button>
                                     <div class="d-flex align-items-center justify-content-center">
                                         <p class="fs-4 mb-0 fw-medium">You have account?</p>
                                         <a class="text-primary fw-medium ms-2" href="#">Sign In</a>
@@ -65,25 +65,33 @@
         </button>
     </div>
 </template>
-<script>
-    export default {
-        data() {
-            return {
-                username: '',
-                password: '',
-                rememberMe: false
-            };
-        },
-        methods: {
-            login() {
-                const payload = {
-                    username: this.username,
-                    password: this.password,
-                    rememberMe: this.rememberMe
-                };
-                // Implement login logic (send API request, etc.)
-                console.log(payload);
-            }
+
+<script setup lang="ts">
+    definePageMeta({
+        layout: 'default'
+    })
+
+    import { ref } from 'vue';
+    import { useRouter } from 'vue-router';
+    import axios from 'axios'
+
+    const user = ref({
+        username: '',
+        email: '',
+        password: ''
+    })
+
+    const router = useRouter()
+
+    const registerUser = async () => {
+        try {
+            const response = await axios.post('http://localhost:8088/api/user/register', user.value); // Use the correct Axios payload format
+            console.log('User registered:', response.data);
+
+            // Navigate to the home page after registration
+            router.push('/');
+        } catch (error) {
+            console.error('Error registering user:', error.response?.data || error.message);
         }
     };
 </script>

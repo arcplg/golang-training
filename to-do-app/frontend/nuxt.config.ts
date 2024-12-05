@@ -3,17 +3,28 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
+  // modules: ['@nuxtjs/axios'],
+  // axios: {
+  //   baseURL: 'http://localhost:8088/api', // Replace with your API base URL
+  //   credentials: true,
+  //   headers: {
+  //     common: {
+  //       Accept: 'application/json',
+  //     },
+  //   },
+  // },
+  // modules: ['@nuxtjs/axios'],
+  axios: {
+    baseURL: 'http://localhost:8080/',
+    credentials: false,
+    headers: {
+      common: {
+        Accept: 'application/json',
+      },
+    },
+    proxyHeaders: false,
+  },
   app: {
-    // head: {
-    //   link: [{ rel: 'stylesheet', href: '/assets/css/styles.css' }],
-    //   script: [
-        // { src: '/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js', type: 'text/javascript' },
-        // { src: '/assets/libs/simplebar/dist/simplebar.min.js', type: 'text/javascript' },
-        // { src: '/assets/js/theme/app.init.js', type: 'text/javascript' },
-        // { src: '/assets/js/theme/theme.js', type: 'text/javascript' },
-        // { src: '/assets/js/theme/app.min.js', type: 'text/javascript' }
-    //   ]
-    // },
     head: {
       link: [
         { rel: 'stylesheet', href: '/assets/css/09f6b43cb9566376.css', 'data-precedence': 'next' },

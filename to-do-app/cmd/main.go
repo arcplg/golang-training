@@ -3,17 +3,18 @@ package main
 import (
 	"fmt"
 	"log"
-	db "to-do-app/pkg"
 
 	"to-do-app/internal/controller"
+	"to-do-app/internal/repository"
+	db "to-do-app/pkg"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	// Kết nối MySQL
+	// Connect to MySQL
 	_, err := db.InitDB()
-	// check have error
 	if err != nil {
 		fmt.Println("Connected to MySQL ERROR!")
 		log.Fatal(err)
@@ -22,18 +23,39 @@ func main() {
 
 	fmt.Println("Connected to MySQL!")
 
+	// Migrate database tables
 	db.MigrateUserTable(db.DB)
 	db.MigrateToDoListTable(db.DB)
 
+	// Initialize Gin router
 	router := gin.Default()
 
-	router.POST("/login", controller.Login)
+	// Apply CORS middleware
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:3000"}, // Add your frontend URL
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
+		AllowHeaders:     []string{"Accept", "Authorization", "Content-Type"},
+		AllowCredentials: true, // Enable cookies/auth
+	}))
 
-	router.POST("/to-do-list", controller.AddTodoList)
-	router.GET("/to-do-list", controller.GetToDoList)
+	todoRepo := repository.NewToDoRepository(db.DB)
+	todoCtrl := controller.NewToDoController(todoRepo)
 
-	router.POST("/user/register", controller.AddUser)
-	router.GET("/user-list", controller.GetUserList)
+	// Define routes
+	router.POST("/api/to-do-list", todoCtrl.AddTodoList)
+	router.GET("/api/to-do-list", todoCtrl.GetToDoList)
+	router.GET("/api/to-do-list/:id", todoCtrl.GetToDoDetail)
+	router.PUT("/api/to-do-list/:id", todoCtrl.EditToDoList)
+	router.DELETE("/api/to-do-list/:id", todoCtrl.DeleteToDoList)
 
+	router.POST("/api/login", controller.Login)
+	router.POST("/api/user/register", controller.AddUser)
+	router.GET("/api/user-list", controller.GetUserList)
+
+	router.GET("/ws", controller.HandleConnections)
+
+	go controller.HandleMessages()
+
+	// Start the server
 	router.Run("localhost:8088")
 }

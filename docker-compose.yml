@@ -16,7 +16,6 @@ services:
 
   mongo:
     image: mongo:6.0
-    container_name: mongodb
     ports:
       - "27017:27017"
     volumes:
@@ -29,7 +28,6 @@ services:
       - intranet
   mongo-express:
     image: mongo-express:latest
-    container_name: mongodb-express
     ports:
       - "8081:8081"
     depends_on:
@@ -46,6 +44,21 @@ services:
       - redis_data:/data
     networks:
       - intranet
+  minio:
+    image: minio/minio:latest
+    platform: linux/amd64
+    environment:
+      MINIO_ACCESS_KEY: s3-minio
+      MINIO_SECRET_KEY: s3-minio
+      MINIO_BUCKETS: s3-minio
+    ports:
+      - 19000:19000
+      - 19001:19001
+    networks:
+      - intranet
+    volumes:
+      - s3_data:/minio/data
+    command: server --address ":19000" --console-address ":19001" /minio/data
 networks:
   intranet:
     driver: bridge
@@ -53,3 +66,4 @@ volumes:
   mongo_data:
   mongo-init:
   redis_data:
+  s3_data:

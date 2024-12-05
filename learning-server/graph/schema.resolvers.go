@@ -10,21 +10,17 @@ import (
 	"learning-server/graph/model"
 )
 
-// CreateTodo is the resolver for the createTodo field.
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: CreateTodo - createTodo"))
+// Person is the resolver for the person field.
+func (r *queryResolver) Person(ctx context.Context) ([]*model.Person, error) {
+	panic(fmt.Errorf("not implemented: Person - person"))
 }
 
-// Todos is the resolver for the todos field.
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: Todos - todos"))
+// Pet is the resolver for the pet field.
+func (r *queryResolver) Pet(ctx context.Context) ([]*model.Pet, error) {
+	panic(fmt.Errorf("not implemented: Pet - pet"))
 }
-
-// Mutation returns MutationResolver implementation.
-func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
-type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }

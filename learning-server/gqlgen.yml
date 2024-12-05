@@ -1,6 +1,6 @@
 # Where are all the schema files located? globs are supported eg  src/**/*.graphqls
 schema:
-  - graph/*.graphql
+  - graph/*.graphqls
 
 # Where should the generated server code go?
 exec:
@@ -18,9 +18,9 @@ exec:
 #     computed_requires: true
 
 # Where should any generated models go?
-# model:
-#   filename: graph/model/models_gen.go
-#   package: model
+model:
+  filename: graph/models/models_gen.go
+  package: models
 
 # Where should the resolver implementations go?
 resolver:
@@ -98,6 +98,6 @@ models:
       - github.com/99designs/gqlgen/graphql.Int64
       - github.com/99designs/gqlgen/graphql.Int32
   Person:
-    model: learning-server/graph/model.Person
+    model: learning-server/graph/models.Person
   Pet:
-    model: learning-server/graph/model.Pet
+    model: learning-server/graph/models.Pet

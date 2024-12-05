@@ -6,21 +6,52 @@ package graph
 
 import (
 	"context"
+	"crypto/rand"
 	"fmt"
-	"learning-server/graph/model"
+	"learning-server/graph/models"
+	"math/big"
 )
 
-// Person is the resolver for the person field.
-func (r *queryResolver) Person(ctx context.Context) ([]*model.Person, error) {
-	panic(fmt.Errorf("not implemented: Person - person"))
+// CreateTodo is the resolver for the createTodo field.
+func (r *mutationResolver) CreateTodo(ctx context.Context, input models.NewTodo) (*models.Todo, error) {
+	randNumber, _ := rand.Int(rand.Reader, big.NewInt(100))
+	todo := &models.Todo{
+		Text: input.Text,
+		ID:   fmt.Sprintf("T%d", randNumber),
+		User: &models.User{ID: input.UserID, Name: "user " + input.UserID},
+	}
+	r.todos = append(r.todos, todo)
+	return todo, nil
 }
 
-// Pet is the resolver for the pet field.
-func (r *queryResolver) Pet(ctx context.Context) ([]*model.Pet, error) {
-	panic(fmt.Errorf("not implemented: Pet - pet"))
+// CreateQuestion is the resolver for the createQuestion field.
+func (r *mutationResolver) CreateQuestion(ctx context.Context, input models.NewQuestion) (*models.Question, error) {
+	randNumber, _ := rand.Int(rand.Reader, big.NewInt(100))
+	question := &models.Question{
+		Title:       input.Title,
+		Description: input.Description,
+		ID:          fmt.Sprintf("T%d", randNumber),
+		User:        &models.User{ID: input.UserID, Name: "user " + input.UserID},
+	}
+	r.questions = append(r.questions, question)
+	return question, nil
 }
+
+// Todos is the resolver for the todos field.
+func (r *queryResolver) Todos(ctx context.Context) ([]*models.Todo, error) {
+	return r.todos, nil
+}
+
+// Questions is the resolver for the questions field.
+func (r *queryResolver) Questions(ctx context.Context) ([]*models.Question, error) {
+	return r.questions, nil
+}
+
+// Mutation returns MutationResolver implementation.
+func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
+type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }

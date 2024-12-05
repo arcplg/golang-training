@@ -1,7 +1,7 @@
 package server
 
 import (
-	question "learning-server/internal/controller"
+	question "learning-server/api/controller"
 	"net/http"
 	"net/http/httptest"
 	"testing"

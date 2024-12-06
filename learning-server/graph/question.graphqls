@@ -3,13 +3,11 @@ type Question {
   id: ID!
   title: String!
   description: String!
-  user: User!
 }
 
 input NewQuestion {
   title: String!
   description: String!
-  userId: String!
 }
 
 extend type Query {

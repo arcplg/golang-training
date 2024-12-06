@@ -6,26 +6,36 @@ package graph
 
 import (
 	"context"
-	"crypto/rand"
 	"fmt"
 	"learning-server/graph/models"
-	"math/big"
+	"learning-server/internal/db"
+
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 // CreateQuestion is the resolver for the createQuestion field.
 func (r *mutationResolver) CreateQuestion(ctx context.Context, input models.NewQuestion) (*models.Question, error) {
-	randNumber, _ := rand.Int(rand.Reader, big.NewInt(100))
-	question := &models.Question{
+	collection := db.GetCollection("questions")
+
+	// Create a new question instance
+	question := models.Question{
+		ID:          bson.TypeObjectID.String(),
 		Title:       input.Title,
 		Description: input.Description,
-		ID:          fmt.Sprintf("T%d", randNumber),
-		User:        &models.User{ID: input.UserID, Name: "user " + input.UserID},
 	}
-	r.questions = append(r.questions, question)
-	return question, nil
+	fmt.Println(question)
+
+	// Insert the question into the database
+	_, err := collection.InsertOne(ctx, question)
+	if err != nil {
+		return nil, err
+	}
+
+	// Return the created question
+	return &question, nil
 }
 
 // Questions is the resolver for the questions field.
 func (r *queryResolver) Questions(ctx context.Context) ([]*models.Question, error) {
-	return r.questions, nil
+	panic(fmt.Errorf("not implemented: Questions - questions"))
 }

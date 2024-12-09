@@ -79,7 +79,7 @@ func (ctrl *ToDoController) AddTodoList(c *gin.Context) {
 
 	fmt.Println("Received Todo:", newToDo)
 
-	result, err := db.DB.Exec("INSERT INTO to_do_list (title, description, is_completed, user_id) VALUES (?, ?, ?, 1)", newToDo.Title, newToDo.Description, newToDo.IsCompleted)
+	result, err := db.DB.Exec("INSERT INTO to_do_list (title, description, is_completed, user_id, reminder_time) VALUES (?, ?, ?, 1, ?)", newToDo.Title, newToDo.Description, newToDo.IsCompleted, newToDo.ReminderTime.TimeValue())
 
 	if err != nil {
 		fmt.Println("Error:", err)

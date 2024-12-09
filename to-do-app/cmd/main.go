@@ -26,6 +26,7 @@ func main() {
 	// Migrate database tables
 	db.MigrateUserTable(db.DB)
 	db.MigrateToDoListTable(db.DB)
+	db.MigrateAlterToDoListTable(db.DB)
 
 	// Initialize Gin router
 	router := gin.Default()

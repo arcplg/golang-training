@@ -44,3 +44,26 @@ func MigrateUserTable(db *sql.DB) {
 
 	log.Println("Table `users` migration completed successfully!")
 }
+
+func MigrateAlterToDoListTable(db *sql.DB) {
+	var columnName string
+	query := `
+        SELECT COLUMN_NAME
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_NAME = 'to_do_list' AND COLUMN_NAME = 'reminder_time'
+    `
+	err := db.QueryRow(query).Scan(&columnName)
+	if err != nil && err != sql.ErrNoRows {
+		log.Fatalf("error checking column existence: %v", err)
+	}
+
+	// Nếu cột chưa tồn tại, thêm mới
+	if columnName == "" {
+		_, err := db.Exec("ALTER TABLE to_do_list ADD COLUMN reminder_time DATETIME NULL")
+		if err != nil {
+			log.Fatalf("error adding column: %v", err)
+		}
+	}
+
+	log.Println("alter `reminder_time` to table `to_do_list` migration completed successfully!")
+}

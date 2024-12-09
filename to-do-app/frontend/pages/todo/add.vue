@@ -62,6 +62,25 @@
                                                                     </div>
                                                                     <textarea v-model="toDo.description" class="block w-full rounded-md text-sm disabled:cursor-not-allowed disabled:opacity-50 bg-transparent border border-ld text-dark focus:border-primary focus:ring-0 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary dark:focus:ring-0 form-control-textarea" id="comment" placeholder="Leave a comment..." required="" rows="4"></textarea>
                                                                 </div>
+                                                                <div class="flex pb-6">
+                                                                    <div class="basis-1/4 flex items-center pr-[1.875rem] justify-end">
+                                                                        <label class="text-sm font-semibold text-gray-900 dark:text-white" data-testid="flowbite-label" for="birthdate">Birth Date</label>
+                                                                    </div>
+                                                                    <div class="basis-3/4">
+                                                                        <div class="relative form-control">
+                                                                            <div class="flex">
+                                                                                <div class="relative w-full">
+                                                                                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                                                                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 20 20" aria-hidden="true" class="h-5 w-5 text-gray-500 dark:text-gray-400" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                                                                                            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                                                                                        </svg>
+                                                                                    </div>
+                                                                                    <input class="block w-full border disabled:cursor-not-allowed disabled:opacity-50 border-gray-300 bg-gray-50 text-gray-900 focus:border-cyan-500 focus:ring-cyan-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500 p-2.5 text-sm pl-10 rounded-lg" readonly="" type="text" value="January 3, 2025">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                                 <div class="col-span-12">
                                                                     <button type="submit" class="group relative flex items-stretch justify-center p-0.5 text-center font-medium bg-primary text-white rounded-lg">
                                                                         <span class="flex items-center gap-2 transition-all duration-150 justify-center rounded-md px-4 py-2 text-sm">Submit</span>

@@ -6,17 +6,17 @@ type Mutation struct {
 }
 
 type NewQuestion struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
+	Title       string  `json:"title"`
+	Description *string `json:"description,omitempty"`
 }
 
 type Query struct {
 }
 
 type Question struct {
-	ID          string `json:"id"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
+	ID          string  `json:"_id"`
+	Title       string  `json:"title"`
+	Description *string `json:"description,omitempty"`
 }
 
 type User struct {

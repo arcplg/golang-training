@@ -1,13 +1,13 @@
 
 type Question {
-  id: ID!
+  _id: ID!
   title: String!
-  description: String!
+  description: String
 }
 
 input NewQuestion {
   title: String!
-  description: String!
+  description: String
 }
 
 extend type Query {

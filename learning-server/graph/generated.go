@@ -129,7 +129,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Question.Description(childComplexity), true
 
-	case "Question.id":
+	case "Question._id":
 		if e.complexity.Question.ID == nil {
 			break
 		}
@@ -430,8 +430,8 @@ func (ec *executionContext) fieldContext_Mutation_createQuestion(ctx context.Con
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "id":
-				return ec.fieldContext_Question_id(ctx, field)
+			case "_id":
+				return ec.fieldContext_Question__id(ctx, field)
 			case "title":
 				return ec.fieldContext_Question_title(ctx, field)
 			case "description":
@@ -493,8 +493,8 @@ func (ec *executionContext) fieldContext_Query_questions(_ context.Context, fiel
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "id":
-				return ec.fieldContext_Question_id(ctx, field)
+			case "_id":
+				return ec.fieldContext_Question__id(ctx, field)
 			case "title":
 				return ec.fieldContext_Question_title(ctx, field)
 			case "description":
@@ -687,8 +687,8 @@ func (ec *executionContext) fieldContext_Query___schema(_ context.Context, field
 	return fc, nil
 }
 
-func (ec *executionContext) _Question_id(ctx context.Context, field graphql.CollectedField, obj *models.Question) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Question_id(ctx, field)
+func (ec *executionContext) _Question__id(ctx context.Context, field graphql.CollectedField, obj *models.Question) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Question__id(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -718,7 +718,7 @@ func (ec *executionContext) _Question_id(ctx context.Context, field graphql.Coll
 	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Question_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Question__id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Question",
 		Field:      field,
@@ -796,14 +796,11 @@ func (ec *executionContext) _Question_description(ctx context.Context, field gra
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Question_description(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2747,7 +2744,7 @@ func (ec *executionContext) unmarshalInputNewQuestion(ctx context.Context, obj i
 			it.Title = data
 		case "description":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("description"))
-			data, err := ec.unmarshalNString2string(ctx, v)
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2920,8 +2917,8 @@ func (ec *executionContext) _Question(ctx context.Context, sel ast.SelectionSet,
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Question")
-		case "id":
-			out.Values[i] = ec._Question_id(ctx, field, obj)
+		case "_id":
+			out.Values[i] = ec._Question__id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -2932,9 +2929,6 @@ func (ec *executionContext) _Question(ctx context.Context, sel ast.SelectionSet,
 			}
 		case "description":
 			out.Values[i] = ec._Question_description(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}

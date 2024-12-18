@@ -14,19 +14,19 @@ import (
 
 // CreateQuestion is the resolver for the createQuestion field.
 func (r *mutationResolver) CreateQuestion(ctx context.Context, input models.NewQuestion) (*models.Question, error) {
-	// collection := db.GetCollection("questions")
+	collection := db.GetCollection("questions")
+	res, err := collection.InsertOne(ctx, input)
+	if err != nil {
+		return nil, err
+	}
 
-	question := models.Question{
-		ID:          bson.TypeObjectID.String(),
+	question := &models.Question{
+		ID:          res.InsertedID.(bson.ObjectID).Hex(),
 		Title:       input.Title,
 		Description: input.Description,
 	}
-	// _, err := collection.InsertOne(ctx, question)
-	// if err != nil {
-	// 	return nil, err
-	// }
 
-	return &question, nil
+	return question, nil
 }
 
 // Questions is the resolver for the questions field.

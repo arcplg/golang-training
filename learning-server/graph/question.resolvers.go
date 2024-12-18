@@ -12,6 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
+// CreateQuestion is the resolver for the createQuestion field.
 func (r *mutationResolver) CreateQuestion(ctx context.Context, input models.NewQuestion) (*models.Question, error) {
 	// collection := db.GetCollection("questions")
 
@@ -28,6 +29,7 @@ func (r *mutationResolver) CreateQuestion(ctx context.Context, input models.NewQ
 	return &question, nil
 }
 
+// Questions is the resolver for the questions field.
 func (r *queryResolver) Questions(ctx context.Context) ([]*models.Question, error) {
 	collection := db.GetCollection("questions")
 	cursor, err := collection.Find(ctx, bson.M{})
@@ -49,3 +51,12 @@ func (r *queryResolver) Questions(ctx context.Context) ([]*models.Question, erro
 
 	return questions, nil
 }
+
+// Mutation returns MutationResolver implementation.
+func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
+
+// Query returns QueryResolver implementation.
+func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
+
+type mutationResolver struct{ *Resolver }
+type queryResolver struct{ *Resolver }

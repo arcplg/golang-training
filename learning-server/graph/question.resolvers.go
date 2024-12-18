@@ -6,36 +6,46 @@ package graph
 
 import (
 	"context"
-	"fmt"
 	"learning-server/graph/models"
 	"learning-server/internal/db"
 
-	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
-// CreateQuestion is the resolver for the createQuestion field.
 func (r *mutationResolver) CreateQuestion(ctx context.Context, input models.NewQuestion) (*models.Question, error) {
-	collection := db.GetCollection("questions")
+	// collection := db.GetCollection("questions")
 
-	// Create a new question instance
 	question := models.Question{
 		ID:          bson.TypeObjectID.String(),
 		Title:       input.Title,
 		Description: input.Description,
 	}
-	fmt.Println(question)
+	// _, err := collection.InsertOne(ctx, question)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	// Insert the question into the database
-	_, err := collection.InsertOne(ctx, question)
-	if err != nil {
-		return nil, err
-	}
-
-	// Return the created question
 	return &question, nil
 }
 
-// Questions is the resolver for the questions field.
 func (r *queryResolver) Questions(ctx context.Context) ([]*models.Question, error) {
-	panic(fmt.Errorf("not implemented: Questions - questions"))
+	collection := db.GetCollection("questions")
+	cursor, err := collection.Find(ctx, bson.M{})
+
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var questions []*models.Question
+	for cursor.Next(ctx) {
+		var question models.Question
+		err := cursor.Decode(&question)
+		if err != nil {
+			return nil, err
+		}
+		questions = append(questions, &question)
+	}
+
+	return questions, nil
 }

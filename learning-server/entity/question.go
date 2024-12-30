@@ -9,6 +9,6 @@ type Question struct {
 }
 
 type NewQuestion struct {
-	Title       string  `json:"title" bson:"title"`
-	Description *string `json:"description,omitempty" bson:"description,omitempty"`
+	Title       string  `json:"title"`
+	Description *string `json:"description,omitempty"`
 }

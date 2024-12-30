@@ -1,9 +1,7 @@
-//go:generate go run generate.go
-
 package graph
 
-import "learning-server/graph/models"
+import "learning-server/entity"
 
 type Resolver struct {
-	questions []*models.Question
+	questions []*entity.Question
 }

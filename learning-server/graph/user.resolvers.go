@@ -7,10 +7,10 @@ package graph
 import (
 	"context"
 	"fmt"
-	"learning-server/graph/models"
+	"learning-server/entity"
 )
 
 // Users is the resolver for the users field.
-func (r *queryResolver) Users(ctx context.Context) ([]*models.User, error) {
+func (r *queryResolver) Users(ctx context.Context) ([]*entity.User, error) {
 	panic(fmt.Errorf("not implemented: Users - users"))
 }

@@ -6,21 +6,21 @@ package graph
 
 import (
 	"context"
-	"learning-server/graph/models"
+	"learning-server/entity"
 	"learning-server/internal/db"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 // CreateQuestion is the resolver for the createQuestion field.
-func (r *mutationResolver) CreateQuestion(ctx context.Context, input models.NewQuestion) (*models.Question, error) {
+func (r *mutationResolver) CreateQuestion(ctx context.Context, input entity.NewQuestion) (*entity.Question, error) {
 	collection := db.GetCollection("questions")
 	res, err := collection.InsertOne(ctx, input)
 	if err != nil {
 		return nil, err
 	}
 
-	question := &models.Question{
+	question := &entity.Question{
 		ID:          res.InsertedID.(bson.ObjectID),
 		Title:       input.Title,
 		Description: input.Description,
@@ -30,7 +30,7 @@ func (r *mutationResolver) CreateQuestion(ctx context.Context, input models.NewQ
 }
 
 // Questions is the resolver for the questions field.
-func (r *queryResolver) Questions(ctx context.Context) ([]*models.Question, error) {
+func (r *queryResolver) Questions(ctx context.Context) ([]*entity.Question, error) {
 	collection := db.GetCollection("questions")
 	cursor, err := collection.Find(ctx, bson.M{})
 
@@ -39,9 +39,9 @@ func (r *queryResolver) Questions(ctx context.Context) ([]*models.Question, erro
 	}
 	defer cursor.Close(ctx)
 
-	var questions []*models.Question
+	var questions []*entity.Question
 	for cursor.Next(ctx) {
-		var question models.Question
+		var question entity.Question
 		err := cursor.Decode(&question)
 		if err != nil {
 			return nil, err

@@ -8,7 +8,7 @@ import (
 	"embed"
 	"errors"
 	"fmt"
-	"learning-server/graph/models"
+	"learning-server/entity"
 	"learning-server/graph/scalar"
 	"strconv"
 	"sync"
@@ -50,7 +50,7 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Mutation struct {
-		CreateQuestion func(childComplexity int, input models.NewQuestion) int
+		CreateQuestion func(childComplexity int, input entity.NewQuestion) int
 	}
 
 	Query struct {
@@ -72,11 +72,11 @@ type ComplexityRoot struct {
 }
 
 type MutationResolver interface {
-	CreateQuestion(ctx context.Context, input models.NewQuestion) (*models.Question, error)
+	CreateQuestion(ctx context.Context, input entity.NewQuestion) (*entity.Question, error)
 }
 type QueryResolver interface {
-	Questions(ctx context.Context) ([]*models.Question, error)
-	Users(ctx context.Context) ([]*models.User, error)
+	Questions(ctx context.Context) ([]*entity.Question, error)
+	Users(ctx context.Context) ([]*entity.User, error)
 }
 
 type executableSchema struct {
@@ -108,7 +108,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateQuestion(childComplexity, args["input"].(models.NewQuestion)), true
+		return e.complexity.Mutation.CreateQuestion(childComplexity, args["input"].(entity.NewQuestion)), true
 
 	case "Query.questions":
 		if e.complexity.Query.Questions == nil {
@@ -306,13 +306,13 @@ func (ec *executionContext) field_Mutation_createQuestion_args(ctx context.Conte
 func (ec *executionContext) field_Mutation_createQuestion_argsInput(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (models.NewQuestion, error) {
+) (entity.NewQuestion, error) {
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 	if tmp, ok := rawArgs["input"]; ok {
-		return ec.unmarshalNNewQuestion2learningᚑserverᚋgraphᚋmodelsᚐNewQuestion(ctx, tmp)
+		return ec.unmarshalNNewQuestion2learningᚑserverᚋentityᚐNewQuestion(ctx, tmp)
 	}
 
-	var zeroVal models.NewQuestion
+	var zeroVal entity.NewQuestion
 	return zeroVal, nil
 }
 
@@ -407,7 +407,7 @@ func (ec *executionContext) _Mutation_createQuestion(ctx context.Context, field 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateQuestion(rctx, fc.Args["input"].(models.NewQuestion))
+		return ec.resolvers.Mutation().CreateQuestion(rctx, fc.Args["input"].(entity.NewQuestion))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -419,9 +419,9 @@ func (ec *executionContext) _Mutation_createQuestion(ctx context.Context, field 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*models.Question)
+	res := resTmp.(*entity.Question)
 	fc.Result = res
-	return ec.marshalNQuestion2ᚖlearningᚑserverᚋgraphᚋmodelsᚐQuestion(ctx, field.Selections, res)
+	return ec.marshalNQuestion2ᚖlearningᚑserverᚋentityᚐQuestion(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createQuestion(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -482,9 +482,9 @@ func (ec *executionContext) _Query_questions(ctx context.Context, field graphql.
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*models.Question)
+	res := resTmp.([]*entity.Question)
 	fc.Result = res
-	return ec.marshalNQuestion2ᚕᚖlearningᚑserverᚋgraphᚋmodelsᚐQuestionᚄ(ctx, field.Selections, res)
+	return ec.marshalNQuestion2ᚕᚖlearningᚑserverᚋentityᚐQuestionᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_questions(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -534,9 +534,9 @@ func (ec *executionContext) _Query_users(ctx context.Context, field graphql.Coll
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*models.User)
+	res := resTmp.([]*entity.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚕᚖlearningᚑserverᚋgraphᚋmodelsᚐUserᚄ(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚕᚖlearningᚑserverᚋentityᚐUserᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_users(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -689,7 +689,7 @@ func (ec *executionContext) fieldContext_Query___schema(_ context.Context, field
 	return fc, nil
 }
 
-func (ec *executionContext) _Question__id(ctx context.Context, field graphql.CollectedField, obj *models.Question) (ret graphql.Marshaler) {
+func (ec *executionContext) _Question__id(ctx context.Context, field graphql.CollectedField, obj *entity.Question) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Question__id(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -733,7 +733,7 @@ func (ec *executionContext) fieldContext_Question__id(_ context.Context, field g
 	return fc, nil
 }
 
-func (ec *executionContext) _Question_title(ctx context.Context, field graphql.CollectedField, obj *models.Question) (ret graphql.Marshaler) {
+func (ec *executionContext) _Question_title(ctx context.Context, field graphql.CollectedField, obj *entity.Question) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Question_title(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -777,7 +777,7 @@ func (ec *executionContext) fieldContext_Question_title(_ context.Context, field
 	return fc, nil
 }
 
-func (ec *executionContext) _Question_description(ctx context.Context, field graphql.CollectedField, obj *models.Question) (ret graphql.Marshaler) {
+func (ec *executionContext) _Question_description(ctx context.Context, field graphql.CollectedField, obj *entity.Question) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Question_description(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -818,7 +818,7 @@ func (ec *executionContext) fieldContext_Question_description(_ context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _User_id(ctx context.Context, field graphql.CollectedField, obj *models.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_id(ctx context.Context, field graphql.CollectedField, obj *entity.User) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_User_id(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -862,7 +862,7 @@ func (ec *executionContext) fieldContext_User_id(_ context.Context, field graphq
 	return fc, nil
 }
 
-func (ec *executionContext) _User_name(ctx context.Context, field graphql.CollectedField, obj *models.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_name(ctx context.Context, field graphql.CollectedField, obj *entity.User) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_User_name(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -906,7 +906,7 @@ func (ec *executionContext) fieldContext_User_name(_ context.Context, field grap
 	return fc, nil
 }
 
-func (ec *executionContext) _User_email(ctx context.Context, field graphql.CollectedField, obj *models.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_email(ctx context.Context, field graphql.CollectedField, obj *entity.User) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_User_email(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -2723,8 +2723,8 @@ func (ec *executionContext) fieldContext___Type_specifiedByURL(_ context.Context
 
 // region    **************************** input.gotpl *****************************
 
-func (ec *executionContext) unmarshalInputNewQuestion(ctx context.Context, obj interface{}) (models.NewQuestion, error) {
-	var it models.NewQuestion
+func (ec *executionContext) unmarshalInputNewQuestion(ctx context.Context, obj interface{}) (entity.NewQuestion, error) {
+	var it entity.NewQuestion
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -2910,7 +2910,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 
 var questionImplementors = []string{"Question"}
 
-func (ec *executionContext) _Question(ctx context.Context, sel ast.SelectionSet, obj *models.Question) graphql.Marshaler {
+func (ec *executionContext) _Question(ctx context.Context, sel ast.SelectionSet, obj *entity.Question) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, questionImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -2956,7 +2956,7 @@ func (ec *executionContext) _Question(ctx context.Context, sel ast.SelectionSet,
 
 var userImplementors = []string{"User"}
 
-func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj *models.User) graphql.Marshaler {
+func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj *entity.User) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, userImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -3359,7 +3359,7 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalNNewQuestion2learningᚑserverᚋgraphᚋmodelsᚐNewQuestion(ctx context.Context, v interface{}) (models.NewQuestion, error) {
+func (ec *executionContext) unmarshalNNewQuestion2learningᚑserverᚋentityᚐNewQuestion(ctx context.Context, v interface{}) (entity.NewQuestion, error) {
 	res, err := ec.unmarshalInputNewQuestion(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -3379,11 +3379,11 @@ func (ec *executionContext) marshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriver
 	return res
 }
 
-func (ec *executionContext) marshalNQuestion2learningᚑserverᚋgraphᚋmodelsᚐQuestion(ctx context.Context, sel ast.SelectionSet, v models.Question) graphql.Marshaler {
+func (ec *executionContext) marshalNQuestion2learningᚑserverᚋentityᚐQuestion(ctx context.Context, sel ast.SelectionSet, v entity.Question) graphql.Marshaler {
 	return ec._Question(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNQuestion2ᚕᚖlearningᚑserverᚋgraphᚋmodelsᚐQuestionᚄ(ctx context.Context, sel ast.SelectionSet, v []*models.Question) graphql.Marshaler {
+func (ec *executionContext) marshalNQuestion2ᚕᚖlearningᚑserverᚋentityᚐQuestionᚄ(ctx context.Context, sel ast.SelectionSet, v []*entity.Question) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -3407,7 +3407,7 @@ func (ec *executionContext) marshalNQuestion2ᚕᚖlearningᚑserverᚋgraphᚋm
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNQuestion2ᚖlearningᚑserverᚋgraphᚋmodelsᚐQuestion(ctx, sel, v[i])
+			ret[i] = ec.marshalNQuestion2ᚖlearningᚑserverᚋentityᚐQuestion(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -3427,7 +3427,7 @@ func (ec *executionContext) marshalNQuestion2ᚕᚖlearningᚑserverᚋgraphᚋm
 	return ret
 }
 
-func (ec *executionContext) marshalNQuestion2ᚖlearningᚑserverᚋgraphᚋmodelsᚐQuestion(ctx context.Context, sel ast.SelectionSet, v *models.Question) graphql.Marshaler {
+func (ec *executionContext) marshalNQuestion2ᚖlearningᚑserverᚋentityᚐQuestion(ctx context.Context, sel ast.SelectionSet, v *entity.Question) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -3452,7 +3452,7 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 	return res
 }
 
-func (ec *executionContext) marshalNUser2ᚕᚖlearningᚑserverᚋgraphᚋmodelsᚐUserᚄ(ctx context.Context, sel ast.SelectionSet, v []*models.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2ᚕᚖlearningᚑserverᚋentityᚐUserᚄ(ctx context.Context, sel ast.SelectionSet, v []*entity.User) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -3476,7 +3476,7 @@ func (ec *executionContext) marshalNUser2ᚕᚖlearningᚑserverᚋgraphᚋmodel
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNUser2ᚖlearningᚑserverᚋgraphᚋmodelsᚐUser(ctx, sel, v[i])
+			ret[i] = ec.marshalNUser2ᚖlearningᚑserverᚋentityᚐUser(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -3496,7 +3496,7 @@ func (ec *executionContext) marshalNUser2ᚕᚖlearningᚑserverᚋgraphᚋmodel
 	return ret
 }
 
-func (ec *executionContext) marshalNUser2ᚖlearningᚑserverᚋgraphᚋmodelsᚐUser(ctx context.Context, sel ast.SelectionSet, v *models.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2ᚖlearningᚑserverᚋentityᚐUser(ctx context.Context, sel ast.SelectionSet, v *entity.User) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")

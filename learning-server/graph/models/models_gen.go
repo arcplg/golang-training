@@ -2,29 +2,8 @@
 
 package models
 
-import (
-	"go.mongodb.org/mongo-driver/v2/bson"
-)
-
 type Mutation struct {
 }
 
-type NewQuestion struct {
-	Title       string  `json:"title" bson:"title"`
-	Description *string `json:"description,omitempty" bson:"description,omitempty"`
-}
-
 type Query struct {
-}
-
-type Question struct {
-	ID          bson.ObjectID `json:"_id" bson:"_id"`
-	Title       string        `json:"title" bson:"title"`
-	Description *string       `json:"description,omitempty" bson:"description,omitempty"`
-}
-
-type User struct {
-	ID    string `json:"id" bson:"id"`
-	Name  string `json:"name" bson:"name"`
-	Email string `json:"email" bson:"email"`
 }

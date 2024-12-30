@@ -21,7 +21,7 @@ func (r *mutationResolver) CreateQuestion(ctx context.Context, input models.NewQ
 	}
 
 	question := &models.Question{
-		ID:          res.InsertedID.(bson.ObjectID).Hex(),
+		ID:          res.InsertedID.(bson.ObjectID),
 		Title:       input.Title,
 		Description: input.Description,
 	}

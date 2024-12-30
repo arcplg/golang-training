@@ -1,6 +1,7 @@
+scalar ObjectID
 
 type Question {
-  _id: ID!
+  _id: ObjectID!
   title: String!
   description: String
 }

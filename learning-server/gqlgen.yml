@@ -86,6 +86,9 @@ autobind:
 # modelgen, the others will be allowed when binding to fields. Configure them to
 # your liking
 models:
+  ObjectID:
+    model:
+      - learning-server/graph/scalar.ObjectID
   ID:
     model:
       - github.com/99designs/gqlgen/graphql.String

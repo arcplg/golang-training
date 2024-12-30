@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"learning-server/graph/models"
+	"learning-server/graph/scalar"
 	"strconv"
 	"sync"
 	"sync/atomic"
@@ -17,6 +18,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/introspection"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 // region    ************************** generated!.gotpl **************************
@@ -713,9 +715,9 @@ func (ec *executionContext) _Question__id(ctx context.Context, field graphql.Col
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(bson.ObjectID)
 	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Question__id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -725,7 +727,7 @@ func (ec *executionContext) fieldContext_Question__id(_ context.Context, field g
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			return nil, errors.New("field of type ObjectID does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3360,6 +3362,21 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 func (ec *executionContext) unmarshalNNewQuestion2learningᚑserverᚋgraphᚋmodelsᚐNewQuestion(ctx context.Context, v interface{}) (models.NewQuestion, error) {
 	res, err := ec.unmarshalInputNewQuestion(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID(ctx context.Context, v interface{}) (bson.ObjectID, error) {
+	res, err := scalar.UnmarshalObjectID(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID(ctx context.Context, sel ast.SelectionSet, v bson.ObjectID) graphql.Marshaler {
+	res := scalar.MarshalObjectID(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
 }
 
 func (ec *executionContext) marshalNQuestion2learningᚑserverᚋgraphᚋmodelsᚐQuestion(ctx context.Context, sel ast.SelectionSet, v models.Question) graphql.Marshaler {

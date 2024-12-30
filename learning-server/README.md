@@ -14,6 +14,9 @@ docker-composer up -d
 ```
 go run github.com/99designs/gqlgen generate
 ```
+```
+go generate ./...
+```
 
 ## Add package
 ```

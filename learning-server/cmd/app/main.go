@@ -9,6 +9,7 @@ import (
 	"syscall"
 	"time"
 
+	"learning-server/internal/validation"
 	"learning-server/server"
 )
 
@@ -35,6 +36,8 @@ func main() {
 	server := server.NewServer()
 
 	done := make(chan bool, 1)
+
+	validation.Init()
 
 	go gracefulShutdown(server, done)
 

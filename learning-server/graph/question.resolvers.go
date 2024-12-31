@@ -6,14 +6,21 @@ package graph
 
 import (
 	"context"
+	"fmt"
 	"learning-server/entity"
 	"learning-server/internal/db"
+	"learning-server/internal/validation"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 // CreateQuestion is the resolver for the createQuestion field.
 func (r *mutationResolver) CreateQuestion(ctx context.Context, input entity.NewQuestion) (*entity.Question, error) {
+
+	if err := validation.ValidateStruct(input); err != nil {
+		return nil, fmt.Errorf("validation failed: %v", err)
+	}
+
 	collection := db.GetCollection("questions")
 	res, err := collection.InsertOne(ctx, input)
 	if err != nil {

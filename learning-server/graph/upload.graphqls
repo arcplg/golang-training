@@ -1,0 +1,21 @@
+scalar Upload
+
+type File {
+    _id: ObjectID!
+    name: String!
+    type: String!
+    path: String!
+    url: String!
+}
+
+input UploadFile {
+    file: Upload!
+}
+
+
+type Mutation {
+    singleUpload(file: Upload!): File!
+    singleUploadWithPayload(req: UploadFile!): File!
+    multipleUpload(files: [Upload!]!): [File!]!
+    multipleUploadWithPayload(req: [UploadFile!]!): [File!]!
+}

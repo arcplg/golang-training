@@ -15,4 +15,12 @@ bin
 build
 config
 index.html
-src/assets
+.nuxt
+.output
+assets
+nuxt.config.ts
+package-lock.json
+package.json
+README.md
+server/tsconfig.json
+tsconfig.json

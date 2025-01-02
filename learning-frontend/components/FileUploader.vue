@@ -1,15 +1,13 @@
 <template>
-    <form @submit.prevent="handleFileUpload">
-      <input type="file" multiple @change="handleFileChange" />
-      <button type="submit">Upload</button>
-      <p v-if="uploadMessage">{{ uploadMessage }}</p>
-    </form>
+  <form @submit.prevent="handleFileUpload">
+    <input type="file" multiple @change="handleFileChange" />
+    <button type="submit">Upload</button>
+    <p v-if="uploadMessage">{{ uploadMessage }}</p>
+  </form>
+</template>
 
-
-  </template>
-  
 <script setup>
-import { ref } from 'vue';
+import { ref } from "vue";
 
 // const mutation = gql`
 //     mutation CreateQuestion {
@@ -20,29 +18,26 @@ import { ref } from 'vue';
 //         }
 //     }
 
-
-
 // `
-  
+
 const selectedFiles = ref(null);
-const uploadMessage = ref('');
-  
+const uploadMessage = ref("");
+
 const handleFileChange = (event) => {
-    selectedFiles.value = event.target.files;
+  selectedFiles.value = event.target.files;
 };
-  
+
 const handleFileUpload = async () => {
-    // const { mutate } = useMutation(mutation, { title: '111112222', description: 11222 })
-    // const response = await mutate() 
-    // console.log(response)
-    // if (!selectedFiles.value || selectedFiles.value.length === 0) {
-    //   uploadMessage.value = 'Please select files to upload';
-    //   return;
-    // }
-    // for (const file of selectedFiles.value) {
-    //     const { mutate } = useMutation(mutation, { file })
-    //     console.log(mutate)
-    // }
+  // const { mutate } = useMutation(mutation, { title: '111112222', description: 11222 })
+  // const response = await mutate()
+  // console.log(response)
+  // if (!selectedFiles.value || selectedFiles.value.length === 0) {
+  //   uploadMessage.value = 'Please select files to upload';
+  //   return;
+  // }
+  // for (const file of selectedFiles.value) {
+  //     const { mutate } = useMutation(mutation, { file })
+  //     console.log(mutate)
+  // }
 };
 </script>
-  

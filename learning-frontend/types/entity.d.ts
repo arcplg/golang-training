@@ -3,3 +3,8 @@ interface Question {
   title: String
   description: String
 }
+
+interface NewQuestion {
+  title: string;
+  description: string;
+}

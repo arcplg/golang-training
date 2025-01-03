@@ -1,29 +1,40 @@
-export interface RequestOptions extends RequestInit {
-  headers?: HeadersInit
+
+const defaultHeaders = {
+  "Content-Type": "application/json",
+  Accept: "application/json",
 }
 
-export async function httpRequest<T>(
-  url: string,
-  options: RequestOptions = {},
-): Promise<T> {
-  const defaultHeaders = {
-    "Content-Type": "application/json",
-  }
-
-  const mergedOptions: RequestOptions = {
-    ...options,
-    headers: {
-      ...defaultHeaders,
-      ...options.headers,
+export async function graphqlQueryFetch(
+  gql: any,
+  variables?: Record<string, any>
+): Promise<any> {
+  return await $fetch('http://localhost:8080/graphql', {
+    method: "POST",
+    headers: defaultHeaders,
+    body: {
+      query: gql?.loc?.source.body,
+      variables: variables,
     },
+  })
+}
+
+export async function graphqlQueryUseFetch(
+  gql: any,
+  variables?: Record<string, any>
+): Promise<any> {
+
+  const {data, error} = await useFetch('http://localhost:8080/graphql', {
+    method: "POST",
+    headers: defaultHeaders,
+    body: {
+      query: gql?.loc?.source.body,
+      variables: variables,
+    },
+  })
+
+  if (error.value) {
+    throw new Error(error.value.message);
   }
 
-  const response = await $fetch(url, mergedOptions)
-
-  if (!response.ok) {
-    const error = await response.json()
-    throw new Error(error.message || "An error occurred while fetching data")
-  }
-
-  return response.json()
+  return data.value;
 }

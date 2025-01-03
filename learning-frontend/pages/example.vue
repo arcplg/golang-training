@@ -8,7 +8,7 @@
           <td>Title</td>
           <td>Body</td>
         </tr>
-        <tr v-for="(item, i) in questions" :key="i">
+        <tr v-for="(item, i) in pageQuestion.questions" :key="i">
           <td>{{ item._id }}</td>
           <td>{{ item.title }}</td>
           <td>{{ item.description }}</td>
@@ -19,11 +19,11 @@
     <form>
       <div>
         Title
-        <input type="text" name="title" v-model="formQuestion.title" />
+        <input type="text" name="title" v-model="pageQuestion.form.title" />
       </div>
       <div>
         Descriptions
-        <textarea name="description" v-model="formQuestion.description" />
+        <textarea name="description" v-model="pageQuestion.form.description" />
       </div>
       <div>
         <button @click.prevent="submit">Submit</button>
@@ -36,84 +36,74 @@
 </template>
 
 <script lang="ts" setup>
-import gql from "graphql-tag"
+  import gql from "graphql-tag"
 
-const query = gql`
-  query Questions {
-    questions {
-      _id
-      title
-      description
+  /** variable */
+  const query = gql`
+    query Questions {
+      questions {
+        _id
+        title
+        description
+      }
     }
+  `
+ const mutation = gql`
+      mutation CreateQuestion($title: String!, $description: String! ) {
+        createQuestion(input: { title: $title, description: $description }) {
+            _id
+            title
+            description
+        }
+      }
+      
+  `;
+
+  interface PageQuestion {
+    questions: Question[],
+    form: NewQuestion
   }
-`
+  const pageQuestion = ref<PageQuestion>({
+    questions: [],
+    form: {
+      title: "",
+      description: "",
+    }
+  })
 
-console.log(query)
+  /** list question */
+  const { data } = await graphqlQueryUseFetch(query)
+  pageQuestion.value.questions  = data?.questions || [];
 
-interface QueryResponse {
-  questions: Question[]
-}
-
-const data = await $fetch("http://localhost:8080/graphql", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-  },
-  body: {
-    query: query?.loc?.source.body,
-  },
-})
-
-// const { data } = await useQuery(queryQuestion);
-// console.log(data)
-// const questions: Question[]  = data.value?.questions || [];
-
-// const queryCreateQuestion = gql`
-//     mutation CreateQuestion($title: string!, $description: string! ) {
-//       createQuestion(input: { title: $title, description: $description }) {
-//           _id
-//           title
-//           description
-//       }
-//   }
-// `;
-
-const formQuestion = ref({
-  title: "",
-  description: "",
-})
-
-const submit = async () => {
-  // const value: any = formQuestion.value
-  // console.log(value);
-  // const { mutate: createQuestion } = await useMutation<QueryResponse>(queryCreateQuestion);
-  // const response = await createQuestion(value)
-  // console.log(response);
-}
+  /** Make new question */
+  const submit = async () => {
+    await graphqlQueryFetch(mutation, pageQuestion.value.form);
+    const { data } = await graphqlQueryFetch(query)
+    pageQuestion.value.questions  = data?.questions || [];
+  }
 </script>
 
 <style>
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 20px 0;
-  text-align: left;
-  table-layout: fixed;
-}
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    text-align: left;
+    table-layout: fixed;
+  }
 
-th,
-td {
-  padding: 10px;
-  border: 1px solid #ddd;
-}
+  th,
+  td {
+    padding: 10px;
+    border: 1px solid #ddd;
+  }
 
-th {
-  background-color: #f4f4f4;
-  color: #333;
-}
-td {
-  width: 200px;
-  word-wrap: break-word;
-}
+  th {
+    background-color: #f4f4f4;
+    color: #333;
+  }
+  td {
+    width: 200px;
+    word-wrap: break-word;
+  }
 </style>

@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref } from "vue"
 
 // const mutation = gql`
 //     mutation CreateQuestion {
@@ -20,12 +20,12 @@ import { ref } from "vue";
 
 // `
 
-const selectedFiles = ref(null);
-const uploadMessage = ref("");
+const selectedFiles = ref(null)
+const uploadMessage = ref("")
 
 const handleFileChange = (event) => {
-  selectedFiles.value = event.target.files;
-};
+  selectedFiles.value = event.target.files
+}
 
 const handleFileUpload = async () => {
   // const { mutate } = useMutation(mutation, { title: '111112222', description: 11222 })
@@ -39,5 +39,5 @@ const handleFileUpload = async () => {
   //     const { mutate } = useMutation(mutation, { file })
   //     console.log(mutate)
   // }
-};
+}
 </script>

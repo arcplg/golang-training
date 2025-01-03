@@ -8,7 +8,7 @@
           <td>Title</td>
           <td>Body</td>
         </tr>
-        <tr v-for="(item, i) in data?.questions" :key="i">
+        <tr v-for="(item, i) in questions" :key="i">
           <td>{{ item._id }}</td>
           <td>{{ item.title }}</td>
           <td>{{ item.description }}</td>
@@ -16,13 +16,29 @@
       </tbody>
     </table>
 
+    <form>
+      <div>
+        Title
+        <input type="text" name="title" v-model="formQuestion.title" />
+      </div>
+      <div>
+        Descriptions
+        <textarea name="description" v-model="formQuestion.description" />
+      </div>
+      <div>
+        <button @click.prevent="submit">Submit</button>
+      </div>
+    </form>
+
     <h2>Upload</h2>
     <!-- <FileUploader /> -->
   </div>
 </template>
 
 <script lang="ts" setup>
-const queryQuestion = gql`
+import gql from "graphql-tag"
+
+const query = gql`
   query Questions {
     questions {
       _id
@@ -30,9 +46,51 @@ const queryQuestion = gql`
       description
     }
   }
-`;
+`
 
-const { data } = await useAsyncQuery(queryQuestion);
+console.log(query)
+
+interface QueryResponse {
+  questions: Question[]
+}
+
+const data = await $fetch("http://localhost:8080/graphql", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  },
+  body: {
+    query: query?.loc?.source.body,
+  },
+})
+
+// const { data } = await useQuery(queryQuestion);
+// console.log(data)
+// const questions: Question[]  = data.value?.questions || [];
+
+// const queryCreateQuestion = gql`
+//     mutation CreateQuestion($title: string!, $description: string! ) {
+//       createQuestion(input: { title: $title, description: $description }) {
+//           _id
+//           title
+//           description
+//       }
+//   }
+// `;
+
+const formQuestion = ref({
+  title: "",
+  description: "",
+})
+
+const submit = async () => {
+  // const value: any = formQuestion.value
+  // console.log(value);
+  // const { mutate: createQuestion } = await useMutation<QueryResponse>(queryCreateQuestion);
+  // const response = await createQuestion(value)
+  // console.log(response);
+}
 </script>
 
 <style>

@@ -5,6 +5,6 @@ interface Question {
 }
 
 interface NewQuestion {
-  title: string;
-  description: string;
+  title: string
+  description: string
 }

@@ -1,5 +1,12 @@
 <template>
   <div>
+    <h1>Upload</h1>
+    <form @submit.prevent="handleFileUpload">
+      <input type="file" @change="handleFileChange" />
+      <button type="submit">Upload</button>
+      <p v-if="uploadMessage">{{ uploadMessage }}</p>
+    </form>
+
     <h1>Questions</h1>
     <table>
       <tbody>
@@ -29,81 +36,100 @@
         <button @click.prevent="submit">Submit</button>
       </div>
     </form>
-
-    <h2>Upload</h2>
-    <!-- <FileUploader /> -->
   </div>
 </template>
 
 <script lang="ts" setup>
-  import gql from "graphql-tag"
+import gql from "graphql-tag"
 
-  /** variable */
-  const query = gql`
-    query Questions {
-      questions {
-        _id
-        title
-        description
-      }
+/** variable */
+const query = gql`
+  query Questions {
+    questions {
+      _id
+      title
+      description
     }
-  `
- const mutation = gql`
-      mutation CreateQuestion($title: String!, $description: String! ) {
-        createQuestion(input: { title: $title, description: $description }) {
-            _id
-            title
-            description
-        }
-      }
-      
-  `;
-
-  interface PageQuestion {
-    questions: Question[],
-    form: NewQuestion
   }
-  const pageQuestion = ref<PageQuestion>({
-    questions: [],
-    form: {
-      title: "",
-      description: "",
+`
+const mutation = gql`
+  mutation CreateQuestion($title: String!, $description: String!) {
+    createQuestion(input: { title: $title, description: $description }) {
+      _id
+      title
+      description
     }
-  })
-
-  /** list question */
-  const { data } = await graphqlQueryUseFetch(query)
-  pageQuestion.value.questions  = data?.questions || [];
-
-  /** Make new question */
-  const submit = async () => {
-    await graphqlQueryFetch(mutation, pageQuestion.value.form);
-    const { data } = await graphqlQueryFetch(query)
-    pageQuestion.value.questions  = data?.questions || [];
   }
+`
+
+interface PageQuestion {
+  questions: Question[]
+  form: NewQuestion
+}
+const pageQuestion = ref<PageQuestion>({
+  questions: [],
+  form: {
+    title: "",
+    description: "",
+  },
+})
+
+/** list question */
+const { data } = await graphqlQueryUseFetch(query)
+pageQuestion.value.questions = data?.questions || []
+
+/** Make new question */
+const submit = async () => {
+  await graphqlQueryFetch(mutation, pageQuestion.value.form)
+  const { data } = await graphqlQueryFetch(query)
+  pageQuestion.value.questions = data?.questions || []
+}
+
+/** Upload file */
+const mutationUpload = gql`
+  mutation SingleUpload($file: Upload!) {
+    singleUpload(file: $file) {
+      _id
+      name
+      type
+      path
+      url
+    }
+  }
+`
+const selectedFiles = ref(null)
+const uploadMessage = ref("")
+const handleFileChange = (event: any) => {
+  selectedFiles.value = event.target.files
+}
+
+const handleFileUpload = async () => {
+  if (!selectedFiles.value) return
+  await graphqlUpload(mutationUpload, selectedFiles.value[0])
+}
 </script>
 
 <style>
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    text-align: left;
-    table-layout: fixed;
-  }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  text-align: left;
+  table-layout: fixed;
+}
 
-  th,
-  td {
-    padding: 10px;
-    border: 1px solid #ddd;
-  }
+th,
+td {
+  padding: 10px;
+  border: 1px solid #ddd;
+}
 
-  th {
-    background-color: #f4f4f4;
-    color: #333;
-  }
-  td {
-    width: 200px;
-    word-wrap: break-word;
-  }
+th {
+  background-color: #f4f4f4;
+  color: #333;
+}
+td {
+  width: 200px;
+  word-wrap: break-word;
+}
 </style>

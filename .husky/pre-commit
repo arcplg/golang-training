@@ -1,3 +1,9 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# SourceTree上でcommitする場合に下記が必要.
+PATH="/usr/local/bin:$PATH"
+
 cd ./learning-frontend && npm run format && npm run lint-fix && npm run lint
 
 

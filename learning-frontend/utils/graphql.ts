@@ -7,7 +7,9 @@ export async function graphqlQueryFetch(
   gql: any,
   variables?: Record<string, any>,
 ): Promise<any> {
-  return await $fetch("http://localhost:8080/graphql", {
+  const config = useRuntimeConfig()
+  const graphqlUrl = config.public.graphqlUrl
+  return await $fetch(graphqlUrl, {
     method: "POST",
     headers: defaultHeaders,
     body: {
@@ -21,7 +23,9 @@ export async function graphqlQueryUseFetch(
   gql: any,
   variables?: Record<string, any>,
 ): Promise<any> {
-  const { data, error } = await useFetch("http://localhost:8080/graphql", {
+  const config = useRuntimeConfig()
+  const graphqlUrl = config.public.graphqlUrl
+  const { data, error } = await useFetch(graphqlUrl, {
     method: "POST",
     headers: defaultHeaders,
     body: {
@@ -38,6 +42,9 @@ export async function graphqlQueryUseFetch(
 }
 
 export async function graphqlUpload(gql: any, file: any): Promise<any> {
+  const config = useRuntimeConfig()
+  const graphqlUrl = config.public.graphqlUrl
+  
   const operations = JSON.stringify({
     query: gql?.loc?.source.body,
     variables: { file: null },
@@ -52,7 +59,7 @@ export async function graphqlUpload(gql: any, file: any): Promise<any> {
   formData.append("map", map)
   formData.append("0", file)
 
-  const { data, error } = await useFetch("http://localhost:8080/graphql", {
+  const { data, error } = await useFetch(graphqlUrl, {
     method: "POST",
     body: formData,
   })

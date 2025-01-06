@@ -1,0 +1,4 @@
+cd ./learning-frontend && npm run format && npm run lint-fix && npm run lint
+
+
+docker-compose exec app /bin/sh -c "go run github.com/99designs/gqlgen generate"

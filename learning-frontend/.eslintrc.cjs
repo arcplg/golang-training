@@ -65,7 +65,7 @@ module.exports = {
     "no-case-declarations": "off",
     "no-console": "off",
     "vue/html-indent": "off",
-    indent: [1, 4, { SwitchCase: 1 }],
+    indent: [1, 2, { SwitchCase: 1 }],
   },
   globals: {
     window: true,

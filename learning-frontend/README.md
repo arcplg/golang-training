@@ -73,3 +73,13 @@ bun run preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+# Rule code:
+
+Please format code before commit
+
+```
+npm run format
+npm run lint-fix
+npm run lint
+``` 

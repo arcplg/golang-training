@@ -10,7 +10,8 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint --ext .js,.jsx,.ts,.vue ./",
     "lint-fix": "eslint --ext .js,.jsx,.ts,.vue ./ --fix",
-    "format": "npx prettier --write ./"
+    "format": "npx prettier --write ./",
+    "prepare": "husky"
   },
   "dependencies": {
     "@typescript-eslint/typescript-estree": "^8.19.0",

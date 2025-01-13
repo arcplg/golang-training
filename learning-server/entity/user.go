@@ -1,7 +1,18 @@
 package entity
 
+import (
+	"time"
+
+	"go.mongodb.org/mongo-driver/v2/bson"
+)
+
 type User struct {
-	ID    string `json:"id" bson:"id"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
+	ID        bson.ObjectID `json:"_id" bson:"_id"`
+	Avatar    string        `json:"avatar"`
+	Email     string        `json:"email"`
+	Name      string        `json:"name"`
+	Phone     string        `json:"phone"`
+	CreatedAt time.Time     `json:"createdAt"`
+	UpdatedAt time.Time     `json:"updatedAt"`
+	DeletedAt *time.Time    `json:"deletedAt,omitempty"`
 }

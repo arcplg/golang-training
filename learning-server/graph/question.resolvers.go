@@ -14,25 +14,149 @@ import (
 	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
+// User is the resolver for the user field.
+func (r *answerResolver) User(ctx context.Context, obj *entity.Answer) (*entity.User, error) {
+	panic(fmt.Errorf("not implemented: User - user"))
+}
+
+// StartAt is the resolver for the startAt field.
+func (r *answerResolver) StartAt(ctx context.Context, obj *entity.Answer) (*string, error) {
+	panic(fmt.Errorf("not implemented: StartAt - startAt"))
+}
+
+// EndAt is the resolver for the endAt field.
+func (r *answerResolver) EndAt(ctx context.Context, obj *entity.Answer) (*string, error) {
+	panic(fmt.Errorf("not implemented: EndAt - endAt"))
+}
+
+// PublishedAt is the resolver for the publishedAt field.
+func (r *answerResolver) PublishedAt(ctx context.Context, obj *entity.Answer) (*string, error) {
+	panic(fmt.Errorf("not implemented: PublishedAt - publishedAt"))
+}
+
+// CreatedAt is the resolver for the createdAt field.
+func (r *answerResolver) CreatedAt(ctx context.Context, obj *entity.Answer) (*string, error) {
+	panic(fmt.Errorf("not implemented: CreatedAt - createdAt"))
+}
+
+// UpdatedAt is the resolver for the updatedAt field.
+func (r *answerResolver) UpdatedAt(ctx context.Context, obj *entity.Answer) (*string, error) {
+	panic(fmt.Errorf("not implemented: UpdatedAt - updatedAt"))
+}
+
+// DeletedAt is the resolver for the deletedAt field.
+func (r *answerResolver) DeletedAt(ctx context.Context, obj *entity.Answer) (*string, error) {
+	panic(fmt.Errorf("not implemented: DeletedAt - deletedAt"))
+}
+
+// StartAt is the resolver for the startAt field.
+func (r *groupQuestionResolver) StartAt(ctx context.Context, obj *entity.GroupQuestion) (*string, error) {
+	panic(fmt.Errorf("not implemented: StartAt - startAt"))
+}
+
+// EndAt is the resolver for the endAt field.
+func (r *groupQuestionResolver) EndAt(ctx context.Context, obj *entity.GroupQuestion) (*string, error) {
+	panic(fmt.Errorf("not implemented: EndAt - endAt"))
+}
+
+// PublishedAt is the resolver for the publishedAt field.
+func (r *groupQuestionResolver) PublishedAt(ctx context.Context, obj *entity.GroupQuestion) (*string, error) {
+	panic(fmt.Errorf("not implemented: PublishedAt - publishedAt"))
+}
+
+// CreatedAt is the resolver for the createdAt field.
+func (r *groupQuestionResolver) CreatedAt(ctx context.Context, obj *entity.GroupQuestion) (*string, error) {
+	panic(fmt.Errorf("not implemented: CreatedAt - createdAt"))
+}
+
+// CreatedBy is the resolver for the createdBy field.
+func (r *groupQuestionResolver) CreatedBy(ctx context.Context, obj *entity.GroupQuestion) (*entity.User, error) {
+	panic(fmt.Errorf("not implemented: CreatedBy - createdBy"))
+}
+
+// UpdatedAt is the resolver for the updatedAt field.
+func (r *groupQuestionResolver) UpdatedAt(ctx context.Context, obj *entity.GroupQuestion) (*string, error) {
+	panic(fmt.Errorf("not implemented: UpdatedAt - updatedAt"))
+}
+
+// DeletedAt is the resolver for the deletedAt field.
+func (r *groupQuestionResolver) DeletedAt(ctx context.Context, obj *entity.GroupQuestion) (*string, error) {
+	panic(fmt.Errorf("not implemented: DeletedAt - deletedAt"))
+}
+
 // CreateQuestion is the resolver for the createQuestion field.
-func (r *mutationResolver) CreateQuestion(ctx context.Context, input entity.NewQuestion) (*entity.Question, error) {
+func (r *mutationResolver) CreateQuestion(ctx context.Context, input entity.QuestionInput) (*entity.Question, error) {
 	if err := validation.ValidateStruct(input); err != nil {
 		return nil, fmt.Errorf("validation failed: %v", err)
 	}
 
+	questionItemsList := make([]entity.QuestionItemInput, len(input.QuestionItemInput))
+	for i, input := range input.QuestionItemInput {
+		questionItemsList[i] = entity.QuestionItemInput{
+			ID:           bson.NewObjectID(),
+			Key:          input.Key,
+			OriginNumber: input.OriginNumber,
+			Text:         input.Text,
+			ImageUrl:     input.ImageUrl,
+			VideoUrl:     input.VideoUrl,
+			YoutubeUrl:   input.YoutubeUrl,
+		}
+	}
+
+	questionInput := &entity.QuestionInput{
+		ID:                bson.NewObjectID(),
+		OriginNumber:      input.OriginNumber,
+		Text:              input.Text,
+		ImageUrl:          input.ImageUrl,
+		VideoUrl:          input.VideoUrl,
+		YoutubeUrl:        input.YoutubeUrl,
+		QuestionItemInput: questionItemsList,
+	}
+
 	collection := db.GetCollection("questions")
-	res, err := collection.InsertOne(ctx, input)
+	res, err := collection.InsertOne(ctx, questionInput)
 	if err != nil {
 		return nil, err
 	}
 
-	question := &entity.Question{
-		ID:          res.InsertedID.(bson.ObjectID),
-		Title:       input.Title,
-		Description: input.Description,
+	var question entity.Question
+	filter := bson.M{"_id": res.InsertedID}
+	err = collection.FindOne(ctx, filter).Decode(&question)
+	if err != nil {
+		return nil, err
 	}
 
-	return question, nil
+	return &question, nil
+}
+
+// CreateGroupQuestion is the resolver for the createGroupQuestion field.
+func (r *mutationResolver) CreateGroupQuestion(ctx context.Context, input entity.GroupQuestionInput) (*entity.GroupQuestion, error) {
+	if err := validation.ValidateStruct(input); err != nil {
+		return nil, fmt.Errorf("validation failed: %v", err)
+	}
+	groupQuestionInput := &entity.GroupQuestionInput{
+		Title:        input.Title,
+		Description:  input.Description,
+		ThumbnailUrl: input.ThumbnailUrl,
+		AnyTime:      input.AnyTime,
+		StartAt:      input.StartAt,
+		EndAt:        input.EndAt,
+	}
+
+	collection := db.GetCollection("questions")
+	res, err := collection.InsertOne(ctx, groupQuestionInput)
+	if err != nil {
+		return nil, err
+	}
+
+	var groupQuestion entity.GroupQuestion
+	filter := bson.M{"_id": res.InsertedID}
+	err = collection.FindOne(ctx, filter).Decode(&groupQuestion)
+	if err != nil {
+		return nil, err
+	}
+
+	return &groupQuestion, nil
 }
 
 // Questions is the resolver for the questions field.
@@ -58,7 +182,98 @@ func (r *queryResolver) Questions(ctx context.Context) ([]*entity.Question, erro
 	return questions, nil
 }
 
+// GroupQuestions is the resolver for the groupQuestions field.
+func (r *queryResolver) GroupQuestions(ctx context.Context) ([]*entity.GroupQuestion, error) {
+	panic(fmt.Errorf("not implemented: GroupQuestions - groupQuestions"))
+}
+
+// PublishedAt is the resolver for the publishedAt field.
+func (r *questionResolver) PublishedAt(ctx context.Context, obj *entity.Question) (*string, error) {
+	panic(fmt.Errorf("not implemented: PublishedAt - publishedAt"))
+}
+
+// CreatedAt is the resolver for the createdAt field.
+func (r *questionResolver) CreatedAt(ctx context.Context, obj *entity.Question) (*string, error) {
+	panic(fmt.Errorf("not implemented: CreatedAt - createdAt"))
+}
+
+// CreatedBy is the resolver for the createdBy field.
+func (r *questionResolver) CreatedBy(ctx context.Context, obj *entity.Question) (*entity.User, error) {
+	panic(fmt.Errorf("not implemented: CreatedBy - createdBy"))
+}
+
+// UpdatedAt is the resolver for the updatedAt field.
+func (r *questionResolver) UpdatedAt(ctx context.Context, obj *entity.Question) (*string, error) {
+	panic(fmt.Errorf("not implemented: UpdatedAt - updatedAt"))
+}
+
+// DeletedAt is the resolver for the deletedAt field.
+func (r *questionResolver) DeletedAt(ctx context.Context, obj *entity.Question) (*string, error) {
+	panic(fmt.Errorf("not implemented: DeletedAt - deletedAt"))
+}
+
+// PublishedAt is the resolver for the publishedAt field.
+func (r *questionTemplateResolver) PublishedAt(ctx context.Context, obj *entity.QuestionTemplate) (*string, error) {
+	panic(fmt.Errorf("not implemented: PublishedAt - publishedAt"))
+}
+
+// CreatedAt is the resolver for the createdAt field.
+func (r *questionTemplateResolver) CreatedAt(ctx context.Context, obj *entity.QuestionTemplate) (*string, error) {
+	panic(fmt.Errorf("not implemented: CreatedAt - createdAt"))
+}
+
+// UpdatedAt is the resolver for the updatedAt field.
+func (r *questionTemplateResolver) UpdatedAt(ctx context.Context, obj *entity.QuestionTemplate) (*string, error) {
+	panic(fmt.Errorf("not implemented: UpdatedAt - updatedAt"))
+}
+
+// DeletedAt is the resolver for the deletedAt field.
+func (r *questionTemplateResolver) DeletedAt(ctx context.Context, obj *entity.QuestionTemplate) (*string, error) {
+	panic(fmt.Errorf("not implemented: DeletedAt - deletedAt"))
+}
+
+// StartAt is the resolver for the startAt field.
+func (r *groupQuestionInputResolver) StartAt(ctx context.Context, obj *entity.GroupQuestionInput, data *string) error {
+	panic(fmt.Errorf("not implemented: StartAt - startAt"))
+}
+
+// EndAt is the resolver for the endAt field.
+func (r *groupQuestionInputResolver) EndAt(ctx context.Context, obj *entity.GroupQuestionInput, data *string) error {
+	panic(fmt.Errorf("not implemented: EndAt - endAt"))
+}
+
+// QuestionItems is the resolver for the questionItems field.
+func (r *questionInputResolver) QuestionItems(ctx context.Context, obj *entity.QuestionInput, data []*entity.QuestionItemInput) error {
+	panic(fmt.Errorf("not implemented: QuestionItems - questionItems"))
+}
+
+// Answer returns AnswerResolver implementation.
+func (r *Resolver) Answer() AnswerResolver { return &answerResolver{r} }
+
+// GroupQuestion returns GroupQuestionResolver implementation.
+func (r *Resolver) GroupQuestion() GroupQuestionResolver { return &groupQuestionResolver{r} }
+
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
+// Question returns QuestionResolver implementation.
+func (r *Resolver) Question() QuestionResolver { return &questionResolver{r} }
+
+// QuestionTemplate returns QuestionTemplateResolver implementation.
+func (r *Resolver) QuestionTemplate() QuestionTemplateResolver { return &questionTemplateResolver{r} }
+
+// GroupQuestionInput returns GroupQuestionInputResolver implementation.
+func (r *Resolver) GroupQuestionInput() GroupQuestionInputResolver {
+	return &groupQuestionInputResolver{r}
+}
+
+// QuestionInput returns QuestionInputResolver implementation.
+func (r *Resolver) QuestionInput() QuestionInputResolver { return &questionInputResolver{r} }
+
+type answerResolver struct{ *Resolver }
+type groupQuestionResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+type questionResolver struct{ *Resolver }
+type questionTemplateResolver struct{ *Resolver }
+type groupQuestionInputResolver struct{ *Resolver }
+type questionInputResolver struct{ *Resolver }

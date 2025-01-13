@@ -14,3 +14,13 @@ import (
 func (r *queryResolver) Users(ctx context.Context) ([]*entity.User, error) {
 	panic(fmt.Errorf("not implemented: Users - users"))
 }
+
+// ID is the resolver for the id field.
+func (r *userResolver) ID(ctx context.Context, obj *entity.User) (string, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// User returns UserResolver implementation.
+func (r *Resolver) User() UserResolver { return &userResolver{r} }
+
+type userResolver struct{ *Resolver }

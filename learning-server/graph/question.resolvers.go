@@ -8,11 +8,8 @@ import (
 	"context"
 	"fmt"
 	"learning-server/entity"
-	"learning-server/internal/db"
-	"learning-server/internal/validation"
+	"learning-server/internal/services"
 	"time"
-
-	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 // User is the resolver for the user field.
@@ -32,126 +29,27 @@ func (r *groupQuestionResolver) CreatedBy(ctx context.Context, obj *entity.Group
 
 // CreateQuestion is the resolver for the createQuestion field.
 func (r *mutationResolver) CreateQuestion(ctx context.Context, input entity.QuestionInput) (*entity.Question, error) {
-	if err := validation.ValidateStruct(input); err != nil {
-		return nil, fmt.Errorf("validation failed: %v", err)
-	}
-
-	questionItemsList := make([]entity.QuestionItemInput, len(input.QuestionItemInput))
-	for i, input := range input.QuestionItemInput {
-		questionItemsList[i] = entity.QuestionItemInput{
-			ID:           bson.NewObjectID(),
-			Key:          input.Key,
-			OriginNumber: input.OriginNumber,
-			Text:         input.Text,
-			ImageUrl:     input.ImageUrl,
-			VideoUrl:     input.VideoUrl,
-			YoutubeUrl:   input.YoutubeUrl,
-		}
-	}
-
-	questionInput := &entity.QuestionInput{
-		ID:                bson.NewObjectID(),
-		OriginNumber:      input.OriginNumber,
-		Text:              input.Text,
-		ImageUrl:          input.ImageUrl,
-		VideoUrl:          input.VideoUrl,
-		YoutubeUrl:        input.YoutubeUrl,
-		QuestionItemInput: questionItemsList,
-	}
-
-	collection := db.GetCollection("questions")
-	res, err := collection.InsertOne(ctx, questionInput)
-	if err != nil {
-		return nil, err
-	}
-
-	var question entity.Question
-	filter := bson.M{"_id": res.InsertedID}
-	err = collection.FindOne(ctx, filter).Decode(&question)
-	if err != nil {
-		return nil, err
-	}
-
-	return &question, nil
+	return services.CreateQuestion(ctx, input)
 }
 
 // CreateGroupQuestion is the resolver for the createGroupQuestion field.
 func (r *mutationResolver) CreateGroupQuestion(ctx context.Context, input entity.GroupQuestionInput) (*entity.GroupQuestion, error) {
-	if err := validation.ValidateStruct(input); err != nil {
-		return nil, fmt.Errorf("validation failed: %v", err)
-	}
-
-	groupQuestionInput := &entity.GroupQuestionInput{
-		Title:        input.Title,
-		Description:  input.Description,
-		ThumbnailUrl: input.ThumbnailUrl,
-		AnyTime:      input.AnyTime,
-		StartAt:      input.StartAt,
-		EndAt:        input.EndAt,
-		CreatedAt:    time.Now(),
-		UpdatedAt:    time.Now(),
-	}
-
-	collection := db.GetCollection("questions")
-	res, err := collection.InsertOne(ctx, groupQuestionInput)
-	if err != nil {
-		return nil, err
-	}
-
-	var groupQuestion entity.GroupQuestion
-	filter := bson.M{"_id": res.InsertedID}
-	err = collection.FindOne(ctx, filter).Decode(&groupQuestion)
-	if err != nil {
-		return nil, err
-	}
-
-	return &groupQuestion, nil
+	return services.CreateGroupQuestion(ctx, input)
 }
 
 // Questions is the resolver for the questions field.
 func (r *queryResolver) Questions(ctx context.Context) ([]*entity.Question, error) {
-	collection := db.GetCollection("questions")
-	cursor, err := collection.Find(ctx, bson.M{})
-
-	if err != nil {
-		return nil, err
-	}
-	defer cursor.Close(ctx)
-
-	var questions []*entity.Question
-	for cursor.Next(ctx) {
-		var question entity.Question
-		err := cursor.Decode(&question)
-		if err != nil {
-			return nil, err
-		}
-		questions = append(questions, &question)
-	}
-
-	return questions, nil
+	return services.GetQuestions(ctx)
 }
 
 // GroupQuestions is the resolver for the groupQuestions field.
 func (r *queryResolver) GroupQuestions(ctx context.Context) ([]*entity.GroupQuestion, error) {
-	collection := db.GetCollection("questions")
-	cursor, err := collection.Find(ctx, bson.M{})
+	return services.GetGroupQuestions(ctx)
+}
 
-	if err != nil {
-		return nil, err
-	}
-	defer cursor.Close(ctx)
-
-	var groupQuestions []*entity.GroupQuestion
-	for cursor.Next(ctx) {
-		var question entity.GroupQuestion
-		err := cursor.Decode(&question)
-		if err != nil {
-			return nil, err
-		}
-		groupQuestions = append(groupQuestions, &question)
-	}
-
-	return groupQuestions, nil
+// FindGroupQuestion is the resolver for the findGroupQuestion field.
+func (r *queryResolver) FindGroupQuestion(ctx context.Context, id string) (*entity.GroupQuestion, error) {
+	return services.FindGroupQuestion(ctx, id)
 }
 
 // CreatedBy is the resolver for the createdBy field.

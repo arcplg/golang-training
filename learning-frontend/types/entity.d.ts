@@ -1,18 +1,18 @@
 interface GroupQuestion {
-  _id: string
-  title: String
-  description: String
-  thumbnailUrl: String
-  questions: [Question]
-  answers: [Answer]
+  _id: String
+  title: ?String
+  description: ?String
+  thumbnailUrl: ?String
+  questions: Question[]
+  answers: Answer[]
   anyTime: Boolean
-  startAt: Date
-  endAt: Date
-  publishedAt: Date
-  createdAt: Date
-  createdBy: User
-  updatedAt: Date
-  deletedAt: Date
+  startAt: ?Date
+  endAt: ?Date
+  publishedAt: ?Date
+  createdAt: ?Date
+  createdBy: ?User
+  updatedAt: ?Date
+  deletedAt: ?Date
 }
 
 interface Answer {
@@ -90,12 +90,12 @@ interface QuestionItemInput {
 
 interface QuestionInput {
   originNumber: Int
-  note: String
-  text: String
-  imageUrl: String
-  videoUrl: String
-  youtubeUrl: String
-  questionItems: [QuestionItemInput]
+  note: ?String
+  text: ?String
+  imageUrl: ?String
+  videoUrl: ?String
+  youtubeUrl: ?String
+  questionItems: QuestionItemInput[]
 }
 
 interface GroupQuestionInput {

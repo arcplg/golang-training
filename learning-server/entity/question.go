@@ -7,112 +7,112 @@ import (
 )
 
 type GroupQuestion struct {
-	ID           bson.ObjectID `json:"_id" bson:"_id"`
-	Title        *string       `json:"title"`
-	Description  *string       `json:"description,omitempty"`
-	ThumbnailUrl *string       `json:"thumbnailUrl,omitempty"`
-	Questions    []Question    `json:"questions"`
-	Answers      []Answer      `json:"answers"`
-	CreatedBy    bson.ObjectID `json:"createdBy" bson:"createdBy"`
-	AnyTime      bool          `json:"anyTime"`
-	StartAt      *time.Time    `json:"startAt"`
-	EndAt        *time.Time    `json:"endAt"`
-	PublishedAt  *time.Time    `json:"publishedAt,omitempty"`
-	CreatedAt    time.Time     `json:"createdAt"`
-	UpdatedAt    time.Time     `json:"updatedAt"`
-	DeletedAt    *time.Time    `json:"deletedAt,omitempty"`
+	ID           bson.ObjectID `bson:"_id"`
+	Title        *string       `bson:"title"`
+	Description  *string       `bson:"description,omitempty"`
+	ThumbnailUrl *string       `bson:"thumbnailUrl,omitempty"`
+	Questions    []Question    `bson:"questions"`
+	Answers      []Answer      `bson:"answers"`
+	CreatedBy    bson.ObjectID `bson:"createdBy"`
+	AnyTime      bool          `bson:"anyTime"`
+	StartAt      *time.Time    `bson:"startAt"`
+	EndAt        *time.Time    `bson:"endAt"`
+	PublishedAt  *time.Time    `bson:"publishedAt,omitempty"`
+	CreatedAt    time.Time     `bson:"createdAt"`
+	UpdatedAt    time.Time     `bson:"updatedAt"`
+	DeletedAt    *time.Time    `bson:"deletedAt,omitempty"`
 }
 
 type Answer struct {
-	ID        bson.ObjectID `json:"_id" bson:"_id"`
-	UserId    bson.ObjectID `json:"userId" bson:"_id"`
-	Lock      bool          `json:"lock,omitempty"`
-	Questions []Question    `json:"questions"`
-	StartAt   time.Time     `json:"startAt"`
-	EndAt     time.Time     `json:"endAt"`
-	CreatedAt time.Time     `json:"createdAt"`
-	UpdatedAt time.Time     `json:"updatedAt"`
-	DeletedAt *time.Time    `json:"deletedAt,omitempty"`
+	ID        bson.ObjectID `bson:"_id"`
+	UserId    bson.ObjectID `bson:"userId"`
+	Lock      bool          `bson:"lock,omitempty"`
+	Questions []Question    `bson:"questions"`
+	StartAt   time.Time     `bson:"startAt"`
+	EndAt     time.Time     `bson:"endAt"`
+	CreatedAt time.Time     `bson:"createdAt"`
+	UpdatedAt time.Time     `bson:"updatedAt"`
+	DeletedAt *time.Time    `bson:"deletedAt,omitempty"`
 }
 
 type Question struct {
-	ID            bson.ObjectID  `json:"_id" bson:"_id"`
-	OriginNumber  int            `json:"originNumber"`
-	Note          *string        `json:"note,omitempty"`
-	Text          *string        `json:"text,omitempty"`
-	ImageUrl      *string        `json:"imageUrl,omitempty"`
-	VideoUrl      *string        `json:"videoUrl,omitempty"`
-	YoutubeUrl    *string        `json:"youtubeUrl,omitempty"`
-	QuestionItems []QuestionItem `json:"questionItems"`
-	PublishedAt   *time.Time     `json:"publishedAt,omitempty"`
-	CreatedAt     time.Time      `json:"createdAt"`
-	CreatedBy     bson.ObjectID  `json:"createdBy" bson:"CreatedBy"`
-	UpdatedAt     time.Time      `json:"updatedAt"`
-	DeletedAt     *time.Time     `json:"deletedAt,omitempty"`
+	ID            bson.ObjectID  `bson:"_id"`
+	OriginNumber  int            `bson:"originNumber"`
+	Note          *string        `bson:"note,omitempty"`
+	Text          *string        `bson:"text,omitempty"`
+	ImageUrl      *string        `bson:"imageUrl,omitempty"`
+	VideoUrl      *string        `bson:"videoUrl,omitempty"`
+	YoutubeUrl    *string        `bson:"youtubeUrl,omitempty"`
+	QuestionItems []QuestionItem `bson:"questionItems"`
+	PublishedAt   *time.Time     `bson:"publishedAt,omitempty"`
+	CreatedAt     time.Time      `bson:"createdAt"`
+	CreatedBy     bson.ObjectID  `bson:"createdBy"`
+	UpdatedAt     time.Time      `bson:"updatedAt"`
+	DeletedAt     *time.Time     `bson:"deletedAt,omitempty"`
 }
 
 type QuestionItem struct {
-	ID           bson.ObjectID `json:"_id" bson:"_id"`
-	Key          *string       `json:"key,omitempty"`
-	OriginNumber int           `json:"originNumber"`
-	Text         *string       `json:"text,omitempty"`
-	ImageUrl     *string       `json:"imageUrl,omitempty"`
-	VideoUrl     *string       `json:"videoUrl,omitempty"`
-	YoutubeUrl   *string       `json:"youtubeUrl,omitempty"`
+	ID           bson.ObjectID `bson:"_id"`
+	Key          *string       `bson:"key,omitempty"`
+	OriginNumber int           `bson:"originNumber"`
+	Text         *string       `bson:"text,omitempty"`
+	ImageUrl     *string       `bson:"imageUrl,omitempty"`
+	VideoUrl     *string       `bson:"videoUrl,omitempty"`
+	YoutubeUrl   *string       `bson:"youtubeUrl,omitempty"`
 }
 
 type QuestionTemplate struct {
-	ID                    bson.ObjectID          `json:"_id" bson:"_id"`
-	OriginNumber          int                    `json:"originNumber"`
-	Note                  *string                `json:"note,omitempty"`
-	Text                  *string                `json:"text,omitempty"`
-	ImageUrl              *string                `json:"imageUrl,omitempty"`
-	VideoUrl              *string                `json:"videoUrl,omitempty"`
-	YoutubeUrl            *string                `json:"youtubeUrl,omitempty"`
-	QuestionTemplateItems []QuestionTemplateItem `json:"questionTemplateItems"`
-	PublishedAt           *time.Time             `json:"publishedAt,omitempty"`
-	CreatedAt             time.Time              `json:"createdAt"`
-	UpdatedAt             time.Time              `json:"updatedAt"`
-	DeletedAt             *time.Time             `json:"deletedAt,omitempty"`
+	ID                    bson.ObjectID          `bson:"_id"`
+	OriginNumber          int                    `bson:"originNumber"`
+	Note                  *string                `bson:"note,omitempty"`
+	Text                  *string                `bson:"text,omitempty"`
+	ImageUrl              *string                `bson:"imageUrl,omitempty"`
+	VideoUrl              *string                `bson:"videoUrl,omitempty"`
+	YoutubeUrl            *string                `bson:"youtubeUrl,omitempty"`
+	QuestionTemplateItems []QuestionTemplateItem `bson:"questionTemplateItems"`
+	PublishedAt           *time.Time             `bson:"publishedAt,omitempty"`
+	CreatedAt             time.Time              `bson:"createdAt"`
+	UpdatedAt             time.Time              `bson:"updatedAt"`
+	DeletedAt             *time.Time             `bson:"deletedAt,omitempty"`
 }
 type QuestionTemplateItem struct {
-	ID           bson.ObjectID `json:"_id" bson:"_id"`
-	Key          *string       `json:"key,omitempty"`
-	OriginNumber int           `json:"originNumber"`
-	Text         *string       `json:"text,omitempty"`
-	ImageUrl     *string       `json:"imageUrl,omitempty"`
-	VideoUrl     *string       `json:"videoUrl,omitempty"`
-	YoutubeUrl   *string       `json:"youtubeUrl,omitempty"`
+	ID           bson.ObjectID `bson:"_id"`
+	Key          *string       `bson:"key,omitempty"`
+	OriginNumber int           `bson:"originNumber"`
+	Text         *string       `bson:"text,omitempty"`
+	ImageUrl     *string       `bson:"imageUrl,omitempty"`
+	VideoUrl     *string       `bson:"videoUrl,omitempty"`
+	YoutubeUrl   *string       `bson:"youtubeUrl,omitempty"`
 }
 
 type QuestionItemInput struct {
-	ID           bson.ObjectID `json:"_id" bson:"_id"`
-	Key          *string       `json:"key,omitempty"`
-	OriginNumber int           `json:"originNumber"`
-	Text         *string       `json:"text,omitempty"`
-	ImageUrl     *string       `json:"imageUrl,omitempty"`
-	VideoUrl     *string       `json:"videoUrl,omitempty"`
-	YoutubeUrl   *string       `json:"youtubeUrl,omitempty"`
+	ID           bson.ObjectID `bson:"_id"`
+	Key          *string       `bson:"key,omitempty"`
+	OriginNumber int           `bson:"originNumber"`
+	Text         *string       `bson:"text,omitempty"`
+	ImageUrl     *string       `bson:"imageUrl,omitempty"`
+	VideoUrl     *string       `bson:"videoUrl,omitempty"`
+	YoutubeUrl   *string       `bson:"youtubeUrl,omitempty"`
 }
 
 type QuestionInput struct {
-	ID                bson.ObjectID       `json:"_id" bson:"_id"`
-	OriginNumber      int                 `json:"originNumber"`
-	Note              *string             `json:"note,omitempty"`
-	Text              *string             `json:"text,omitempty"`
-	ImageUrl          *string             `json:"imageUrl,omitempty"`
-	VideoUrl          *string             `json:"videoUrl,omitempty"`
-	YoutubeUrl        *string             `json:"youtubeUrl,omitempty"`
-	QuestionItemInput []QuestionItemInput `json:"questionItems"`
+	ID                bson.ObjectID       `bson:"_id"`
+	OriginNumber      int                 `bson:"originNumber"`
+	Note              *string             `bson:"note,omitempty"`
+	Text              *string             `bson:"text,omitempty"`
+	ImageUrl          *string             `bson:"imageUrl,omitempty"`
+	VideoUrl          *string             `bson:"videoUrl,omitempty"`
+	YoutubeUrl        *string             `bson:"youtubeUrl,omitempty"`
+	QuestionItemInput []QuestionItemInput `bson:"questionItems"`
 }
 
 type GroupQuestionInput struct {
-	Title        *string    `json:"title"`
-	Description  *string    `json:"description,omitempty"`
-	ThumbnailUrl *string    `json:"thumbnailUrl,omitempty"`
-	AnyTime      bool       `json:"anyTime"`
-	StartAt      *time.Time `json:"startAt,omitempty"`
-	EndAt        *time.Time `json:"endAt,omitempty"`
-	CreatedAt    time.Time  `json:"createdAt,omitempty"`
-	UpdatedAt    time.Time  `json:"updatedAt,omitempty"`
+	Title        *string    `bson:"title"`
+	Description  *string    `bson:"description,omitempty"`
+	ThumbnailUrl *string    `bson:"thumbnailUrl,omitempty"`
+	AnyTime      bool       `bson:"anyTime"`
+	StartAt      *time.Time `bson:"startAt,omitempty"`
+	EndAt        *time.Time `bson:"endAt,omitempty"`
+	CreatedAt    time.Time  `bson:"createdAt,omitempty"`
+	UpdatedAt    time.Time  `bson:"updatedAt,omitempty"`
 }

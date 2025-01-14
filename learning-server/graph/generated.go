@@ -103,9 +103,10 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		GroupQuestions func(childComplexity int) int
-		Questions      func(childComplexity int) int
-		Users          func(childComplexity int) int
+		FindGroupQuestion func(childComplexity int, id string) int
+		GroupQuestions    func(childComplexity int) int
+		Questions         func(childComplexity int) int
+		Users             func(childComplexity int) int
 	}
 
 	Question struct {
@@ -185,6 +186,7 @@ type MutationResolver interface {
 type QueryResolver interface {
 	Questions(ctx context.Context) ([]*entity.Question, error)
 	GroupQuestions(ctx context.Context) ([]*entity.GroupQuestion, error)
+	FindGroupQuestion(ctx context.Context, id string) (*entity.GroupQuestion, error)
 	Users(ctx context.Context) ([]*entity.User, error)
 }
 type QuestionResolver interface {
@@ -491,6 +493,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.SingleUploadWithPayload(childComplexity, args["req"].(entity.UploadFile)), true
+
+	case "Query.findGroupQuestion":
+		if e.complexity.Query.FindGroupQuestion == nil {
+			break
+		}
+
+		args, err := ec.field_Query_findGroupQuestion_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.FindGroupQuestion(childComplexity, args["_id"].(string)), true
 
 	case "Query.groupQuestions":
 		if e.complexity.Query.GroupQuestions == nil {
@@ -1091,6 +1105,29 @@ func (ec *executionContext) field_Query___type_argsName(
 ) (string, error) {
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
 	if tmp, ok := rawArgs["name"]; ok {
+		return ec.unmarshalNString2string(ctx, tmp)
+	}
+
+	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_findGroupQuestion_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_findGroupQuestion_argsID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["_id"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Query_findGroupQuestion_argsID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (string, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("_id"))
+	if tmp, ok := rawArgs["_id"]; ok {
 		return ec.unmarshalNString2string(ctx, tmp)
 	}
 
@@ -3034,6 +3071,91 @@ func (ec *executionContext) fieldContext_Query_groupQuestions(_ context.Context,
 			}
 			return nil, fmt.Errorf("no field named %q was found under type GroupQuestion", field.Name)
 		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_findGroupQuestion(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_findGroupQuestion(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().FindGroupQuestion(rctx, fc.Args["_id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*entity.GroupQuestion)
+	fc.Result = res
+	return ec.marshalNGroupQuestion2ᚖlearningᚑserverᚋentityᚐGroupQuestion(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_findGroupQuestion(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "_id":
+				return ec.fieldContext_GroupQuestion__id(ctx, field)
+			case "title":
+				return ec.fieldContext_GroupQuestion_title(ctx, field)
+			case "description":
+				return ec.fieldContext_GroupQuestion_description(ctx, field)
+			case "thumbnailUrl":
+				return ec.fieldContext_GroupQuestion_thumbnailUrl(ctx, field)
+			case "questions":
+				return ec.fieldContext_GroupQuestion_questions(ctx, field)
+			case "answers":
+				return ec.fieldContext_GroupQuestion_answers(ctx, field)
+			case "anyTime":
+				return ec.fieldContext_GroupQuestion_anyTime(ctx, field)
+			case "startAt":
+				return ec.fieldContext_GroupQuestion_startAt(ctx, field)
+			case "endAt":
+				return ec.fieldContext_GroupQuestion_endAt(ctx, field)
+			case "publishedAt":
+				return ec.fieldContext_GroupQuestion_publishedAt(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_GroupQuestion_createdAt(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_GroupQuestion_createdBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_GroupQuestion_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_GroupQuestion_deletedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type GroupQuestion", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_findGroupQuestion_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
 	}
 	return fc, nil
 }
@@ -7414,6 +7536,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_groupQuestions(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "findGroupQuestion":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_findGroupQuestion(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}

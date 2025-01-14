@@ -5,11 +5,11 @@
     <form>
       <div>
         Title
-        <input type="text" name="title" v-model="pageQuestion.form.title" />
+        <input type="text" name="title" v-model="pageGroupQuestion.form.title" />
       </div>
       <div>
-        Descriptions
-        <textarea name="description" v-model="pageQuestion.form.description"></textarea>
+        Description
+        <input name="description" v-model="pageGroupQuestion.form.description" />
       </div>
       <div>
         <button @click.prevent="submit">Submit</button>
@@ -27,9 +27,9 @@
           <td>End At</td>
           <td>Created At</td>
           <td>Updated At</td>
-          <td></td>
+          <td>Action</td>
         </tr>
-        <tr v-for="(item, i) in pageQuestion.groupQuestions" :key="i">
+        <tr v-for="(item, i) in pageGroupQuestion.groupQuestions" :key="i">
           <td>{{ item._id }}</td>
           <td>{{ item.title }}</td>
           <td>{{ item.description }}</td>
@@ -39,7 +39,11 @@
           <td>{{ item.endAt }}</td>
           <td>{{ item.createdAt }}</td>
           <td>{{ item.updatedAt }}</td>
-          <td></td>
+          <td>
+            <NuxtLink :to="'questions/'+item._id">
+              Detail
+            </NuxtLink>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -95,11 +99,11 @@ const mutation = gql`
   }
 `
 
-interface PageQuestion {
+interface PageGroupQuestion {
   groupQuestions: GroupQuestion[]
   form: GroupQuestionInput
 }
-const pageQuestion = ref<PageQuestion>({
+const pageGroupQuestion = ref<PageGroupQuestion>({
   groupQuestions: [],
   form: {
     title: "",
@@ -113,13 +117,13 @@ const pageQuestion = ref<PageQuestion>({
 
 /** list question */
 const { data } = await graphqlQueryUseFetch(query)
-pageQuestion.value.groupQuestions = data?.groupQuestions || []
+pageGroupQuestion.value.groupQuestions = data?.groupQuestions || []
 
 /** Make new question */
 const submit = async () => {
-  await graphqlQueryFetch(mutation, pageQuestion.value.form)
+  await graphqlQueryFetch(mutation, pageGroupQuestion.value.form)
   const { data } = await graphqlQueryFetch(query)
-  pageQuestion.value.groupQuestions = data?.groupQuestions || []
+  pageGroupQuestion.value.groupQuestions = data?.groupQuestions || []
 }
 
 </script>

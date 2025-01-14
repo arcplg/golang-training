@@ -94,8 +94,8 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
+		AddQuestion               func(childComplexity int, id string, input entity.QuestionInput) int
 		CreateGroupQuestion       func(childComplexity int, input entity.GroupQuestionInput) int
-		CreateQuestion            func(childComplexity int, input entity.QuestionInput) int
 		MultipleUpload            func(childComplexity int, files []*graphql.Upload) int
 		MultipleUploadWithPayload func(childComplexity int, req []*entity.UploadFile) int
 		SingleUpload              func(childComplexity int, file graphql.Upload) int
@@ -180,7 +180,7 @@ type MutationResolver interface {
 	SingleUploadWithPayload(ctx context.Context, req entity.UploadFile) (*entity.File, error)
 	MultipleUpload(ctx context.Context, files []*graphql.Upload) ([]*entity.File, error)
 	MultipleUploadWithPayload(ctx context.Context, req []*entity.UploadFile) ([]*entity.File, error)
-	CreateQuestion(ctx context.Context, input entity.QuestionInput) (*entity.Question, error)
+	AddQuestion(ctx context.Context, id string, input entity.QuestionInput) (*entity.GroupQuestion, error)
 	CreateGroupQuestion(ctx context.Context, input entity.GroupQuestionInput) (*entity.GroupQuestion, error)
 }
 type QueryResolver interface {
@@ -422,6 +422,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.GroupQuestion.UpdatedAt(childComplexity), true
 
+	case "Mutation.addQuestion":
+		if e.complexity.Mutation.AddQuestion == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_addQuestion_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddQuestion(childComplexity, args["_id"].(string), args["input"].(entity.QuestionInput)), true
+
 	case "Mutation.createGroupQuestion":
 		if e.complexity.Mutation.CreateGroupQuestion == nil {
 			break
@@ -433,18 +445,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateGroupQuestion(childComplexity, args["input"].(entity.GroupQuestionInput)), true
-
-	case "Mutation.createQuestion":
-		if e.complexity.Mutation.CreateQuestion == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_createQuestion_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.CreateQuestion(childComplexity, args["input"].(entity.QuestionInput)), true
 
 	case "Mutation.multipleUpload":
 		if e.complexity.Mutation.MultipleUpload == nil {
@@ -951,6 +951,47 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
 // region    ***************************** args.gotpl *****************************
 
+func (ec *executionContext) field_Mutation_addQuestion_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Mutation_addQuestion_argsID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["_id"] = arg0
+	arg1, err := ec.field_Mutation_addQuestion_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["input"] = arg1
+	return args, nil
+}
+func (ec *executionContext) field_Mutation_addQuestion_argsID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (string, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("_id"))
+	if tmp, ok := rawArgs["_id"]; ok {
+		return ec.unmarshalNString2string(ctx, tmp)
+	}
+
+	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_addQuestion_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (entity.QuestionInput, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNQuestionInput2learningᚑserverᚋentityᚐQuestionInput(ctx, tmp)
+	}
+
+	var zeroVal entity.QuestionInput
+	return zeroVal, nil
+}
+
 func (ec *executionContext) field_Mutation_createGroupQuestion_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -971,29 +1012,6 @@ func (ec *executionContext) field_Mutation_createGroupQuestion_argsInput(
 	}
 
 	var zeroVal entity.GroupQuestionInput
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Mutation_createQuestion_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	arg0, err := ec.field_Mutation_createQuestion_argsInput(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["input"] = arg0
-	return args, nil
-}
-func (ec *executionContext) field_Mutation_createQuestion_argsInput(
-	ctx context.Context,
-	rawArgs map[string]interface{},
-) (entity.QuestionInput, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-	if tmp, ok := rawArgs["input"]; ok {
-		return ec.unmarshalNQuestionInput2learningᚑserverᚋentityᚐQuestionInput(ctx, tmp)
-	}
-
-	var zeroVal entity.QuestionInput
 	return zeroVal, nil
 }
 
@@ -2761,8 +2779,8 @@ func (ec *executionContext) fieldContext_Mutation_multipleUploadWithPayload(ctx 
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_createQuestion(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_createQuestion(ctx, field)
+func (ec *executionContext) _Mutation_addQuestion(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_addQuestion(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -2775,7 +2793,7 @@ func (ec *executionContext) _Mutation_createQuestion(ctx context.Context, field 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateQuestion(rctx, fc.Args["input"].(entity.QuestionInput))
+		return ec.resolvers.Mutation().AddQuestion(rctx, fc.Args["_id"].(string), fc.Args["input"].(entity.QuestionInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2787,12 +2805,12 @@ func (ec *executionContext) _Mutation_createQuestion(ctx context.Context, field 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*entity.Question)
+	res := resTmp.(*entity.GroupQuestion)
 	fc.Result = res
-	return ec.marshalNQuestion2ᚖlearningᚑserverᚋentityᚐQuestion(ctx, field.Selections, res)
+	return ec.marshalNGroupQuestion2ᚖlearningᚑserverᚋentityᚐGroupQuestion(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_createQuestion(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_addQuestion(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -2801,33 +2819,35 @@ func (ec *executionContext) fieldContext_Mutation_createQuestion(ctx context.Con
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "_id":
-				return ec.fieldContext_Question__id(ctx, field)
-			case "originNumber":
-				return ec.fieldContext_Question_originNumber(ctx, field)
-			case "note":
-				return ec.fieldContext_Question_note(ctx, field)
-			case "text":
-				return ec.fieldContext_Question_text(ctx, field)
-			case "imageUrl":
-				return ec.fieldContext_Question_imageUrl(ctx, field)
-			case "videoUrl":
-				return ec.fieldContext_Question_videoUrl(ctx, field)
-			case "youtubeUrl":
-				return ec.fieldContext_Question_youtubeUrl(ctx, field)
-			case "questionItems":
-				return ec.fieldContext_Question_questionItems(ctx, field)
+				return ec.fieldContext_GroupQuestion__id(ctx, field)
+			case "title":
+				return ec.fieldContext_GroupQuestion_title(ctx, field)
+			case "description":
+				return ec.fieldContext_GroupQuestion_description(ctx, field)
+			case "thumbnailUrl":
+				return ec.fieldContext_GroupQuestion_thumbnailUrl(ctx, field)
+			case "questions":
+				return ec.fieldContext_GroupQuestion_questions(ctx, field)
+			case "answers":
+				return ec.fieldContext_GroupQuestion_answers(ctx, field)
+			case "anyTime":
+				return ec.fieldContext_GroupQuestion_anyTime(ctx, field)
+			case "startAt":
+				return ec.fieldContext_GroupQuestion_startAt(ctx, field)
+			case "endAt":
+				return ec.fieldContext_GroupQuestion_endAt(ctx, field)
 			case "publishedAt":
-				return ec.fieldContext_Question_publishedAt(ctx, field)
+				return ec.fieldContext_GroupQuestion_publishedAt(ctx, field)
 			case "createdAt":
-				return ec.fieldContext_Question_createdAt(ctx, field)
+				return ec.fieldContext_GroupQuestion_createdAt(ctx, field)
 			case "createdBy":
-				return ec.fieldContext_Question_createdBy(ctx, field)
+				return ec.fieldContext_GroupQuestion_createdBy(ctx, field)
 			case "updatedAt":
-				return ec.fieldContext_Question_updatedAt(ctx, field)
+				return ec.fieldContext_GroupQuestion_updatedAt(ctx, field)
 			case "deletedAt":
-				return ec.fieldContext_Question_deletedAt(ctx, field)
+				return ec.fieldContext_GroupQuestion_deletedAt(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Question", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type GroupQuestion", field.Name)
 		},
 	}
 	defer func() {
@@ -2837,7 +2857,7 @@ func (ec *executionContext) fieldContext_Mutation_createQuestion(ctx context.Con
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_createQuestion_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_addQuestion_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -7448,9 +7468,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "createQuestion":
+		case "addQuestion":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_createQuestion(ctx, field)
+				return ec._Mutation_addQuestion(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -8450,10 +8470,6 @@ func (ec *executionContext) marshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriver
 		}
 	}
 	return res
-}
-
-func (ec *executionContext) marshalNQuestion2learningᚑserverᚋentityᚐQuestion(ctx context.Context, sel ast.SelectionSet, v entity.Question) graphql.Marshaler {
-	return ec._Question(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalNQuestion2ᚕᚖlearningᚑserverᚋentityᚐQuestionᚄ(ctx context.Context, sel ast.SelectionSet, v []*entity.Question) graphql.Marshaler {

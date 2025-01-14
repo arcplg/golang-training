@@ -104,10 +104,19 @@ func GetQuestions(ctx context.Context) ([]*entity.Question, error) {
 	return questions, nil
 }
 
-func CreateQuestion(ctx context.Context, input entity.QuestionInput) (*entity.Question, error) {
+func AddQuestion(ctx context.Context, id string, input entity.QuestionInput) (*entity.GroupQuestion, error) {
 	if err := validation.ValidateStruct(input); err != nil {
 		return nil, fmt.Errorf("validation failed: %v", err)
 	}
+
+	collection := db.GetCollection("questions")
+	var groupQuestion entity.GroupQuestion
+	_id, e := bson.ObjectIDFromHex(id)
+	if e != nil {
+		return nil, e
+	}
+
+	filter := bson.M{"_id": _id}
 
 	questionItemsList := make([]entity.QuestionItemInput, len(input.QuestionItemInput))
 	for i, input := range input.QuestionItemInput {
@@ -132,18 +141,17 @@ func CreateQuestion(ctx context.Context, input entity.QuestionInput) (*entity.Qu
 		QuestionItemInput: questionItemsList,
 	}
 
-	collection := db.GetCollection("questions")
-	res, err := collection.InsertOne(ctx, questionInput)
+	update := bson.M{
+		"$push": bson.M{
+			"items": questionInput,
+		},
+	}
+	collection.FindOneAndUpdate(ctx, filter, update)
+
+	err := collection.FindOne(ctx, filter).Decode(&groupQuestion)
 	if err != nil {
 		return nil, err
 	}
 
-	var question entity.Question
-	filter := bson.M{"_id": res.InsertedID}
-	err = collection.FindOne(ctx, filter).Decode(&question)
-	if err != nil {
-		return nil, err
-	}
-
-	return &question, nil
+	return &groupQuestion, nil
 }

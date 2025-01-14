@@ -27,9 +27,9 @@ func (r *groupQuestionResolver) CreatedBy(ctx context.Context, obj *entity.Group
 	panic(fmt.Errorf("not implemented: CreatedBy - createdBy"))
 }
 
-// CreateQuestion is the resolver for the createQuestion field.
-func (r *mutationResolver) CreateQuestion(ctx context.Context, input entity.QuestionInput) (*entity.Question, error) {
-	return services.CreateQuestion(ctx, input)
+// AddQuestion is the resolver for the addQuestion field.
+func (r *mutationResolver) AddQuestion(ctx context.Context, id string, input entity.QuestionInput) (*entity.GroupQuestion, error) {
+	return services.AddQuestion(ctx, id, input)
 }
 
 // CreateGroupQuestion is the resolver for the createGroupQuestion field.

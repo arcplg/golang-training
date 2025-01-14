@@ -117,6 +117,6 @@ extend type Query {
 }
 
 extend type Mutation {
-  createQuestion(input: QuestionInput!): Question!
+  addQuestion(_id: String!, input: QuestionInput!): GroupQuestion!
   createGroupQuestion(input: GroupQuestionInput!): GroupQuestion!
 }

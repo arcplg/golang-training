@@ -2,14 +2,29 @@
     <div>
       <h1>Questions detail id: {{ pageQuestion.id }}</h1>
       <div>
-        <div>Title: {{ pageQuestion.groupQuestion.title }}</div>
-        <div>Description: {{ pageQuestion.groupQuestion.description }}</div>
-        <div>Thumbnail: {{ pageQuestion.groupQuestion.thumbnailUrl }}</div>
-        <div>Any Time: {{ pageQuestion.groupQuestion.anyTime }} </div>
-        <div>Start At: {{ pageQuestion.groupQuestion.startAt }} </div>
-        <div>End At: {{ pageQuestion.groupQuestion.endAt }}</div>
-        <div>Created At: {{ pageQuestion.groupQuestion.createdAt }}</div>
-        <div>Updated At: {{ pageQuestion.groupQuestion.updatedAt }}</div>
+        <div>Title: {{ pageQuestion.groupQuestion?.title }}</div>
+        <div>Description: {{ pageQuestion.groupQuestion?.description }}</div>
+        <div>Thumbnail: {{ pageQuestion.groupQuestion?.thumbnailUrl }}</div>
+        <div>Any Time: {{ pageQuestion.groupQuestion?.anyTime }} </div>
+        <div>Start At: {{ pageQuestion.groupQuestion?.startAt }} </div>
+        <div>End At: {{ pageQuestion.groupQuestion?.endAt }}</div>
+        <div>Created At: {{ pageQuestion.groupQuestion?.createdAt }}</div>
+        <div>Updated At: {{ pageQuestion.groupQuestion?.updatedAt }}</div>
+      </div>
+      <div>
+        <form>
+          <div>
+            Title
+            <input type="text" name="title" v-model="pageQuestion.form.note" />
+          </div>
+          <div>
+            Description
+            <input name="description" v-model="pageQuestion.form.text" />
+          </div>
+          <div>
+            <button @click.prevent="submit">Submit</button>
+          </div>
+        </form>
       </div>
     </div>
 </template>
@@ -31,9 +46,39 @@
     }
   `
 
+  const mutation = gql`
+    mutation AddQuestion(
+      $id: String!,
+      $originNumber: String!,
+      $text: String!,
+      $imageUrl: String
+      $videoUrl: String
+      $questionItems: Array
+      $youtubeUrl: String
+    ) {
+      addQuestion(_id: $id, input: { 
+        originNumber: $originNumber
+        note: $note
+        text: $text
+        imageUrl: $imageUrl
+        videoUrl: $videoUrl
+        questionItems: $questionItems
+        youtubeUrl: $youtubeUrl
+      }) {
+        originNumber
+        note
+        text
+        imageUrl
+        videoUrl
+        questionItems
+        youtubeUrl
+    }
+  }
+  `
+
 interface PageQuestion {
   id: String | String[],
-  groupQuestion: GroupQuestion
+  groupQuestion: GroupQuestion | null
   questions: Question[]
   form: QuestionInput
 }
@@ -71,8 +116,14 @@ const pageQuestion = ref<PageQuestion>({
 
 /** list question */
 const { data } = await graphqlQueryUseFetch(query, {id: pageQuestion.value.id})
-pageQuestion.value.groupQuestion = data?.findGroupQuestion || []
+pageQuestion.value.groupQuestion = data?.findGroupQuestion || null
 if (!data) {
   throw createError({ statusCode: 404, statusMessage: 'Page not found' })
+}
+
+const submit = async () => {
+  await graphqlQueryFetch(mutation, pageQuestion.value.form)
+  const { data } = await graphqlQueryFetch(query)
+  pageQuestion.value.groupQuestion = data?.groupQuestion || null
 }
 </script>

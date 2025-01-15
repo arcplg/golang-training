@@ -11,20 +11,26 @@
         <div>Created At: {{ pageQuestion.groupQuestion?.createdAt }}</div>
         <div>Updated At: {{ pageQuestion.groupQuestion?.updatedAt }}</div>
       </div>
-      <div>
-        <form>
-          <div>
-            Title
-            <input type="text" name="title" v-model="pageQuestion.form.note" />
-          </div>
-          <div>
-            Description
-            <input name="description" v-model="pageQuestion.form.text" />
-          </div>
-          <div>
-            <button @click.prevent="submit">Submit</button>
-          </div>
-        </form>
+      <div class="inner">
+        <div class="left">
+            <ul>
+              <li>1) 記帳時に費目・項目が二重に表示されているユーザーがいます。</li>
+              <li>2) 記帳時に費目・項目が二重に表示されているユーザーがいます。</li>
+              <li>3) 記帳時に費目・項目が二重に表示されているユーザーがいます。</li>
+              <li>4) 記帳時に費目・項目が二重に表示されているユーザーがいます。</li>
+              <li>5) 記帳時に費目・項目が二重に表示されているユーザーがいます。</li>
+              <li>6) 記帳時に費目・項目が二重に表示されているユーザーがいます。</li>
+              <li>7) 記帳時に費目・項目が二重に表示されているユーザーがいます。</li>
+            </ul>
+        </div>
+        <div class="right">
+          <Questions
+            v-for="item,key in pageQuestion.templates"
+              :key="key"
+              :type="item.templateType.toString()"
+              :data="item"
+          />
+        </div>
       </div>
     </div>
 </template>
@@ -78,6 +84,7 @@
 
 interface PageQuestion {
   id: String | String[],
+  templates: QuestionInput[],
   groupQuestion: GroupQuestion | null
   questions: Question[]
   form: QuestionInput
@@ -86,6 +93,19 @@ interface PageQuestion {
 const route = useRoute()
 const pageQuestion = ref<PageQuestion>({
   id: route.params.id,
+  templates: [
+    {
+      templateType: 'basic',
+      templateName: 'Basic',
+      originNumber: 1,
+      note: null,
+      text: null,
+      imageUrl: null,
+      videoUrl: null,
+      youtubeUrl: null,
+      questionItems: [],
+    }
+  ],
   groupQuestion: {
     _id: "",
     title: null,
@@ -104,6 +124,8 @@ const pageQuestion = ref<PageQuestion>({
   },
   questions: [],
   form: {
+    templateType: 'basic',
+    templateName: 'Basic',
     originNumber: 1,
     note: null,
     text: null,
@@ -127,3 +149,21 @@ const submit = async () => {
   pageQuestion.value.groupQuestion = data?.groupQuestion || null
 }
 </script>
+
+<style lang="scss">
+  .inner {
+    display: flex;
+    .left {
+      display: flex;
+      flex-direction: column;
+      width: 25%;
+      height: 100%;
+      background-color: #ccc;
+      padding: 15px;
+    }
+    .right {
+      width: 75%;
+      padding: 15px;
+    }
+  }
+</style>

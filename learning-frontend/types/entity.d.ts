@@ -89,6 +89,8 @@ interface QuestionItemInput {
 }
 
 interface QuestionInput {
+  templateType: String,
+  templateName: String,
   originNumber: Int
   note: ?String
   text: ?String

@@ -1,26 +1,26 @@
 <template>
     <div class="card">
-        <span>Question 1: </span>
+        <span>Question 2: </span>
         <div class="card-title">
             <h2><input type="text" name="A"></h2>
         </div>
         <div class="card-inner">
-            <div class="">
+            <div class="question">
             <input type="radio">
             <label>A)</label>
             <input type="text" name="A">
             </div>
-            <div class="">
+            <div class="question">
             <input type="radio">
             <label>B)</label>
             <input type="text" name="B">
             </div>
-            <div class="">
+            <div class="question">
             <input type="radio">
             <label>C)</label>
             <input type="text" name="C">
             </div>
-            <div class="">
+            <div class="question">
             <input type="radio">
             <label>D)</label>
             <input type="text" name="D">
@@ -28,14 +28,11 @@
         </div>
     </div>
 </template>
-
 <script lang="ts" setup>
-
-
 
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .card {
     margin-top: 15px;
     background-color: #ccc;
@@ -45,12 +42,15 @@
     box-sizing: border-box;
      &-inner {
       display: flex;
-      flex-direction: column;
       width: 100%;
       padding: 15px;
       background-color: #FFF;
-      height: 200px;
+      flex-wrap: wrap;
       box-sizing: border-box;
+      .question {
+        width: 50%;
+        display: flex;
+      }
      }
      &-title {
       display: flex;

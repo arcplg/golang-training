@@ -27,7 +27,7 @@
           <Questions
             v-for="item,key in pageQuestion.templates"
               :key="key"
-              :type="item.templateType.toString()"
+              :type="item.templateKey.toString()"
               :data="item"
           />
         </div>
@@ -95,16 +95,21 @@ const pageQuestion = ref<PageQuestion>({
   id: route.params.id,
   templates: [
     {
-      templateType: 'basic',
-      templateName: 'Basic',
+      templateKey: 'T10001',
+      templateName: 'T10001',
       originNumber: 1,
-      note: null,
       text: null,
-      imageUrl: null,
-      videoUrl: null,
-      youtubeUrl: null,
+      media: null,
       questionItems: [],
-    }
+    },
+    {
+      templateKey: 'T10002',
+      templateName: 'T10002',
+      originNumber: 1,
+      text: null,
+      media: null,
+      questionItems: [],
+    },
   ],
   groupQuestion: {
     _id: "",
@@ -124,14 +129,11 @@ const pageQuestion = ref<PageQuestion>({
   },
   questions: [],
   form: {
-    templateType: 'basic',
+    templateKey: 'basic',
     templateName: 'Basic',
     originNumber: 1,
-    note: null,
     text: null,
-    imageUrl: null,
-    videoUrl: null,
-    youtubeUrl: null,
+    media: null,
     questionItems: [],
   },
 })

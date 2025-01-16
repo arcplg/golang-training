@@ -5,8 +5,8 @@
 <script lang="ts" setup>
 import { createVNode } from 'vue'
 import { inputTypes, type InputAttr } from './helper';
-import Basic from './components/basic.vue';
-import Template2 from './components/template2.vue';
+import T10001 from './components/T10001.vue';
+import T10002 from './components/T10002.vue';
 
 
 const props = defineProps({
@@ -33,21 +33,21 @@ const props = defineProps({
 
 const buildFun = new Map([
     [   
-        'basic',
+        'T10001',
         () => {
             return () =>
-                createVNode(Basic, {
-                    class: 'basic',
+                createVNode(T10001, {
+                    class: 'T1001',
                     ...props.attr,
                 })
         },
     ],
     [   
-        'template2',
+        'T10002',
         () => {
             return () =>
-                createVNode(Template2, {
-                    class: 'template2',
+                createVNode(T10002, {
+                    class: 'T10002',
                     ...props.attr,
                 })
         },

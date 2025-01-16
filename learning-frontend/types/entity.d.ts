@@ -79,24 +79,24 @@ interface QuestionTemplateItem {
   youtubeUrl: String
 }
 
+interface Media {
+  type: String,
+  url: String,
+}
+
 interface QuestionItemInput {
   key: String
   originNumber: Int
   text: String
-  imageUrl: String
-  videoUrl: String
-  youtubeUrl: String
+  media: Media
 }
 
 interface QuestionInput {
-  templateType: String,
+  templateKey: String,
   templateName: String,
   originNumber: Int
-  note: ?String
   text: ?String
-  imageUrl: ?String
-  videoUrl: ?String
-  youtubeUrl: ?String
+  media: ?Media
   questionItems: QuestionItemInput[]
 }
 

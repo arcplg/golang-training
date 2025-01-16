@@ -1,5 +1,6 @@
 export const inputTypes = [
-    'basic',
+    'T10001',
+    'T10002'
 ]
 
 export interface InputAttr {

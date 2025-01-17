@@ -2,6 +2,24 @@
 
 package models
 
+import (
+	"go.mongodb.org/mongo-driver/v2/bson"
+)
+
+type BlockInput struct {
+	ID     bson.ObjectID `json:"_id"`
+	Label  *string       `json:"label,omitempty"`
+	Text   *string       `json:"text,omitempty"`
+	Media  *MediaInput   `json:"media,omitempty"`
+	Blocks []*BlockInput `json:"blocks,omitempty"`
+}
+
+type MediaInput struct {
+	ID   bson.ObjectID `json:"_id"`
+	Type *string       `json:"type,omitempty"`
+	URL  *string       `json:"url,omitempty"`
+}
+
 type Mutation struct {
 }
 

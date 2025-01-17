@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"learning-server/entity"
+	"learning-server/graph/models"
 	"learning-server/graph/scalar"
 	"strconv"
 	"sync"
@@ -48,6 +49,7 @@ type ResolverRoot interface {
 	Query() QueryResolver
 	Question() QuestionResolver
 	User() UserResolver
+	QuestionInput() QuestionInputResolver
 }
 
 type DirectiveRoot struct {
@@ -105,6 +107,7 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
+		AddQuestionIntoExam       func(childComplexity int, id *string, input entity.QuestionInput) int
 		CreateExam                func(childComplexity int, input entity.ExamInput) int
 		MultipleUpload            func(childComplexity int, files []*graphql.Upload) int
 		MultipleUploadWithPayload func(childComplexity int, req []*entity.UploadFile) int
@@ -168,6 +171,7 @@ type MutationResolver interface {
 	MultipleUpload(ctx context.Context, files []*graphql.Upload) ([]*entity.File, error)
 	MultipleUploadWithPayload(ctx context.Context, req []*entity.UploadFile) ([]*entity.File, error)
 	CreateExam(ctx context.Context, input entity.ExamInput) (*entity.Exam, error)
+	AddQuestionIntoExam(ctx context.Context, id *string, input entity.QuestionInput) (*entity.Exam, error)
 }
 type QueryResolver interface {
 	QuestionTemplates(ctx context.Context) ([]*entity.QuestionTemplate, error)
@@ -184,6 +188,14 @@ type QuestionResolver interface {
 }
 type UserResolver interface {
 	ID(ctx context.Context, obj *entity.User) (string, error)
+}
+
+type QuestionInputResolver interface {
+	ID(ctx context.Context, obj *entity.QuestionInput, data bson.ObjectID) error
+
+	Media(ctx context.Context, obj *entity.QuestionInput, data *models.MediaInput) error
+	Options(ctx context.Context, obj *entity.QuestionInput, data []*models.BlockInput) error
+	CorrectOption(ctx context.Context, obj *entity.QuestionInput, data []*models.BlockInput) error
 }
 
 type executableSchema struct {
@@ -450,6 +462,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Media.Url(childComplexity), true
 
+	case "Mutation.addQuestionIntoExam":
+		if e.complexity.Mutation.AddQuestionIntoExam == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_addQuestionIntoExam_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddQuestionIntoExam(childComplexity, args["id"].(*string), args["input"].(entity.QuestionInput)), true
+
 	case "Mutation.createExam":
 		if e.complexity.Mutation.CreateExam == nil {
 			break
@@ -712,7 +736,10 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	opCtx := graphql.GetOperationContext(ctx)
 	ec := executionContext{opCtx, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
+		ec.unmarshalInputBlockInput,
 		ec.unmarshalInputExamInput,
+		ec.unmarshalInputMediaInput,
+		ec.unmarshalInputQuestionInput,
 		ec.unmarshalInputUploadFile,
 	)
 	first := true
@@ -831,6 +858,47 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) field_Mutation_addQuestionIntoExam_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Mutation_addQuestionIntoExam_argsID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["id"] = arg0
+	arg1, err := ec.field_Mutation_addQuestionIntoExam_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["input"] = arg1
+	return args, nil
+}
+func (ec *executionContext) field_Mutation_addQuestionIntoExam_argsID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*string, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+	if tmp, ok := rawArgs["id"]; ok {
+		return ec.unmarshalOString2ᚖstring(ctx, tmp)
+	}
+
+	var zeroVal *string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_addQuestionIntoExam_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (entity.QuestionInput, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNQuestionInput2learningᚑserverᚋentityᚐQuestionInput(ctx, tmp)
+	}
+
+	var zeroVal entity.QuestionInput
+	return zeroVal, nil
+}
 
 func (ec *executionContext) field_Mutation_createExam_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -2986,6 +3054,95 @@ func (ec *executionContext) fieldContext_Mutation_createExam(ctx context.Context
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_createExam_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_addQuestionIntoExam(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_addQuestionIntoExam(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().AddQuestionIntoExam(rctx, fc.Args["id"].(*string), fc.Args["input"].(entity.QuestionInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Exam)
+	fc.Result = res
+	return ec.marshalNExam2ᚖlearningᚑserverᚋentityᚐExam(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_addQuestionIntoExam(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "_id":
+				return ec.fieldContext_Exam__id(ctx, field)
+			case "title":
+				return ec.fieldContext_Exam_title(ctx, field)
+			case "description":
+				return ec.fieldContext_Exam_description(ctx, field)
+			case "thumbnailUrl":
+				return ec.fieldContext_Exam_thumbnailUrl(ctx, field)
+			case "questions":
+				return ec.fieldContext_Exam_questions(ctx, field)
+			case "answers":
+				return ec.fieldContext_Exam_answers(ctx, field)
+			case "anyTime":
+				return ec.fieldContext_Exam_anyTime(ctx, field)
+			case "startAt":
+				return ec.fieldContext_Exam_startAt(ctx, field)
+			case "endAt":
+				return ec.fieldContext_Exam_endAt(ctx, field)
+			case "publishedAt":
+				return ec.fieldContext_Exam_publishedAt(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Exam_createdAt(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Exam_createdBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Exam_updatedAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Exam_updatedBy(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_Exam_deletedAt(ctx, field)
+			case "deletedBy":
+				return ec.fieldContext_Exam_deletedBy(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Exam", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_addQuestionIntoExam_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -6205,6 +6362,61 @@ func (ec *executionContext) fieldContext___Type_specifiedByURL(_ context.Context
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputBlockInput(ctx context.Context, obj interface{}) (models.BlockInput, error) {
+	var it models.BlockInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"_id", "label", "text", "media", "blocks"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "_id":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("_id"))
+			data, err := ec.unmarshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ID = data
+		case "label":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("label"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Label = data
+		case "text":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("text"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Text = data
+		case "media":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("media"))
+			data, err := ec.unmarshalOMediaInput2ᚖlearningᚑserverᚋgraphᚋmodelsᚐMediaInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Media = data
+		case "blocks":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("blocks"))
+			data, err := ec.unmarshalOBlockInput2ᚕᚖlearningᚑserverᚋgraphᚋmodelsᚐBlockInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Blocks = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputExamInput(ctx context.Context, obj interface{}) (entity.ExamInput, error) {
 	var it entity.ExamInput
 	asMap := map[string]interface{}{}
@@ -6261,6 +6473,124 @@ func (ec *executionContext) unmarshalInputExamInput(ctx context.Context, obj int
 				return it, err
 			}
 			it.EndAt = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputMediaInput(ctx context.Context, obj interface{}) (models.MediaInput, error) {
+	var it models.MediaInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"_id", "type", "url"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "_id":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("_id"))
+			data, err := ec.unmarshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ID = data
+		case "type":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Type = data
+		case "url":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("url"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.URL = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputQuestionInput(ctx context.Context, obj interface{}) (entity.QuestionInput, error) {
+	var it entity.QuestionInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"_id", "name", "note", "text", "media", "options", "correctOption"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "_id":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("_id"))
+			data, err := ec.unmarshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.QuestionInput().ID(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "name":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Name = data
+		case "note":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("note"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Note = data
+		case "text":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("text"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Text = data
+		case "media":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("media"))
+			data, err := ec.unmarshalOMediaInput2ᚖlearningᚑserverᚋgraphᚋmodelsᚐMediaInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.QuestionInput().Media(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "options":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("options"))
+			data, err := ec.unmarshalOBlockInput2ᚕᚖlearningᚑserverᚋgraphᚋmodelsᚐBlockInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.QuestionInput().Options(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "correctOption":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("correctOption"))
+			data, err := ec.unmarshalOBlockInput2ᚕᚖlearningᚑserverᚋgraphᚋmodelsᚐBlockInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.QuestionInput().CorrectOption(ctx, &it, data); err != nil {
+				return it, err
+			}
 		}
 	}
 
@@ -6743,6 +7073,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "createExam":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_createExam(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "addQuestionIntoExam":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_addQuestionIntoExam(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -7687,6 +8024,11 @@ func (ec *executionContext) marshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriver
 	return res
 }
 
+func (ec *executionContext) unmarshalNQuestionInput2learningᚑserverᚋentityᚐQuestionInput(ctx context.Context, v interface{}) (entity.QuestionInput, error) {
+	res, err := ec.unmarshalInputQuestionInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) marshalNQuestionTemplate2ᚕᚖlearningᚑserverᚋentityᚐQuestionTemplateᚄ(ctx context.Context, sel ast.SelectionSet, v []*entity.QuestionTemplate) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
@@ -8248,6 +8590,34 @@ func (ec *executionContext) marshalOBlock2ᚕlearningᚑserverᚋentityᚐBlock(
 	return ret
 }
 
+func (ec *executionContext) unmarshalOBlockInput2ᚕᚖlearningᚑserverᚋgraphᚋmodelsᚐBlockInput(ctx context.Context, v interface{}) ([]*models.BlockInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*models.BlockInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOBlockInput2ᚖlearningᚑserverᚋgraphᚋmodelsᚐBlockInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOBlockInput2ᚖlearningᚑserverᚋgraphᚋmodelsᚐBlockInput(ctx context.Context, v interface{}) (*models.BlockInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputBlockInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -8309,6 +8679,14 @@ func (ec *executionContext) marshalOMedia2ᚖlearningᚑserverᚋentityᚐMedia(
 		return graphql.Null
 	}
 	return ec._Media(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOMediaInput2ᚖlearningᚑserverᚋgraphᚋmodelsᚐMediaInput(ctx context.Context, v interface{}) (*models.MediaInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputMediaInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOQuestion2learningᚑserverᚋentityᚐQuestion(ctx context.Context, sel ast.SelectionSet, v entity.Question) graphql.Marshaler {

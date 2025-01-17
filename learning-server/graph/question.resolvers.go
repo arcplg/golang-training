@@ -8,7 +8,10 @@ import (
 	"context"
 	"fmt"
 	"learning-server/entity"
+	"learning-server/graph/models"
 	"learning-server/internal/services"
+
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 // User is the resolver for the user field.
@@ -34,6 +37,11 @@ func (r *examResolver) DeletedBy(ctx context.Context, obj *entity.Exam) (*entity
 // CreateExam is the resolver for the createExam field.
 func (r *mutationResolver) CreateExam(ctx context.Context, input entity.ExamInput) (*entity.Exam, error) {
 	return services.CreateExam(ctx, input)
+}
+
+// AddQuestionIntoExam is the resolver for the addQuestionIntoExam field.
+func (r *mutationResolver) AddQuestionIntoExam(ctx context.Context, id *string, input entity.QuestionInput) (*entity.Exam, error) {
+	panic(fmt.Errorf("not implemented: AddQuestionIntoExam - addQuestionIntoExam"))
 }
 
 // QuestionTemplates is the resolver for the questionTemplates field.
@@ -66,6 +74,26 @@ func (r *questionResolver) DeletedBy(ctx context.Context, obj *entity.Question) 
 	panic(fmt.Errorf("not implemented: DeletedBy - deletedBy"))
 }
 
+// ID is the resolver for the _id field.
+func (r *questionInputResolver) ID(ctx context.Context, obj *entity.QuestionInput, data bson.ObjectID) error {
+	panic(fmt.Errorf("not implemented: ID - _id"))
+}
+
+// Media is the resolver for the media field.
+func (r *questionInputResolver) Media(ctx context.Context, obj *entity.QuestionInput, data *models.MediaInput) error {
+	panic(fmt.Errorf("not implemented: Media - media"))
+}
+
+// Options is the resolver for the options field.
+func (r *questionInputResolver) Options(ctx context.Context, obj *entity.QuestionInput, data []*models.BlockInput) error {
+	panic(fmt.Errorf("not implemented: Options - options"))
+}
+
+// CorrectOption is the resolver for the correctOption field.
+func (r *questionInputResolver) CorrectOption(ctx context.Context, obj *entity.QuestionInput, data []*models.BlockInput) error {
+	panic(fmt.Errorf("not implemented: CorrectOption - correctOption"))
+}
+
 // Answer returns AnswerResolver implementation.
 func (r *Resolver) Answer() AnswerResolver { return &answerResolver{r} }
 
@@ -78,7 +106,11 @@ func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 // Question returns QuestionResolver implementation.
 func (r *Resolver) Question() QuestionResolver { return &questionResolver{r} }
 
+// QuestionInput returns QuestionInputResolver implementation.
+func (r *Resolver) QuestionInput() QuestionInputResolver { return &questionInputResolver{r} }
+
 type answerResolver struct{ *Resolver }
 type examResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 type questionResolver struct{ *Resolver }
+type questionInputResolver struct{ *Resolver }

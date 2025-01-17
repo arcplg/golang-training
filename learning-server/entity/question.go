@@ -74,6 +74,14 @@ type Question struct {
 	DeletedAt     *time.Time    `bson:"deletedAt,omitempty"`
 	DeletedBy     bson.ObjectID `bson:"DeletedBy,omitempty"`
 }
+type QuestionInput struct {
+	Name          *string `bson:"name,omitempty"`
+	Note          *string `bson:"note,omitempty"`
+	Text          *string `bson:"text,omitempty"`
+	Media         *Media  `bson:"media,omitempty"`
+	Options       []Block `bson:"options"`
+	CorrectOption []Block `bson:"correctOption"`
+}
 
 type QuestionTemplate struct {
 	ID     bson.ObjectID `bson:"_id"`

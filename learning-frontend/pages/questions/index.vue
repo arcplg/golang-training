@@ -29,7 +29,7 @@
           <td>Updated At</td>
           <td>Action</td>
         </tr>
-        <tr v-for="(item, i) in pageGroupQuestion.groupQuestions" :key="i">
+        <tr v-for="(item, i) in pageGroupQuestion.exams" :key="i">
           <td>{{ item._id }}</td>
           <td>{{ item.title }}</td>
           <td>{{ item.description }}</td>
@@ -57,8 +57,8 @@ import gql from "graphql-tag"
 
 /** variable */
 const query = gql`
-  query GroupQuestions {
-    groupQuestions {
+  query Exams {
+    exams {
       _id
       title
       description
@@ -72,7 +72,7 @@ const query = gql`
   }
 `
 const mutation = gql`
-  mutation CreateGroupQuestion(
+  mutation CreateExam(
       $title: String!,
       $description: String!,
       $thumbnailUrl: String
@@ -80,7 +80,7 @@ const mutation = gql`
       $startAt: DateTime
       $endAt: DateTime
     ) {
-      createGroupQuestion(input: { 
+      createExam(input: { 
         title: $title, 
         description: $description,
         thumbnailUrl: $thumbnailUrl,
@@ -100,30 +100,38 @@ const mutation = gql`
 `
 
 interface PageGroupQuestion {
-  groupQuestions: GroupQuestion[]
-  form: GroupQuestionInput
+  exams: Exam[]
+  form: Exam
 }
 const pageGroupQuestion = ref<PageGroupQuestion>({
-  groupQuestions: [],
+  exams: [],
   form: {
+    _id: "",
     title: "",
     description: null,
     thumbnailUrl: null,
     anyTime: true,
     startAt: null,
     endAt: null,
+    questions: [],
+    answers: [],
+    publishedAt:null,
+    createdAt:null,
+    createdBy: null,
+    updatedAt:null,
+    deletedAt:null,
   },
 })
 
 /** list question */
 const { data } = await graphqlQueryUseFetch(query)
-pageGroupQuestion.value.groupQuestions = data?.groupQuestions || []
+pageGroupQuestion.value.exams = data?.exams || []
 
 /** Make new question */
 const submit = async () => {
   await graphqlQueryFetch(mutation, pageGroupQuestion.value.form)
   const { data } = await graphqlQueryFetch(query)
-  pageGroupQuestion.value.groupQuestions = data?.groupQuestions || []
+  pageGroupQuestion.value.exams = data?.exams || []
 }
 
 </script>

@@ -2,14 +2,14 @@
     <div>
       <h1>Questions detail id: {{ pageQuestion.id }}</h1>
       <div>
-        <div>Title: {{ pageQuestion.groupQuestion?.title }}</div>
-        <div>Description: {{ pageQuestion.groupQuestion?.description }}</div>
-        <div>Thumbnail: {{ pageQuestion.groupQuestion?.thumbnailUrl }}</div>
-        <div>Any Time: {{ pageQuestion.groupQuestion?.anyTime }} </div>
-        <div>Start At: {{ pageQuestion.groupQuestion?.startAt }} </div>
-        <div>End At: {{ pageQuestion.groupQuestion?.endAt }}</div>
-        <div>Created At: {{ pageQuestion.groupQuestion?.createdAt }}</div>
-        <div>Updated At: {{ pageQuestion.groupQuestion?.updatedAt }}</div>
+        <div>Title: {{ pageQuestion.exam?.title }}</div>
+        <div>Description: {{ pageQuestion.exam?.description }}</div>
+        <div>Thumbnail: {{ pageQuestion.exam?.thumbnailUrl }}</div>
+        <div>Any Time: {{ pageQuestion.exam?.anyTime }} </div>
+        <div>Start At: {{ pageQuestion.exam?.startAt }} </div>
+        <div>End At: {{ pageQuestion.exam?.endAt }}</div>
+        <div>Created At: {{ pageQuestion.exam?.createdAt }}</div>
+        <div>Updated At: {{ pageQuestion.exam?.updatedAt }}</div>
       </div>
       <div class="inner">
         <div class="left">
@@ -23,7 +23,7 @@
           <Questions
             v-for="item,key in pageQuestion.templates"
               :key="key"
-              :type="item.templateKey.toString()"
+              :type="item.name.toString()"
               :data="item"
           />
         </div>
@@ -33,8 +33,8 @@
 <script lang="ts" setup>
   import gql from "graphql-tag"
   const query = gql`
-    query FindGroupQuestion($id: String!) {
-      findGroupQuestion(_id: $id) {
+    query queryGql($id: String!) {
+      findExam(_id: $id) {
         _id
         title
         description
@@ -44,6 +44,26 @@
         endAt,
         createdAt,
         updatedAt
+      }
+      questionTemplates {
+          _id
+          name
+          note
+          text
+          media {
+              _id
+              type
+              url
+          }
+          blocks {
+              _id
+              text
+              media {
+                  _id
+                  type
+                  url
+              }
+          }
       }
     }
   `
@@ -80,51 +100,17 @@
 
 interface PageQuestion {
   id: String | String[],
-  templates: QuestionInput[],
-  groupQuestion: GroupQuestion | null
+  templates: QuestionTemplate[],
+  exam: Exam | null
   questions: Question[]
-  form: QuestionInput
+  form: QuestionTemplate
 }
 
 const route = useRoute()
 const pageQuestion = ref<PageQuestion>({
   id: route.params.id,
-  templates: [
-    {
-      _id: null,
-      templateKey: 'T10001',
-      templateName: 'T10001',
-      originNumber: 1,
-      text: "記帳時に費目・項目が二重に表示されているユーザーがいます。",
-      media: null,
-      questionItems: [
-        {
-          _id: null,
-          optionKey: 'A',
-          originNumber: 1,
-          text: "記帳時に費目",
-          media: null,
-        },
-        {
-          _id: null,
-          optionKey: 'B',
-          originNumber: 2,
-          text: "記帳",
-          media: null,
-        }
-      ],
-    },
-    {
-      _id: null,
-      templateKey: 'T10002',
-      templateName: 'T10002',
-      originNumber: 1,
-      text: "記帳時に費目・項目が二重に表示されているユーザーがいます。",
-      media: null,
-      questionItems: [],
-    },
-  ],
-  groupQuestion: {
+  templates: [],
+  exam: {
     _id: "",
     title: null,
     description: null,
@@ -143,18 +129,18 @@ const pageQuestion = ref<PageQuestion>({
   questions: [],
   form: {
     _id: null,
-    templateKey: 'T10001',
-    templateName: 'T10001',
-    originNumber: 1,
+    name: '',
+    note: null,
     text: null,
     media: null,
-    questionItems: [],
+    blocks: null,
   },
 })
 
 /** list question */
 const { data } = await graphqlQueryUseFetch(query, {id: pageQuestion.value.id})
-pageQuestion.value.groupQuestion = data?.findGroupQuestion || null
+pageQuestion.value.exam = data?.findExam || null
+pageQuestion.value.templates = data?.questionTemplates || null
 if (!data) {
   throw createError({ statusCode: 404, statusMessage: 'Page not found' })
 }
@@ -162,7 +148,7 @@ if (!data) {
 const submit = async () => {
   await graphqlQueryFetch(mutation, pageQuestion.value.form)
   const { data } = await graphqlQueryFetch(query)
-  pageQuestion.value.groupQuestion = data?.groupQuestion || null
+  pageQuestion.value.exam = data?.exam || null
 }
 </script>
 

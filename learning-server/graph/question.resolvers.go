@@ -48,7 +48,7 @@ func (r *queryResolver) Exams(ctx context.Context) ([]*entity.Exam, error) {
 
 // FindExam is the resolver for the findExam field.
 func (r *queryResolver) FindExam(ctx context.Context, id string) (*entity.Exam, error) {
-	panic(fmt.Errorf("not implemented: Exams - exams"))
+	return services.FindExamById(ctx, id)
 }
 
 // CreatedBy is the resolver for the createdBy field.

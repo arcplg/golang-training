@@ -126,6 +126,7 @@ type ComplexityRoot struct {
 		DeletedBy     func(childComplexity int) int
 		ID            func(childComplexity int) int
 		Media         func(childComplexity int) int
+		Name          func(childComplexity int) int
 		Note          func(childComplexity int) int
 		Options       func(childComplexity int) int
 		PublishedAt   func(childComplexity int) int
@@ -582,6 +583,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Question.Media(childComplexity), true
+
+	case "Question.name":
+		if e.complexity.Question.Name == nil {
+			break
+		}
+
+		return e.complexity.Question.Name(childComplexity), true
 
 	case "Question.note":
 		if e.complexity.Question.Note == nil {
@@ -1203,6 +1211,8 @@ func (ec *executionContext) fieldContext_Answer_questions(_ context.Context, fie
 			switch field.Name {
 			case "_id":
 				return ec.fieldContext_Question__id(ctx, field)
+			case "name":
+				return ec.fieldContext_Question_name(ctx, field)
 			case "note":
 				return ec.fieldContext_Question_note(ctx, field)
 			case "text":
@@ -1706,6 +1716,8 @@ func (ec *executionContext) fieldContext_Exam_questions(_ context.Context, field
 			switch field.Name {
 			case "_id":
 				return ec.fieldContext_Question__id(ctx, field)
+			case "name":
+				return ec.fieldContext_Question_name(ctx, field)
 			case "note":
 				return ec.fieldContext_Question_note(ctx, field)
 			case "text":
@@ -3374,6 +3386,47 @@ func (ec *executionContext) fieldContext_Question__id(_ context.Context, field g
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ObjectID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Question_name(ctx context.Context, field graphql.CollectedField, obj *entity.Question) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Question_name(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Question_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Question",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -6812,6 +6865,8 @@ func (ec *executionContext) _Question(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
+		case "name":
+			out.Values[i] = ec._Question_name(ctx, field, obj)
 		case "note":
 			out.Values[i] = ec._Question_note(ctx, field, obj)
 		case "text":

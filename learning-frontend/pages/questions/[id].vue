@@ -14,14 +14,14 @@
       <div class="inner">
         <div class="left">
             <ul>
-              <li v-for="item,key in pageQuestion.questions">
-                
+              <li v-for="item,key in pageQuestion.exam?.questions">
+                  <div>{{ item.text }}</div>
               </li>
             </ul>
         </div>
         <div class="right">
           <Questions
-            v-for="item,key in pageQuestion.templates"
+            v-for="item,key in pageQuestion.exam?.questions"
               :key="key"
               :type="item.name.toString()"
               :data="item"
@@ -41,9 +41,34 @@
         thumbnailUrl
         anyTime
         startAt
-        endAt,
-        createdAt,
+        endAt
+        publishedAt
+        createdAt
         updatedAt
+        deletedAt
+        questions {
+            _id
+            name
+            note
+            text
+            media {
+                _id
+                type
+                url
+            }
+            options {
+                _id
+                text
+            }
+            correctOption {
+                _id
+                text
+            }
+            publishedAt
+            createdAt
+            updatedAt
+            deletedAt
+        }
       }
       questionTemplates {
           _id
@@ -102,7 +127,6 @@ interface PageQuestion {
   id: String | String[],
   templates: QuestionTemplate[],
   exam: Exam | null
-  questions: Question[]
   form: QuestionTemplate
 }
 
@@ -126,7 +150,6 @@ const pageQuestion = ref<PageQuestion>({
     updatedAt: null,
     deletedAt: null,
   },
-  questions: [],
   form: {
     _id: null,
     name: '',

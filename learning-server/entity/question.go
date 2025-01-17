@@ -59,6 +59,7 @@ type Answer struct {
 
 type Question struct {
 	ID            bson.ObjectID `bson:"_id,omitempty"`
+	Name          *string       `bson:"name,omitempty"`
 	Note          *string       `bson:"note,omitempty"`
 	Text          *string       `bson:"text,omitempty"`
 	Media         *Media        `bson:"media,omitempty"`
@@ -70,7 +71,7 @@ type Question struct {
 	UpdatedAt     time.Time     `bson:"updatedAt"`
 	UpdatedBy     bson.ObjectID `bson:"UpdatedBy,omitempty"`
 	DeletedAt     *time.Time    `bson:"deletedAt,omitempty"`
-	DeletedBy     bson.ObjectID `bson:"createdBy,omitempty"`
+	DeletedBy     bson.ObjectID `bson:"DeletedBy,omitempty"`
 }
 
 type QuestionTemplate struct {

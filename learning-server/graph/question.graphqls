@@ -53,6 +53,7 @@ type Answer {
 
 type Question {
   _id: ObjectID!
+  name: String
   note: String
   text: String
   media: Media

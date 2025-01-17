@@ -22,11 +22,11 @@ const props = defineProps({
         default: () => {},
     },
     data: {
-        type: Object as PropType<QuestionTemplate>,
+        type: Object as PropType<Question>,
         default: () => {},
     },
     errors: {
-        type: Object as PropType<QuestionTemplate>,
+        type: Object as PropType<Question>,
         default: () => {},
     },
 })

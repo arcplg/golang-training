@@ -38,6 +38,7 @@ interface Answer {
 
 interface Question {
   _id: String
+  name: String
   note: String
   text: String
   media: Media

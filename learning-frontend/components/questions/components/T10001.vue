@@ -1,13 +1,13 @@
 <template>
     <div class="card">
-        <span>Question {{props.data.originNumber}}: </span>
+        <span>Question : </span>
         <div class="card-title">
             <h2><input type="text" name="A" v-model="props.data.text"></h2>
         </div>
         <div class="card-inner">
-            <div class="" v-for="item,key in questionItems" :key="key">
+            <div class="" v-for="item,key in options" :key="key">
                 <input type="radio">
-                <label>{{item.optionKey}}</label>
+                <label>AAAA</label>
                 <input type="text" v-model="item.text">
             </div>
         </div>
@@ -18,12 +18,12 @@
 
 const props = defineProps({
     data: {
-        type: Object as PropType<QuestionInput>,
+        type: Object as PropType<Question>,
         required: true,
     }
 })
 
-const questionItems = ref(props.data.questionItems)
+const options = ref(props.data.options)
 
 </script>
 

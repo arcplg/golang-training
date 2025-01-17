@@ -9,6 +9,7 @@ type Media {
 
 type Block {
   _id: ObjectID!
+  label: String,
   text: String,
   media: Media,
   blocks: [Block]

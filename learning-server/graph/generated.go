@@ -66,6 +66,7 @@ type ComplexityRoot struct {
 	Block struct {
 		Blocks func(childComplexity int) int
 		ID     func(childComplexity int) int
+		Label  func(childComplexity int) int
 		Media  func(childComplexity int) int
 		Text   func(childComplexity int) int
 	}
@@ -259,6 +260,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Block.ID(childComplexity), true
+
+	case "Block.label":
+		if e.complexity.Block.Label == nil {
+			break
+		}
+
+		return e.complexity.Block.Label(childComplexity), true
 
 	case "Block.media":
 		if e.complexity.Block.Media == nil {
@@ -1370,6 +1378,47 @@ func (ec *executionContext) fieldContext_Block__id(_ context.Context, field grap
 	return fc, nil
 }
 
+func (ec *executionContext) _Block_label(ctx context.Context, field graphql.CollectedField, obj *entity.Block) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Block_label(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Label, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Block_label(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Block",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Block_text(ctx context.Context, field graphql.CollectedField, obj *entity.Block) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Block_text(ctx, field)
 	if err != nil {
@@ -1498,6 +1547,8 @@ func (ec *executionContext) fieldContext_Block_blocks(_ context.Context, field g
 			switch field.Name {
 			case "_id":
 				return ec.fieldContext_Block__id(ctx, field)
+			case "label":
+				return ec.fieldContext_Block_label(ctx, field)
 			case "text":
 				return ec.fieldContext_Block_text(ctx, field)
 			case "media":
@@ -3601,6 +3652,8 @@ func (ec *executionContext) fieldContext_Question_options(_ context.Context, fie
 			switch field.Name {
 			case "_id":
 				return ec.fieldContext_Block__id(ctx, field)
+			case "label":
+				return ec.fieldContext_Block_label(ctx, field)
 			case "text":
 				return ec.fieldContext_Block_text(ctx, field)
 			case "media":
@@ -3652,6 +3705,8 @@ func (ec *executionContext) fieldContext_Question_correctOption(_ context.Contex
 			switch field.Name {
 			case "_id":
 				return ec.fieldContext_Block__id(ctx, field)
+			case "label":
+				return ec.fieldContext_Block_label(ctx, field)
 			case "text":
 				return ec.fieldContext_Block_text(ctx, field)
 			case "media":
@@ -4230,6 +4285,8 @@ func (ec *executionContext) fieldContext_QuestionTemplate_blocks(_ context.Conte
 			switch field.Name {
 			case "_id":
 				return ec.fieldContext_Block__id(ctx, field)
+			case "label":
+				return ec.fieldContext_Block_label(ctx, field)
 			case "text":
 				return ec.fieldContext_Block_text(ctx, field)
 			case "media":
@@ -6341,6 +6398,8 @@ func (ec *executionContext) _Block(ctx context.Context, sel ast.SelectionSet, ob
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "label":
+			out.Values[i] = ec._Block_label(ctx, field, obj)
 		case "text":
 			out.Values[i] = ec._Block_text(ctx, field, obj)
 		case "media":

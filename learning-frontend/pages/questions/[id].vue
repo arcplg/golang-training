@@ -23,9 +23,13 @@
           <Questions
             v-for="item,key in pageQuestion.exam?.questions"
               :key="key"
+              :index="key+1"
               :type="item.name.toString()"
               :data="item"
           />
+        </div>
+        <div>
+          
         </div>
       </div>
     </div>
@@ -82,6 +86,7 @@
           }
           blocks {
               _id
+              label
               text
               media {
                   _id

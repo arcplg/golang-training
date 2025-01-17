@@ -1,13 +1,14 @@
 <template>
-    <div class="card">
-        <span>Question : </span>
+    <div class="card" :id="props.data._id.toString()">
+        <span>Question {{ index }}: </span>
         <div class="card-title">
             <h2><input type="text" name="A" v-model="props.data.text"></h2>
+            <div>{{ props.data.note }}</div>
         </div>
         <div class="card-inner">
             <div class="" v-for="item,key in options" :key="key">
                 <input type="radio">
-                <label>AAAA</label>
+                <label>{{ item.label }}</label>
                 <input type="text" v-model="item.text">
             </div>
         </div>
@@ -17,6 +18,10 @@
 <script lang="ts" setup>
 
 const props = defineProps({
+    index: {
+        type: Number,
+        default: 1
+    },
     data: {
         type: Object as PropType<Question>,
         required: true,
@@ -46,6 +51,8 @@ const options = ref(props.data.options)
      }
      &-title {
       display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
      }
   }
 </style>

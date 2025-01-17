@@ -10,6 +10,10 @@ import T10002 from './components/T10002.vue';
 
 
 const props = defineProps({
+    index: {
+        type: Number,
+        default: 0,
+    },
     type: {
         type: String,
         required: true,

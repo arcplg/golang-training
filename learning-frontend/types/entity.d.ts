@@ -6,6 +6,7 @@ interface Media {
 
 interface Block {
   id: String,
+  label: String,
   text: String,
   media: Media,
   block: Block[],

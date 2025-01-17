@@ -38,7 +38,7 @@ const buildFun = new Map([
             return () =>
                 createVNode(T10001, {
                     class: 'T1001',
-                    ...props.attr,
+                    ...props,
                 })
         },
     ],
@@ -48,7 +48,7 @@ const buildFun = new Map([
             return () =>
                 createVNode(T10002, {
                     class: 'T10002',
-                    ...props.attr,
+                    ...props,
                 })
         },
     ],

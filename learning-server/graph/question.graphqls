@@ -1,7 +1,20 @@
 scalar ObjectID
 scalar DateTime
 
-type GroupQuestion {
+type Media {
+  _id: ObjectID!
+  type: String
+  url: String
+}
+
+type Block {
+  _id: ObjectID!
+  text: String,
+  media: Media,
+  blocks: [Block]
+}
+
+type Exam {
   _id: ObjectID!
   title: String
   description: String
@@ -15,7 +28,18 @@ type GroupQuestion {
   createdAt: DateTime
   createdBy: User
   updatedAt: DateTime
+  updatedBy: User
   deletedAt: DateTime
+  deletedBy: User
+}
+
+input ExamInput {
+  title: String
+  description: String
+  thumbnailUrl: String
+  anyTime: Boolean
+  startAt: DateTime
+  endAt: DateTime
 }
 
 type Answer {
@@ -25,98 +49,39 @@ type Answer {
   questions: [Question]
   startAt: DateTime
   endAt: DateTime
-  publishedAt: DateTime
-  createdAt: DateTime
-  updatedAt: DateTime
-  deletedAt: DateTime
 }
 
 type Question {
   _id: ObjectID!
-  originNumber: Int
   note: String
   text: String
-  imageUrl: String
-  videoUrl: String
-  youtubeUrl: String
-  questionItems: [QuestionItem]
+  media: Media
+  options: [Block]
+  correctOption: [Block]
   publishedAt: DateTime
   createdAt: DateTime
   createdBy: User
   updatedAt: DateTime
+  updatedBy: User
   deletedAt: DateTime
-}
-
-type QuestionItem {
-  _id: ObjectID!
-  key: String
-  originNumber: Int
-  text: String
-  imageUrl: String
-  videoUrl: String
-  youtubeUrl: String
+  deletedBy: User
 }
 
 type QuestionTemplate {
   _id: ObjectID!
-  originNumber: Int
+  name: String
   note: String
   text: String
-  imageUrl: String
-  videoUrl: String
-  youtubeUrl: String
-  questionTemplateItems: [QuestionTemplateItem]
-  publishedAt: DateTime
-  createdAt: DateTime
-  updatedAt: DateTime
-  deletedAt: DateTime
-}
-
-type QuestionTemplateItem {
-  _id: ObjectID!
-  key: String
-  originNumber: Int
-  text: String
-  imageUrl: String
-  videoUrl: String
-  youtubeUrl: String
-}
-
-input QuestionItemInput {
-  key: String
-  originNumber: Int
-  text: String
-  imageUrl: String
-  videoUrl: String
-  youtubeUrl: String
-}
-
-input QuestionInput {
-  originNumber: Int
-  note: String
-  text: String
-  imageUrl: String
-  videoUrl: String
-  youtubeUrl: String
-  questionItems: [QuestionItemInput]
-}
-
-input GroupQuestionInput {
-  title: String
-  description: String
-  thumbnailUrl: String
-  anyTime: Boolean
-  startAt: DateTime
-  endAt: DateTime
+  media: Media
+  blocks: [Block]
 }
 
 extend type Query {
-  questions: [Question!]!
-  groupQuestions: [GroupQuestion!]!
-  findGroupQuestion(_id: String!): GroupQuestion!
+  questionTemplates: [QuestionTemplate!]!
+  exams: [Exam!]!
+  findExam(_id: String!): Exam!
 }
 
 extend type Mutation {
-  addQuestion(_id: String!, input: QuestionInput!): GroupQuestion!
-  createGroupQuestion(input: GroupQuestionInput!): GroupQuestion!
+  createExam(input: ExamInput!): Exam!
 }

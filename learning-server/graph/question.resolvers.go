@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"learning-server/entity"
 	"learning-server/internal/services"
-	"time"
 )
 
 // User is the resolver for the user field.
@@ -17,39 +16,39 @@ func (r *answerResolver) User(ctx context.Context, obj *entity.Answer) (*entity.
 	panic(fmt.Errorf("not implemented: User - user"))
 }
 
-// PublishedAt is the resolver for the publishedAt field.
-func (r *answerResolver) PublishedAt(ctx context.Context, obj *entity.Answer) (*time.Time, error) {
-	panic(fmt.Errorf("not implemented: PublishedAt - publishedAt"))
-}
-
 // CreatedBy is the resolver for the createdBy field.
-func (r *groupQuestionResolver) CreatedBy(ctx context.Context, obj *entity.GroupQuestion) (*entity.User, error) {
+func (r *examResolver) CreatedBy(ctx context.Context, obj *entity.Exam) (*entity.User, error) {
 	panic(fmt.Errorf("not implemented: CreatedBy - createdBy"))
 }
 
-// AddQuestion is the resolver for the addQuestion field.
-func (r *mutationResolver) AddQuestion(ctx context.Context, id string, input entity.QuestionInput) (*entity.GroupQuestion, error) {
-	return services.AddQuestion(ctx, id, input)
+// UpdatedBy is the resolver for the updatedBy field.
+func (r *examResolver) UpdatedBy(ctx context.Context, obj *entity.Exam) (*entity.User, error) {
+	panic(fmt.Errorf("not implemented: UpdatedBy - updatedBy"))
 }
 
-// CreateGroupQuestion is the resolver for the createGroupQuestion field.
-func (r *mutationResolver) CreateGroupQuestion(ctx context.Context, input entity.GroupQuestionInput) (*entity.GroupQuestion, error) {
-	return services.CreateGroupQuestion(ctx, input)
+// DeletedBy is the resolver for the deletedBy field.
+func (r *examResolver) DeletedBy(ctx context.Context, obj *entity.Exam) (*entity.User, error) {
+	panic(fmt.Errorf("not implemented: DeletedBy - deletedBy"))
 }
 
-// Questions is the resolver for the questions field.
-func (r *queryResolver) Questions(ctx context.Context) ([]*entity.Question, error) {
-	return services.GetQuestions(ctx)
+// CreateExam is the resolver for the createExam field.
+func (r *mutationResolver) CreateExam(ctx context.Context, input entity.ExamInput) (*entity.Exam, error) {
+	return services.CreateExam(ctx, input)
 }
 
-// GroupQuestions is the resolver for the groupQuestions field.
-func (r *queryResolver) GroupQuestions(ctx context.Context) ([]*entity.GroupQuestion, error) {
-	return services.GetGroupQuestions(ctx)
+// QuestionTemplates is the resolver for the questionTemplates field.
+func (r *queryResolver) QuestionTemplates(ctx context.Context) ([]*entity.QuestionTemplate, error) {
+	return services.ListQuestionTemplates(ctx)
 }
 
-// FindGroupQuestion is the resolver for the findGroupQuestion field.
-func (r *queryResolver) FindGroupQuestion(ctx context.Context, id string) (*entity.GroupQuestion, error) {
-	return services.FindGroupQuestion(ctx, id)
+// Exams is the resolver for the exams field.
+func (r *queryResolver) Exams(ctx context.Context) ([]*entity.Exam, error) {
+	return services.ListExam(ctx)
+}
+
+// FindExam is the resolver for the findExam field.
+func (r *queryResolver) FindExam(ctx context.Context, id string) (*entity.Exam, error) {
+	panic(fmt.Errorf("not implemented: Exams - exams"))
 }
 
 // CreatedBy is the resolver for the createdBy field.
@@ -57,16 +56,21 @@ func (r *questionResolver) CreatedBy(ctx context.Context, obj *entity.Question) 
 	panic(fmt.Errorf("not implemented: CreatedBy - createdBy"))
 }
 
-// QuestionItems is the resolver for the questionItems field.
-func (r *questionInputResolver) QuestionItems(ctx context.Context, obj *entity.QuestionInput, data []*entity.QuestionItemInput) error {
-	panic(fmt.Errorf("not implemented: QuestionItems - questionItems"))
+// UpdatedBy is the resolver for the updatedBy field.
+func (r *questionResolver) UpdatedBy(ctx context.Context, obj *entity.Question) (*entity.User, error) {
+	panic(fmt.Errorf("not implemented: UpdatedBy - updatedBy"))
+}
+
+// DeletedBy is the resolver for the deletedBy field.
+func (r *questionResolver) DeletedBy(ctx context.Context, obj *entity.Question) (*entity.User, error) {
+	panic(fmt.Errorf("not implemented: DeletedBy - deletedBy"))
 }
 
 // Answer returns AnswerResolver implementation.
 func (r *Resolver) Answer() AnswerResolver { return &answerResolver{r} }
 
-// GroupQuestion returns GroupQuestionResolver implementation.
-func (r *Resolver) GroupQuestion() GroupQuestionResolver { return &groupQuestionResolver{r} }
+// Exam returns ExamResolver implementation.
+func (r *Resolver) Exam() ExamResolver { return &examResolver{r} }
 
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
@@ -74,11 +78,7 @@ func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 // Question returns QuestionResolver implementation.
 func (r *Resolver) Question() QuestionResolver { return &questionResolver{r} }
 
-// QuestionInput returns QuestionInputResolver implementation.
-func (r *Resolver) QuestionInput() QuestionInputResolver { return &questionInputResolver{r} }
-
 type answerResolver struct{ *Resolver }
-type groupQuestionResolver struct{ *Resolver }
+type examResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 type questionResolver struct{ *Resolver }
-type questionInputResolver struct{ *Resolver }

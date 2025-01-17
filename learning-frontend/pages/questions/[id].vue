@@ -14,13 +14,9 @@
       <div class="inner">
         <div class="left">
             <ul>
-              <li>1) 記帳時に費目・項目が二重に表示されているユーザーがいます。</li>
-              <li>2) 記帳時に費目・項目が二重に表示されているユーザーがいます。</li>
-              <li>3) 記帳時に費目・項目が二重に表示されているユーザーがいます。</li>
-              <li>4) 記帳時に費目・項目が二重に表示されているユーザーがいます。</li>
-              <li>5) 記帳時に費目・項目が二重に表示されているユーザーがいます。</li>
-              <li>6) 記帳時に費目・項目が二重に表示されているユーザーがいます。</li>
-              <li>7) 記帳時に費目・項目が二重に表示されているユーザーがいます。</li>
+              <li v-for="item,key in pageQuestion.questions">
+                
+              </li>
             </ul>
         </div>
         <div class="right">
@@ -95,18 +91,35 @@ const pageQuestion = ref<PageQuestion>({
   id: route.params.id,
   templates: [
     {
+      _id: null,
       templateKey: 'T10001',
       templateName: 'T10001',
       originNumber: 1,
-      text: null,
+      text: "記帳時に費目・項目が二重に表示されているユーザーがいます。",
       media: null,
-      questionItems: [],
+      questionItems: [
+        {
+          _id: null,
+          optionKey: 'A',
+          originNumber: 1,
+          text: "記帳時に費目",
+          media: null,
+        },
+        {
+          _id: null,
+          optionKey: 'B',
+          originNumber: 2,
+          text: "記帳",
+          media: null,
+        }
+      ],
     },
     {
+      _id: null,
       templateKey: 'T10002',
       templateName: 'T10002',
       originNumber: 1,
-      text: null,
+      text: "記帳時に費目・項目が二重に表示されているユーザーがいます。",
       media: null,
       questionItems: [],
     },
@@ -129,8 +142,9 @@ const pageQuestion = ref<PageQuestion>({
   },
   questions: [],
   form: {
-    templateKey: 'basic',
-    templateName: 'Basic',
+    _id: null,
+    templateKey: 'T10001',
+    templateName: 'T10001',
     originNumber: 1,
     text: null,
     media: null,

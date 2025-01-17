@@ -1,3 +1,8 @@
+interface Media {
+  id: String,
+  type: String,
+  url: String,
+}
 interface GroupQuestion {
   _id: String
   title: ?String
@@ -33,9 +38,7 @@ interface Question {
   originNumber: Int
   note: String
   text: String
-  imageUrl: String
-  videoUrl: String
-  youtubeUrl: String
+  media: Media
   questionItems: [QuestionItem]
   publishedAt: Date
   createdAt: Date
@@ -49,19 +52,15 @@ interface QuestionItem {
   key: String
   originNumber: Int
   text: String
-  imageUrl: String
-  videoUrl: String
-  youtubeUrl: String
+  media: Media
 }
 
 interface QuestionTemplate {
-  _id: String
+  _id: ?String
   originNumber: Int
-  note: String
-  text: String
-  imageUrl: String
-  videoUrl: String
-  youtubeUrl: String
+  note: ?String
+  text: ?String
+  media: ?Media
   questionTemplateItems: [QuestionTemplateItem]
   publishedAt: Date
   createdAt: Date
@@ -70,28 +69,17 @@ interface QuestionTemplate {
 }
 
 interface QuestionTemplateItem {
-  _id: String
-  key: String
+  _id: ?String
+  key: ?String
   originNumber: Int
-  text: String
-  imageUrl: String
-  videoUrl: String
-  youtubeUrl: String
+  text: ?String
+  media: ?Media
 }
 
-interface Media {
-  type: String,
-  url: String,
-}
 
-interface QuestionItemInput {
-  key: String
-  originNumber: Int
-  text: String
-  media: Media
-}
-
+/** Input */
 interface QuestionInput {
+  _id: ?String,
   templateKey: String,
   templateName: String,
   originNumber: Int
@@ -99,8 +87,15 @@ interface QuestionInput {
   media: ?Media
   questionItems: QuestionItemInput[]
 }
-
+interface QuestionItemInput {
+  _id: ?String,
+  originNumber: Int
+  optionKey: String,
+  text: ?String
+  media: ?Media
+}
 interface GroupQuestionInput {
+  _id: ?String,
   title: String
   description: ?String
   thumbnailUrl: ?String

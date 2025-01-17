@@ -1,29 +1,14 @@
 <template>
     <div class="card">
-        <span>Question 1: </span>
+        <span>Question {{props.data.originNumber}}: </span>
         <div class="card-title">
-            <h2><input type="text" name="A"></h2>
+            <h2><input type="text" name="A" v-model="props.data.text"></h2>
         </div>
         <div class="card-inner">
-            <div class="">
-            <input type="radio">
-            <label>A)</label>
-            <input type="text" name="A">
-            </div>
-            <div class="">
-            <input type="radio">
-            <label>B)</label>
-            <input type="text" name="B">
-            </div>
-            <div class="">
-            <input type="radio">
-            <label>C)</label>
-            <input type="text" name="C">
-            </div>
-            <div class="">
-            <input type="radio">
-            <label>D)</label>
-            <input type="text" name="D">
+            <div class="" v-for="item,key in questionItems" :key="key">
+                <input type="radio">
+                <label>{{item.optionKey}}</label>
+                <input type="text" v-model="item.text">
             </div>
         </div>
     </div>
@@ -31,7 +16,14 @@
 
 <script lang="ts" setup>
 
+const props = defineProps({
+    data: {
+        type: Object as PropType<QuestionInput>,
+        required: true,
+    }
+})
 
+const questionItems = ref(props.data.questionItems)
 
 </script>
 

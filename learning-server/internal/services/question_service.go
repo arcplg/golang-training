@@ -9,10 +9,11 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
-func GetGroupQuestions(ctx context.Context) ([]*entity.GroupQuestion, error) {
+func ListExam(ctx context.Context) ([]*entity.Exam, error) {
 	collection := db.GetCollection("questions")
 	filter := bson.D{}
 	opts := options.Find().SetSort(bson.D{{Key: "createdAt", Value: 1}})
@@ -24,22 +25,22 @@ func GetGroupQuestions(ctx context.Context) ([]*entity.GroupQuestion, error) {
 	}
 	defer cursor.Close(ctx)
 
-	var groupQuestions []*entity.GroupQuestion
+	var exams []*entity.Exam
 	for cursor.Next(ctx) {
-		var question entity.GroupQuestion
+		var question entity.Exam
 		err := cursor.Decode(&question)
 		if err != nil {
 			return nil, err
 		}
-		groupQuestions = append(groupQuestions, &question)
+		exams = append(exams, &question)
 	}
 
-	return groupQuestions, nil
+	return exams, nil
 }
 
-func FindGroupQuestion(ctx context.Context, id string) (*entity.GroupQuestion, error) {
+func FindExamById(ctx context.Context, id string) (*entity.Exam, error) {
 	collection := db.GetCollection("questions")
-	var groupQuestion entity.GroupQuestion
+	var groupQuestion entity.Exam
 	_id, _ := bson.ObjectIDFromHex(id)
 	filter := bson.M{"_id": _id}
 	err := collection.FindOne(ctx, filter).Decode(&groupQuestion)
@@ -50,15 +51,17 @@ func FindGroupQuestion(ctx context.Context, id string) (*entity.GroupQuestion, e
 	return &groupQuestion, nil
 }
 
-func CreateGroupQuestion(ctx context.Context, input entity.GroupQuestionInput) (*entity.GroupQuestion, error) {
+func CreateExam(ctx context.Context, input entity.ExamInput) (*entity.Exam, error) {
 	if err := validation.ValidateStruct(input); err != nil {
 		return nil, fmt.Errorf("validation failed: %v", err)
 	}
-	groupQuestionInput := &entity.GroupQuestionInput{
+
+	examInput := &entity.Exam{
+		ID:           bson.NewObjectID(),
 		Title:        input.Title,
 		Description:  input.Description,
 		ThumbnailUrl: input.ThumbnailUrl,
-		AnyTime:      input.AnyTime,
+		AnyTime:      *input.AnyTime,
 		StartAt:      input.StartAt,
 		EndAt:        input.EndAt,
 		CreatedAt:    time.Now(),
@@ -67,24 +70,30 @@ func CreateGroupQuestion(ctx context.Context, input entity.GroupQuestionInput) (
 
 	collection := db.GetCollection("questions")
 
-	res, err := collection.InsertOne(ctx, groupQuestionInput)
+	res, err := collection.InsertOne(ctx, examInput)
 	if err != nil {
 		return nil, err
 	}
 
-	var groupQuestion entity.GroupQuestion
+	var exam entity.Exam
 	filter := bson.M{"_id": res.InsertedID}
-	err = collection.FindOne(ctx, filter).Decode(&groupQuestion)
+	err = collection.FindOne(ctx, filter).Decode(&exam)
 	if err != nil {
 		return nil, err
 	}
 
-	return &groupQuestion, nil
+	return &exam, nil
 }
 
-func GetQuestions(ctx context.Context) ([]*entity.Question, error) {
+func ListQuestions(ctx context.Context) ([]*entity.Question, error) {
 	collection := db.GetCollection("questions")
-	cursor, err := collection.Find(ctx, bson.M{})
+
+	pipeline := mongo.Pipeline{
+		{{"$unwind", bson.D{{"path", "$questions"}}}},
+		{{"$replaceRoot", bson.D{{"newRoot", "$questions"}}}},
+	}
+
+	cursor, err := collection.Aggregate(ctx, pipeline)
 
 	if err != nil {
 		return nil, err
@@ -104,54 +113,65 @@ func GetQuestions(ctx context.Context) ([]*entity.Question, error) {
 	return questions, nil
 }
 
-func AddQuestion(ctx context.Context, id string, input entity.QuestionInput) (*entity.GroupQuestion, error) {
+func ListQuestionTemplates(ctx context.Context) ([]*entity.QuestionTemplate, error) {
+	collection := db.GetCollection("questionTemplates")
+	filter := bson.D{}
+	opts := options.Find()
+
+	cursor, err := collection.Find(ctx, filter, opts)
+
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var questionTemplate []*entity.QuestionTemplate
+	for cursor.Next(ctx) {
+		var question entity.QuestionTemplate
+		err := cursor.Decode(&question)
+		if err != nil {
+			return nil, err
+		}
+		questionTemplate = append(questionTemplate, &question)
+	}
+
+	return questionTemplate, nil
+}
+
+func AddQuestionTemplateIntoExam(ctx context.Context, examId string, input entity.QuestionTemplate) (*entity.Exam, error) {
 	if err := validation.ValidateStruct(input); err != nil {
 		return nil, fmt.Errorf("validation failed: %v", err)
 	}
 
 	collection := db.GetCollection("questions")
-	var groupQuestion entity.GroupQuestion
-	_id, e := bson.ObjectIDFromHex(id)
+	var exam entity.Exam
+	_id, e := bson.ObjectIDFromHex(examId)
 	if e != nil {
 		return nil, e
 	}
 
 	filter := bson.M{"_id": _id}
 
-	questionItemsList := make([]entity.QuestionItemInput, len(input.QuestionItemInput))
-	for i, input := range input.QuestionItemInput {
-		questionItemsList[i] = entity.QuestionItemInput{
-			ID:           bson.NewObjectID(),
-			Key:          input.Key,
-			OriginNumber: input.OriginNumber,
-			Text:         input.Text,
-			ImageUrl:     input.ImageUrl,
-			VideoUrl:     input.VideoUrl,
-			YoutubeUrl:   input.YoutubeUrl,
-		}
-	}
-
-	questionInput := &entity.QuestionInput{
-		ID:                bson.NewObjectID(),
-		OriginNumber:      input.OriginNumber,
-		Text:              input.Text,
-		ImageUrl:          input.ImageUrl,
-		VideoUrl:          input.VideoUrl,
-		YoutubeUrl:        input.YoutubeUrl,
-		QuestionItemInput: questionItemsList,
+	question := &entity.QuestionTemplate{
+		ID:     bson.NewObjectID(),
+		Name:   input.Name,
+		Note:   input.Note,
+		Text:   input.Text,
+		Media:  input.Media,
+		Blocks: input.Blocks,
 	}
 
 	update := bson.M{
 		"$push": bson.M{
-			"items": questionInput,
+			"questions": question,
 		},
 	}
 	collection.FindOneAndUpdate(ctx, filter, update)
 
-	err := collection.FindOne(ctx, filter).Decode(&groupQuestion)
+	err := collection.FindOne(ctx, filter).Decode(&exam)
 	if err != nil {
 		return nil, err
 	}
 
-	return &groupQuestion, nil
+	return &exam, nil
 }

@@ -153,12 +153,14 @@ func AddQuestionIntoExam(ctx context.Context, examId string, input entity.Questi
 	filter := bson.M{"_id": _id}
 
 	question := &entity.Question{
-		ID:     bson.NewObjectID(),
-		Name:   input.Name,
-		Note:   input.Note,
-		Text:   input.Text,
-		Media:  input.Media,
-		Blocks: input.Blocks,
+		ID:        bson.NewObjectID(),
+		Name:      input.Name,
+		Note:      input.Note,
+		Text:      input.Text,
+		Media:     input.Media,
+		Blocks:    input.Blocks,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}
 
 	update := bson.M{

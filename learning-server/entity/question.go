@@ -59,28 +59,28 @@ type Answer struct {
 }
 
 type Question struct {
-	ID            bson.ObjectID `bson:"_id"`
-	Name          string        `bson:"name"`
-	Note          string        `bson:"note"`
-	Text          string        `bson:"text"`
-	Media         Media         `bson:"media"`
-	Blocks        []Block       `bson:"blocks"`
-	Options       []Block       `bson:"options"`
-	CorrectOption []Block       `bson:"correctOption"`
-	PublishedAt   time.Time     `bson:"publishedAt"`
-	CreatedAt     time.Time     `bson:"createdAt"`
-	CreatedBy     bson.ObjectID `bson:"createdBy"`
-	UpdatedAt     time.Time     `bson:"updatedAt"`
-	UpdatedBy     bson.ObjectID `bson:"UpdatedBy"`
-	DeletedAt     time.Time     `bson:"deletedAt"`
-	DeletedBy     bson.ObjectID `bson:"DeletedBy"`
+	ID            bson.ObjectID  `bson:"_id"`
+	Name          string         `bson:"name"`
+	Note          *string        `bson:"note"`
+	Text          *string        `bson:"text"`
+	Media         *Media         `bson:"media"`
+	Blocks        []Block        `bson:"blocks"`
+	Options       []Block        `bson:"options"`
+	CorrectOption []Block        `bson:"correctOption"`
+	PublishedAt   *time.Time     `bson:"publishedAt"`
+	CreatedAt     time.Time      `bson:"createdAt"`
+	CreatedBy     *bson.ObjectID `bson:"createdBy"`
+	UpdatedAt     time.Time      `bson:"updatedAt"`
+	UpdatedBy     *bson.ObjectID `bson:"UpdatedBy"`
+	DeletedAt     *time.Time     `bson:"deletedAt"`
+	DeletedBy     *bson.ObjectID `bson:"DeletedBy"`
 }
 type QuestionInput struct {
 	ID            string  `bson:"_id"`
 	Name          string  `bson:"name"`
-	Note          string  `bson:"note"`
-	Text          string  `bson:"text"`
-	Media         Media   `bson:"media"`
+	Note          *string `bson:"note"`
+	Text          *string `bson:"text"`
+	Media         *Media  `bson:"media"`
 	Blocks        []Block `bson:"blocks"`
 	Options       []Block `bson:"options"`
 	CorrectOption []Block `bson:"correctOption"`
@@ -91,6 +91,6 @@ type QuestionTemplate struct {
 	Name   string        `bson:"name"`
 	Note   string        `bson:"note"`
 	Text   string        `bson:"text"`
-	Media  Media         `bson:"media"`
+	Media  *Media        `bson:"media"`
 	Blocks []Block       `bson:"blocks"`
 }

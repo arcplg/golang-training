@@ -90,7 +90,11 @@ if (!data) {
 }
 
 const submit = async () => {
-  await graphqlQueryFetch(mutationAddQuestionIntoExam, {id: pageQuestion.value.id, input: pageQuestion.value.questionTemplate})
+  const res = await graphqlQueryFetch(mutationAddQuestionIntoExam, {id: pageQuestion.value.id, input: pageQuestion.value.questionTemplate})
+   if(res?.errors) {
+    alert('Errors')
+    return;
+  }
   const { data } = await graphqlQueryFetch(queryDetailExam, {id: pageQuestion.value.id})
   pageQuestion.value.exam = data?.findExam || null
 }

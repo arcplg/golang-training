@@ -107,7 +107,7 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		AddQuestionIntoExam       func(childComplexity int, id *string, input entity.QuestionInput) int
+		AddQuestionIntoExam       func(childComplexity int, id string, input entity.QuestionInput) int
 		CreateExam                func(childComplexity int, input entity.ExamInput) int
 		MultipleUpload            func(childComplexity int, files []*graphql.Upload) int
 		MultipleUploadWithPayload func(childComplexity int, req []*entity.UploadFile) int
@@ -171,7 +171,7 @@ type MutationResolver interface {
 	MultipleUpload(ctx context.Context, files []*graphql.Upload) ([]*entity.File, error)
 	MultipleUploadWithPayload(ctx context.Context, req []*entity.UploadFile) ([]*entity.File, error)
 	CreateExam(ctx context.Context, input entity.ExamInput) (*entity.Exam, error)
-	AddQuestionIntoExam(ctx context.Context, id *string, input entity.QuestionInput) (*entity.Exam, error)
+	AddQuestionIntoExam(ctx context.Context, id string, input entity.QuestionInput) (*entity.Exam, error)
 }
 type QueryResolver interface {
 	QuestionTemplates(ctx context.Context) ([]*entity.QuestionTemplate, error)
@@ -191,9 +191,8 @@ type UserResolver interface {
 }
 
 type QuestionInputResolver interface {
-	ID(ctx context.Context, obj *entity.QuestionInput, data bson.ObjectID) error
-
 	Media(ctx context.Context, obj *entity.QuestionInput, data *models.MediaInput) error
+	Blocks(ctx context.Context, obj *entity.QuestionInput, data []*models.BlockInput) error
 	Options(ctx context.Context, obj *entity.QuestionInput, data []*models.BlockInput) error
 	CorrectOption(ctx context.Context, obj *entity.QuestionInput, data []*models.BlockInput) error
 }
@@ -472,7 +471,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.AddQuestionIntoExam(childComplexity, args["id"].(*string), args["input"].(entity.QuestionInput)), true
+		return e.complexity.Mutation.AddQuestionIntoExam(childComplexity, args["id"].(string), args["input"].(entity.QuestionInput)), true
 
 	case "Mutation.createExam":
 		if e.complexity.Mutation.CreateExam == nil {
@@ -877,13 +876,13 @@ func (ec *executionContext) field_Mutation_addQuestionIntoExam_args(ctx context.
 func (ec *executionContext) field_Mutation_addQuestionIntoExam_argsID(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (*string, error) {
+) (string, error) {
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 	if tmp, ok := rawArgs["id"]; ok {
-		return ec.unmarshalOString2ᚖstring(ctx, tmp)
+		return ec.unmarshalNString2string(ctx, tmp)
 	}
 
-	var zeroVal *string
+	var zeroVal string
 	return zeroVal, nil
 }
 
@@ -2644,9 +2643,9 @@ func (ec *executionContext) _Media_type(ctx context.Context, field graphql.Colle
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Media_type(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2685,9 +2684,9 @@ func (ec *executionContext) _Media_url(ctx context.Context, field graphql.Collec
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Media_url(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3074,7 +3073,7 @@ func (ec *executionContext) _Mutation_addQuestionIntoExam(ctx context.Context, f
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().AddQuestionIntoExam(rctx, fc.Args["id"].(*string), fc.Args["input"].(entity.QuestionInput))
+		return ec.resolvers.Mutation().AddQuestionIntoExam(rctx, fc.Args["id"].(string), fc.Args["input"].(entity.QuestionInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3622,9 +3621,9 @@ func (ec *executionContext) _Question_name(ctx context.Context, field graphql.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Question_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3663,9 +3662,9 @@ func (ec *executionContext) _Question_note(ctx context.Context, field graphql.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Question_note(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3704,9 +3703,9 @@ func (ec *executionContext) _Question_text(ctx context.Context, field graphql.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Question_text(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3900,9 +3899,9 @@ func (ec *executionContext) _Question_publishedAt(ctx context.Context, field gra
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*time.Time)
+	res := resTmp.(time.Time)
 	fc.Result = res
-	return ec.marshalODateTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+	return ec.marshalODateTime2timeᚐTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Question_publishedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4121,9 +4120,9 @@ func (ec *executionContext) _Question_deletedAt(ctx context.Context, field graph
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*time.Time)
+	res := resTmp.(time.Time)
 	fc.Result = res
-	return ec.marshalODateTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+	return ec.marshalODateTime2timeᚐTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Question_deletedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6378,7 +6377,7 @@ func (ec *executionContext) unmarshalInputBlockInput(ctx context.Context, obj in
 		switch k {
 		case "_id":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("_id"))
-			data, err := ec.unmarshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID(ctx, v)
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6495,7 +6494,7 @@ func (ec *executionContext) unmarshalInputMediaInput(ctx context.Context, obj in
 		switch k {
 		case "_id":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("_id"))
-			data, err := ec.unmarshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID(ctx, v)
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6527,7 +6526,7 @@ func (ec *executionContext) unmarshalInputQuestionInput(ctx context.Context, obj
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"_id", "name", "note", "text", "media", "options", "correctOption"}
+	fieldsInOrder := [...]string{"_id", "name", "note", "text", "media", "blocks", "options", "correctOption"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -6536,30 +6535,28 @@ func (ec *executionContext) unmarshalInputQuestionInput(ctx context.Context, obj
 		switch k {
 		case "_id":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("_id"))
-			data, err := ec.unmarshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID(ctx, v)
+			data, err := ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			if err = ec.resolvers.QuestionInput().ID(ctx, &it, data); err != nil {
-				return it, err
-			}
+			it.ID = data
 		case "name":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			data, err := ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Name = data
 		case "note":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("note"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			data, err := ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Note = data
 		case "text":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("text"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			data, err := ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6571,6 +6568,15 @@ func (ec *executionContext) unmarshalInputQuestionInput(ctx context.Context, obj
 				return it, err
 			}
 			if err = ec.resolvers.QuestionInput().Media(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "blocks":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("blocks"))
+			data, err := ec.unmarshalOBlockInput2ᚕᚖlearningᚑserverᚋgraphᚋmodelsᚐBlockInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.QuestionInput().Blocks(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "options":

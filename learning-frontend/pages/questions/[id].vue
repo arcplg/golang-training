@@ -27,112 +27,28 @@
               :type="item.name.toString()"
               :data="item"
           />
-        </div>
-        <div>
-          
+          <div>
+            <h2>Add question</h2>
+            <form action="">
+              <div v-for="template in pageQuestion.templates">
+                <input type="radio" :id="template.name.toString()" :value="template" v-model="pageQuestion.questionTemplate" />
+                <label for="one">{{template.name}}</label>
+              </div>
+              <div>
+                <button @click.prevent="submit">Submit</button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>
 </template>
 <script lang="ts" setup>
-  import gql from "graphql-tag"
-  const query = gql`
-    query queryGql($id: String!) {
-      findExam(_id: $id) {
-        _id
-        title
-        description
-        thumbnailUrl
-        anyTime
-        startAt
-        endAt
-        publishedAt
-        createdAt
-        updatedAt
-        deletedAt
-        questions {
-            _id
-            name
-            note
-            text
-            media {
-                _id
-                type
-                url
-            }
-            options {
-                _id
-                text
-            }
-            correctOption {
-                _id
-                text
-            }
-            publishedAt
-            createdAt
-            updatedAt
-            deletedAt
-        }
-      }
-      questionTemplates {
-          _id
-          name
-          note
-          text
-          media {
-              _id
-              type
-              url
-          }
-          blocks {
-              _id
-              label
-              text
-              media {
-                  _id
-                  type
-                  url
-              }
-          }
-      }
-    }
-  `
-
-  const mutation = gql`
-    mutation AddQuestion(
-      $id: String!,
-      $originNumber: String!,
-      $text: String!,
-      $imageUrl: String
-      $videoUrl: String
-      $questionItems: Array
-      $youtubeUrl: String
-    ) {
-      addQuestion(_id: $id, input: { 
-        originNumber: $originNumber
-        note: $note
-        text: $text
-        imageUrl: $imageUrl
-        videoUrl: $videoUrl
-        questionItems: $questionItems
-        youtubeUrl: $youtubeUrl
-      }) {
-        originNumber
-        note
-        text
-        imageUrl
-        videoUrl
-        questionItems
-        youtubeUrl
-    }
-  }
-  `
-
 interface PageQuestion {
   id: String | String[],
   templates: QuestionTemplate[],
   exam: Exam | null
-  form: QuestionTemplate
+  questionTemplate: QuestionTemplate
 }
 
 const route = useRoute()
@@ -155,7 +71,7 @@ const pageQuestion = ref<PageQuestion>({
     updatedAt: null,
     deletedAt: null,
   },
-  form: {
+  questionTemplate: {
     _id: null,
     name: '',
     note: null,
@@ -165,8 +81,8 @@ const pageQuestion = ref<PageQuestion>({
   },
 })
 
-/** list question */
-const { data } = await graphqlQueryUseFetch(query, {id: pageQuestion.value.id})
+/** detail exam */
+const { data } = await graphqlQueryUseFetch(queryDetailExam, {id: pageQuestion.value.id})
 pageQuestion.value.exam = data?.findExam || null
 pageQuestion.value.templates = data?.questionTemplates || null
 if (!data) {
@@ -174,9 +90,9 @@ if (!data) {
 }
 
 const submit = async () => {
-  await graphqlQueryFetch(mutation, pageQuestion.value.form)
-  const { data } = await graphqlQueryFetch(query)
-  pageQuestion.value.exam = data?.exam || null
+  await graphqlQueryFetch(mutationAddQuestionIntoExam, {id: pageQuestion.value.id, input: pageQuestion.value.questionTemplate})
+  const { data } = await graphqlQueryFetch(queryDetailExam, {id: pageQuestion.value.id})
+  pageQuestion.value.exam = data?.findExam || null
 }
 </script>
 

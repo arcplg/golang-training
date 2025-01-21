@@ -9,15 +9,15 @@ import (
 /** Entity */
 type Media struct {
 	ID   bson.ObjectID `bson:"_id"`
-	Type *string       `bson:"type,omitempty"`
-	Url  *string       `bson:"url,omitempty"`
+	Type string        `bson:"type"`
+	Url  string        `bson:"url"`
 }
 
 type Block struct {
 	ID     bson.ObjectID `bson:"_id"`
-	Label  string        `bson:"label,omitempty"`
-	Text   string        `bson:"text,omitempty"`
-	Media  Media         `bson:"media,omitempty"`
+	Label  string        `bson:"label"`
+	Text   string        `bson:"text"`
+	Media  Media         `bson:"media"`
 	Blocks []Block       `bson:"block"`
 }
 
@@ -59,35 +59,38 @@ type Answer struct {
 }
 
 type Question struct {
-	ID            bson.ObjectID `bson:"_id,omitempty"`
-	Name          *string       `bson:"name,omitempty"`
-	Note          *string       `bson:"note,omitempty"`
-	Text          *string       `bson:"text,omitempty"`
-	Media         *Media        `bson:"media,omitempty"`
+	ID            bson.ObjectID `bson:"_id"`
+	Name          string        `bson:"name"`
+	Note          string        `bson:"note"`
+	Text          string        `bson:"text"`
+	Media         *Media        `bson:"media"`
+	Blocks        []Block       `bson:"blocks"`
 	Options       []Block       `bson:"options"`
 	CorrectOption []Block       `bson:"correctOption"`
-	PublishedAt   *time.Time    `bson:"publishedAt,omitempty"`
+	PublishedAt   time.Time     `bson:"publishedAt"`
 	CreatedAt     time.Time     `bson:"createdAt"`
-	CreatedBy     bson.ObjectID `bson:"createdBy,omitempty"`
+	CreatedBy     bson.ObjectID `bson:"createdBy"`
 	UpdatedAt     time.Time     `bson:"updatedAt"`
-	UpdatedBy     bson.ObjectID `bson:"UpdatedBy,omitempty"`
-	DeletedAt     *time.Time    `bson:"deletedAt,omitempty"`
-	DeletedBy     bson.ObjectID `bson:"DeletedBy,omitempty"`
+	UpdatedBy     bson.ObjectID `bson:"UpdatedBy"`
+	DeletedAt     time.Time     `bson:"deletedAt"`
+	DeletedBy     bson.ObjectID `bson:"DeletedBy"`
 }
 type QuestionInput struct {
-	Name          *string `bson:"name,omitempty"`
-	Note          *string `bson:"note,omitempty"`
-	Text          *string `bson:"text,omitempty"`
-	Media         *Media  `bson:"media,omitempty"`
+	ID            string  `bson:"_id"`
+	Name          string  `bson:"name"`
+	Note          string  `bson:"note"`
+	Text          string  `bson:"text"`
+	Media         *Media  `bson:"media"`
+	Blocks        []Block `bson:"blocks"`
 	Options       []Block `bson:"options"`
 	CorrectOption []Block `bson:"correctOption"`
 }
 
 type QuestionTemplate struct {
 	ID     bson.ObjectID `bson:"_id"`
-	Name   *string       `bson:"name,omitempty"`
-	Note   *string       `bson:"note,omitempty"`
-	Text   *string       `bson:"text,omitempty"`
-	Media  *Media        `bson:"media,omitempty"`
+	Name   *string       `bson:"name"`
+	Note   *string       `bson:"note"`
+	Text   *string       `bson:"text"`
+	Media  *Media        `bson:"media"`
 	Blocks []Block       `bson:"blocks"`
 }

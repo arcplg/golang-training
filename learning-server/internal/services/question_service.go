@@ -138,7 +138,7 @@ func ListQuestionTemplates(ctx context.Context) ([]*entity.QuestionTemplate, err
 	return questionTemplate, nil
 }
 
-func AddQuestionTemplateIntoExam(ctx context.Context, examId string, input entity.QuestionTemplate) (*entity.Exam, error) {
+func AddQuestionIntoExam(ctx context.Context, examId string, input entity.QuestionInput) (*entity.Exam, error) {
 	if err := validation.ValidateStruct(input); err != nil {
 		return nil, fmt.Errorf("validation failed: %v", err)
 	}
@@ -152,7 +152,7 @@ func AddQuestionTemplateIntoExam(ctx context.Context, examId string, input entit
 
 	filter := bson.M{"_id": _id}
 
-	question := &entity.QuestionTemplate{
+	question := &entity.Question{
 		ID:     bson.NewObjectID(),
 		Name:   input.Name,
 		Note:   input.Note,

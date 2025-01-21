@@ -8,7 +8,7 @@ type Media {
 }
 
 input MediaInput {
-  _id: ObjectID!
+  _id: String
   type: String
   url: String
 }
@@ -21,7 +21,7 @@ type Block {
   blocks: [Block]
 }
 input BlockInput {
-  _id: ObjectID!
+  _id: String
   label: String,
   text: String,
   media: MediaInput,
@@ -82,11 +82,12 @@ type Question {
   deletedBy: User
 }
 input QuestionInput {
-  _id: ObjectID!
+  _id: String
   name: String
   note: String
   text: String
   media: MediaInput
+  blocks: [BlockInput]
   options: [BlockInput]
   correctOption: [BlockInput]
 }
@@ -108,5 +109,5 @@ extend type Query {
 
 extend type Mutation {
   createExam(input: ExamInput!): Exam!
-  addQuestionIntoExam(id: String, input: QuestionInput!): Exam!
+  addQuestionIntoExam(id: String!, input: QuestionInput!): Exam!
 }

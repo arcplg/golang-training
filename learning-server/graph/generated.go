@@ -1696,9 +1696,9 @@ func (ec *executionContext) _Exam_title(ctx context.Context, field graphql.Colle
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Exam_title(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3744,9 +3744,9 @@ func (ec *executionContext) _Question_media(ctx context.Context, field graphql.C
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*entity.Media)
+	res := resTmp.(entity.Media)
 	fc.Result = res
-	return ec.marshalOMedia2ᚖlearningᚑserverᚋentityᚐMedia(ctx, field.Selections, res)
+	return ec.marshalOMedia2learningᚑserverᚋentityᚐMedia(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Question_media(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4254,9 +4254,9 @@ func (ec *executionContext) _QuestionTemplate_name(ctx context.Context, field gr
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionTemplate_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4295,9 +4295,9 @@ func (ec *executionContext) _QuestionTemplate_note(ctx context.Context, field gr
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionTemplate_note(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4336,9 +4336,9 @@ func (ec *executionContext) _QuestionTemplate_text(ctx context.Context, field gr
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionTemplate_text(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4377,9 +4377,9 @@ func (ec *executionContext) _QuestionTemplate_media(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*entity.Media)
+	res := resTmp.(entity.Media)
 	fc.Result = res
-	return ec.marshalOMedia2ᚖlearningᚑserverᚋentityᚐMedia(ctx, field.Selections, res)
+	return ec.marshalOMedia2learningᚑserverᚋentityᚐMedia(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QuestionTemplate_media(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6432,7 +6432,7 @@ func (ec *executionContext) unmarshalInputExamInput(ctx context.Context, obj int
 		switch k {
 		case "title":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("title"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6453,7 +6453,7 @@ func (ec *executionContext) unmarshalInputExamInput(ctx context.Context, obj int
 			it.ThumbnailUrl = data
 		case "anyTime":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("anyTime"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8678,13 +8678,6 @@ func (ec *executionContext) marshalODateTime2ᚖtimeᚐTime(ctx context.Context,
 
 func (ec *executionContext) marshalOMedia2learningᚑserverᚋentityᚐMedia(ctx context.Context, sel ast.SelectionSet, v entity.Media) graphql.Marshaler {
 	return ec._Media(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalOMedia2ᚖlearningᚑserverᚋentityᚐMedia(ctx context.Context, sel ast.SelectionSet, v *entity.Media) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._Media(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOMediaInput2ᚖlearningᚑserverᚋgraphᚋmodelsᚐMediaInput(ctx context.Context, v interface{}) (*models.MediaInput, error) {

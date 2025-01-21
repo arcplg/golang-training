@@ -22,31 +22,31 @@ type Block struct {
 }
 
 type Exam struct {
-	ID           bson.ObjectID `bson:"_id"`
-	Title        *string       `bson:"title"`
-	Description  *string       `bson:"description,omitempty"`
-	ThumbnailUrl *string       `bson:"thumbnailUrl,omitempty"`
-	Questions    []Question    `bson:"questions"`
-	Answers      []Answer      `bson:"answers"`
-	AnyTime      bool          `bson:"anyTime"`
-	StartAt      *time.Time    `bson:"startAt"`
-	EndAt        *time.Time    `bson:"endAt"`
-	PublishedAt  *time.Time    `bson:"publishedAt,omitempty"`
-	CreatedAt    time.Time     `bson:"createdAt"`
-	CreatedBy    bson.ObjectID `bson:"createdBy,omitempty"`
-	UpdatedAt    time.Time     `bson:"updatedAt"`
-	UpdatedBy    bson.ObjectID `bson:"UpdatedBy,omitempty"`
-	DeletedAt    *time.Time    `bson:"deletedAt,omitempty"`
-	DeletedBy    bson.ObjectID `bson:"deletedBy,omitempty"`
+	ID           bson.ObjectID  `bson:"_id"`
+	Title        string         `bson:"title"`
+	Description  *string        `bson:"description"`
+	ThumbnailUrl *string        `bson:"thumbnailUrl"`
+	Questions    []Question     `bson:"questions"`
+	Answers      []Answer       `bson:"answers"`
+	AnyTime      bool           `bson:"anyTime"`
+	StartAt      *time.Time     `bson:"startAt"`
+	EndAt        *time.Time     `bson:"endAt"`
+	PublishedAt  *time.Time     `bson:"publishedAt"`
+	CreatedAt    time.Time      `bson:"createdAt"`
+	CreatedBy    *bson.ObjectID `bson:"createdBy"`
+	UpdatedAt    time.Time      `bson:"updatedAt"`
+	UpdatedBy    *bson.ObjectID `bson:"UpdatedBy"`
+	DeletedAt    *time.Time     `bson:"deletedAt"`
+	DeletedBy    *bson.ObjectID `bson:"deletedBy"`
 }
 
 type ExamInput struct {
-	Title        *string    `json:"title,omitempty"`
-	Description  *string    `json:"description,omitempty"`
-	ThumbnailUrl *string    `json:"thumbnailUrl,omitempty"`
-	AnyTime      *bool      `json:"anyTime"`
-	StartAt      *time.Time `json:"startAt,omitempty"`
-	EndAt        *time.Time `json:"endAt,omitempty"`
+	Title        string     `json:"title" validate:"required,min=5,max=100"`
+	Description  *string    `json:"description"`
+	ThumbnailUrl *string    `json:"thumbnailUrl"`
+	AnyTime      bool       `json:"anyTime"`
+	StartAt      *time.Time `json:"startAt"`
+	EndAt        *time.Time `json:"endAt"`
 }
 
 type Answer struct {
@@ -63,7 +63,7 @@ type Question struct {
 	Name          string        `bson:"name"`
 	Note          string        `bson:"note"`
 	Text          string        `bson:"text"`
-	Media         *Media        `bson:"media"`
+	Media         Media         `bson:"media"`
 	Blocks        []Block       `bson:"blocks"`
 	Options       []Block       `bson:"options"`
 	CorrectOption []Block       `bson:"correctOption"`
@@ -80,7 +80,7 @@ type QuestionInput struct {
 	Name          string  `bson:"name"`
 	Note          string  `bson:"note"`
 	Text          string  `bson:"text"`
-	Media         *Media  `bson:"media"`
+	Media         Media   `bson:"media"`
 	Blocks        []Block `bson:"blocks"`
 	Options       []Block `bson:"options"`
 	CorrectOption []Block `bson:"correctOption"`
@@ -88,9 +88,9 @@ type QuestionInput struct {
 
 type QuestionTemplate struct {
 	ID     bson.ObjectID `bson:"_id"`
-	Name   *string       `bson:"name"`
-	Note   *string       `bson:"note"`
-	Text   *string       `bson:"text"`
-	Media  *Media        `bson:"media"`
+	Name   string        `bson:"name"`
+	Note   string        `bson:"note"`
+	Text   string        `bson:"text"`
+	Media  Media         `bson:"media"`
 	Blocks []Block       `bson:"blocks"`
 }

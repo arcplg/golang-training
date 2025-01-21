@@ -61,7 +61,7 @@ func CreateExam(ctx context.Context, input entity.ExamInput) (*entity.Exam, erro
 		Title:        input.Title,
 		Description:  input.Description,
 		ThumbnailUrl: input.ThumbnailUrl,
-		AnyTime:      *input.AnyTime,
+		AnyTime:      input.AnyTime,
 		StartAt:      input.StartAt,
 		EndAt:        input.EndAt,
 		CreatedAt:    time.Now(),

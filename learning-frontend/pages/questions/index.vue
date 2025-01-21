@@ -74,7 +74,7 @@ const query = gql`
 const mutation = gql`
   mutation CreateExam(
       $title: String!,
-      $description: String!,
+      $description: String,
       $thumbnailUrl: String
       $anyTime: Boolean
       $startAt: DateTime
@@ -107,7 +107,7 @@ const pageGroupQuestion = ref<PageGroupQuestion>({
   exams: [],
   form: {
     _id: "",
-    title: "",
+    title: null,
     description: null,
     thumbnailUrl: null,
     anyTime: true,
@@ -129,7 +129,11 @@ pageGroupQuestion.value.exams = data?.exams || []
 
 /** Make new question */
 const submit = async () => {
-  await graphqlQueryFetch(mutation, pageGroupQuestion.value.form)
+  const res = await graphqlQueryFetch(mutation, pageGroupQuestion.value.form)
+  if(res?.errors) {
+    alert('Errors')
+    return;
+  }
   const { data } = await graphqlQueryFetch(query)
   pageGroupQuestion.value.exams = data?.exams || []
 }

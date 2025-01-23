@@ -67,7 +67,6 @@ type Question struct {
 	Blocks        []Block        `bson:"blocks"`
 	Options       []Block        `bson:"options"`
 	CorrectOption []Block        `bson:"correctOption"`
-	PublishedAt   *time.Time     `bson:"publishedAt"`
 	CreatedAt     time.Time      `bson:"createdAt"`
 	CreatedBy     *bson.ObjectID `bson:"createdBy"`
 	UpdatedAt     time.Time      `bson:"updatedAt"`

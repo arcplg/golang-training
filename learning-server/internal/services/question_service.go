@@ -64,6 +64,8 @@ func CreateExam(ctx context.Context, input entity.ExamInput) (*entity.Exam, erro
 		AnyTime:      input.AnyTime,
 		StartAt:      input.StartAt,
 		EndAt:        input.EndAt,
+		Questions:    []entity.Question{},
+		Answers:      []entity.Answer{},
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),
 	}
@@ -153,14 +155,16 @@ func AddQuestionIntoExam(ctx context.Context, examId string, input entity.Questi
 	filter := bson.M{"_id": _id}
 
 	question := &entity.Question{
-		ID:        bson.NewObjectID(),
-		Name:      input.Name,
-		Note:      input.Note,
-		Text:      input.Text,
-		Media:     input.Media,
-		Blocks:    input.Blocks,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		ID:            bson.NewObjectID(),
+		Name:          input.Name,
+		Note:          input.Note,
+		Text:          input.Text,
+		Media:         input.Media,
+		Blocks:        []entity.Block{},
+		Options:       []entity.Block{},
+		CorrectOption: []entity.Block{},
+		CreatedAt:     time.Now(),
+		UpdatedAt:     time.Now(),
 	}
 
 	update := bson.M{

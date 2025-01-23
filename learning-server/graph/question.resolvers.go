@@ -10,6 +10,7 @@ import (
 	"learning-server/entity"
 	"learning-server/graph/models"
 	"learning-server/internal/services"
+	"time"
 )
 
 // User is the resolver for the user field.
@@ -55,6 +56,11 @@ func (r *queryResolver) Exams(ctx context.Context) ([]*entity.Exam, error) {
 // FindExam is the resolver for the findExam field.
 func (r *queryResolver) FindExam(ctx context.Context, id string) (*entity.Exam, error) {
 	return services.FindExamById(ctx, id)
+}
+
+// PublishedAt is the resolver for the publishedAt field.
+func (r *questionResolver) PublishedAt(ctx context.Context, obj *entity.Question) (*time.Time, error) {
+	panic(fmt.Errorf("not implemented: PublishedAt - publishedAt"))
 }
 
 // CreatedBy is the resolver for the createdBy field.

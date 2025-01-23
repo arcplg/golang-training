@@ -180,6 +180,8 @@ type QueryResolver interface {
 	Users(ctx context.Context) ([]*entity.User, error)
 }
 type QuestionResolver interface {
+	PublishedAt(ctx context.Context, obj *entity.Question) (*time.Time, error)
+
 	CreatedBy(ctx context.Context, obj *entity.Question) (*entity.User, error)
 
 	UpdatedBy(ctx context.Context, obj *entity.Question) (*entity.User, error)
@@ -3890,7 +3892,7 @@ func (ec *executionContext) _Question_publishedAt(ctx context.Context, field gra
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.PublishedAt, nil
+		return ec.resolvers.Question().PublishedAt(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3908,8 +3910,8 @@ func (ec *executionContext) fieldContext_Question_publishedAt(_ context.Context,
 	fc = &graphql.FieldContext{
 		Object:     "Question",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type DateTime does not have child fields")
 		},
@@ -7280,7 +7282,38 @@ func (ec *executionContext) _Question(ctx context.Context, sel ast.SelectionSet,
 		case "correctOption":
 			out.Values[i] = ec._Question_correctOption(ctx, field, obj)
 		case "publishedAt":
-			out.Values[i] = ec._Question_publishedAt(ctx, field, obj)
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Question_publishedAt(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "createdAt":
 			out.Values[i] = ec._Question_createdAt(ctx, field, obj)
 		case "createdBy":

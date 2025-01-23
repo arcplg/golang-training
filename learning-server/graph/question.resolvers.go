@@ -90,7 +90,7 @@ func (r *questionInputResolver) Blocks(ctx context.Context, obj *entity.Question
 
 // Options is the resolver for the options field.
 func (r *questionInputResolver) Options(ctx context.Context, obj *entity.QuestionInput, data []*models.BlockInput) error {
-	panic(fmt.Errorf("not implemented: Options - options"))
+	return nil
 }
 
 // CorrectOption is the resolver for the correctOption field.

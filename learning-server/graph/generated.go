@@ -1488,9 +1488,9 @@ func (ec *executionContext) _Block_label(ctx context.Context, field graphql.Coll
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Block_label(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1529,9 +1529,9 @@ func (ec *executionContext) _Block_text(ctx context.Context, field graphql.Colle
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Block_text(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1570,9 +1570,9 @@ func (ec *executionContext) _Block_media(ctx context.Context, field graphql.Coll
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(entity.Media)
+	res := resTmp.(*entity.Media)
 	fc.Result = res
-	return ec.marshalOMedia2learningᚑserverᚋentityᚐMedia(ctx, field.Selections, res)
+	return ec.marshalOMedia2ᚖlearningᚑserverᚋentityᚐMedia(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Block_media(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8839,10 +8839,6 @@ func (ec *executionContext) marshalODateTime2ᚖtimeᚐTime(ctx context.Context,
 	}
 	res := scalar.MarshalDateTime(*v)
 	return res
-}
-
-func (ec *executionContext) marshalOMedia2learningᚑserverᚋentityᚐMedia(ctx context.Context, sel ast.SelectionSet, v entity.Media) graphql.Marshaler {
-	return ec._Media(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalOMedia2ᚖlearningᚑserverᚋentityᚐMedia(ctx context.Context, sel ast.SelectionSet, v *entity.Media) graphql.Marshaler {

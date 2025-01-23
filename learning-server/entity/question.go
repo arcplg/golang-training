@@ -15,9 +15,9 @@ type Media struct {
 
 type Block struct {
 	ID     bson.ObjectID `bson:"_id"`
-	Label  string        `bson:"label"`
-	Text   string        `bson:"text"`
-	Media  Media         `bson:"media"`
+	Label  *string       `bson:"label"`
+	Text   *string       `bson:"text"`
+	Media  *Media        `bson:"media"`
 	Blocks []Block       `bson:"block"`
 }
 

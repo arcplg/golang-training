@@ -43,6 +43,7 @@ interface Question {
   note: String
   text: String
   media: Media
+  blocks: [Block]
   options: [Block]
   publishedAt: Date
   createdAt: Date
@@ -57,5 +58,6 @@ interface QuestionTemplate {
   note: ?String
   text: ?String
   media: ?Media
-  blocks: ?[Block]
+  blocks: [Block]
+  options: [Block]
 }

@@ -15,38 +15,24 @@
         <button @click.prevent="submit">Submit</button>
       </div>
     </form>
-    <table>
-      <tbody>
-        <tr>
-          <td>Id</td>
-          <td>Title</td>
-          <td>Description</td>
-          <td>Thumbnail</td>
-          <td>Any Time</td>
-          <td>Start At</td>
-          <td>End At</td>
-          <td>Created At</td>
-          <td>Updated At</td>
-          <td>Action</td>
-        </tr>
-        <tr v-for="(item, i) in pageGroupQuestion.exams" :key="i">
-          <td>{{ item._id }}</td>
-          <td>{{ item.title }}</td>
-          <td>{{ item.description }}</td>
-          <td>{{ item.thumbnailUrl }}</td>
-          <td>{{ item.anyTime }}</td>
-          <td>{{ item.startAt }}</td>
-          <td>{{ item.endAt }}</td>
-          <td>{{ item.createdAt }}</td>
-          <td>{{ item.updatedAt }}</td>
-          <td>
-            <NuxtLink :to="'questions/'+item._id">
-              Detail
-            </NuxtLink>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <hr>
+    <div v-for="(item, i) in pageGroupQuestion.exams" :key="i">
+      <div>Id: {{ item._id }}</div>
+      <div>Title: {{ item.title }}</div>
+      <div>Description: {{ item.description }}</div>
+      <div>Thumbnail: {{ item.thumbnailUrl }}</div>
+      <div>Any Time: {{ item.anyTime }}</div>
+      <div>Start At: {{ item.startAt }}</div>
+      <div>End At: {{ item.endAt }}</div>
+      <div>Created At: {{ item.createdAt }}</div>
+      <div>Created At:{{ item.updatedAt }}</div>
+      <div>
+        <NuxtLink :to="'questions/'+item._id">
+          Detail
+        </NuxtLink>
+      </div>
+      <hr>
+    </div>
 
     
   </div>
@@ -141,26 +127,4 @@ const submit = async () => {
 </script>
 
 <style>
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 20px 0;
-  text-align: left;
-  table-layout: fixed;
-}
-
-th,
-td {
-  padding: 10px;
-  border: 1px solid #ddd;
-}
-
-th {
-  background-color: #f4f4f4;
-  color: #333;
-}
-td {
-  width: 200px;
-  word-wrap: break-word;
-}
 </style>

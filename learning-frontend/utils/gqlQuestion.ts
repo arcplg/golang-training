@@ -24,6 +24,16 @@ export const queryDetailExam = gql`
                 type
                 url
             }
+            blocks {
+                _id
+                label
+                text
+                media {
+                    _id
+                    type
+                    url
+                }
+            }
             options {
                 _id
                 text
@@ -32,7 +42,6 @@ export const queryDetailExam = gql`
                 _id
                 text
             }
-            publishedAt
             createdAt
             updatedAt
             deletedAt
@@ -49,6 +58,16 @@ export const queryDetailExam = gql`
             url
         }
         blocks {
+            _id
+            label
+            text
+            media {
+                _id
+                type
+                url
+            }
+        }
+        options {
             _id
             label
             text

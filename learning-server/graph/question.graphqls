@@ -71,6 +71,7 @@ type Question {
   note: String
   text: String
   media: Media
+  blocks: [Block]
   options: [Block]
   correctOption: [Block]
   publishedAt: DateTime
@@ -99,6 +100,7 @@ type QuestionTemplate {
   text: String
   media: Media
   blocks: [Block]
+  options: [Block]
 }
 
 extend type Query {

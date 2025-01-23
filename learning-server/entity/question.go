@@ -86,10 +86,11 @@ type QuestionInput struct {
 }
 
 type QuestionTemplate struct {
-	ID     bson.ObjectID `bson:"_id"`
-	Name   string        `bson:"name"`
-	Note   string        `bson:"note"`
-	Text   string        `bson:"text"`
-	Media  *Media        `bson:"media"`
-	Blocks []Block       `bson:"blocks"`
+	ID      bson.ObjectID `bson:"_id"`
+	Name    string        `bson:"name"`
+	Note    string        `bson:"note"`
+	Text    string        `bson:"text"`
+	Media   *Media        `bson:"media"`
+	Blocks  []Block       `bson:"blocks"`
+	Options []Block       `bson:"options"`
 }

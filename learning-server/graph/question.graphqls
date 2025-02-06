@@ -47,10 +47,6 @@ type Answer {
 
 type Question {
   _id: ObjectID!
-  name: String
-  note: String
-  text: String
-  media: Media
   blocks: [Block]
   options: [Block]
   correctOption: [Block]
@@ -65,10 +61,7 @@ type Question {
 
 type QuestionTemplate {
   _id: ObjectID!
-  name: String
-  note: String
-  text: String
-  media: Media
+  code: String
   blocks: [Block]
   options: [Block]
 }
@@ -99,10 +92,6 @@ input ExamInput {
 
 input QuestionInput {
   _id: String
-  name: String
-  note: String
-  text: String
-  media: MediaInput
   blocks: [BlockInput]
   options: [BlockInput]
   correctOption: [BlockInput]

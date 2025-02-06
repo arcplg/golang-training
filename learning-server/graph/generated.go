@@ -51,7 +51,6 @@ type ResolverRoot interface {
 	Question() QuestionResolver
 	Subscription() SubscriptionResolver
 	User() UserResolver
-	QuestionInput() QuestionInputResolver
 }
 
 type DirectiveRoot struct {
@@ -132,24 +131,17 @@ type ComplexityRoot struct {
 		DeletedAt     func(childComplexity int) int
 		DeletedBy     func(childComplexity int) int
 		ID            func(childComplexity int) int
-		Media         func(childComplexity int) int
-		Name          func(childComplexity int) int
-		Note          func(childComplexity int) int
 		Options       func(childComplexity int) int
 		PublishedAt   func(childComplexity int) int
-		Text          func(childComplexity int) int
 		UpdatedAt     func(childComplexity int) int
 		UpdatedBy     func(childComplexity int) int
 	}
 
 	QuestionTemplate struct {
 		Blocks  func(childComplexity int) int
+		Code    func(childComplexity int) int
 		ID      func(childComplexity int) int
-		Media   func(childComplexity int) int
-		Name    func(childComplexity int) int
-		Note    func(childComplexity int) int
 		Options func(childComplexity int) int
-		Text    func(childComplexity int) int
 	}
 
 	Subscription struct {
@@ -206,10 +198,6 @@ type SubscriptionResolver interface {
 }
 type UserResolver interface {
 	ID(ctx context.Context, obj *entity.User) (string, error)
-}
-
-type QuestionInputResolver interface {
-	Media(ctx context.Context, obj *entity.QuestionInput, data *entity.MediaInput) error
 }
 
 type executableSchema struct {
@@ -630,27 +618,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Question.ID(childComplexity), true
 
-	case "Question.media":
-		if e.complexity.Question.Media == nil {
-			break
-		}
-
-		return e.complexity.Question.Media(childComplexity), true
-
-	case "Question.name":
-		if e.complexity.Question.Name == nil {
-			break
-		}
-
-		return e.complexity.Question.Name(childComplexity), true
-
-	case "Question.note":
-		if e.complexity.Question.Note == nil {
-			break
-		}
-
-		return e.complexity.Question.Note(childComplexity), true
-
 	case "Question.options":
 		if e.complexity.Question.Options == nil {
 			break
@@ -664,13 +631,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Question.PublishedAt(childComplexity), true
-
-	case "Question.text":
-		if e.complexity.Question.Text == nil {
-			break
-		}
-
-		return e.complexity.Question.Text(childComplexity), true
 
 	case "Question.updatedAt":
 		if e.complexity.Question.UpdatedAt == nil {
@@ -693,6 +653,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.QuestionTemplate.Blocks(childComplexity), true
 
+	case "QuestionTemplate.code":
+		if e.complexity.QuestionTemplate.Code == nil {
+			break
+		}
+
+		return e.complexity.QuestionTemplate.Code(childComplexity), true
+
 	case "QuestionTemplate._id":
 		if e.complexity.QuestionTemplate.ID == nil {
 			break
@@ -700,40 +667,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.QuestionTemplate.ID(childComplexity), true
 
-	case "QuestionTemplate.media":
-		if e.complexity.QuestionTemplate.Media == nil {
-			break
-		}
-
-		return e.complexity.QuestionTemplate.Media(childComplexity), true
-
-	case "QuestionTemplate.name":
-		if e.complexity.QuestionTemplate.Name == nil {
-			break
-		}
-
-		return e.complexity.QuestionTemplate.Name(childComplexity), true
-
-	case "QuestionTemplate.note":
-		if e.complexity.QuestionTemplate.Note == nil {
-			break
-		}
-
-		return e.complexity.QuestionTemplate.Note(childComplexity), true
-
 	case "QuestionTemplate.options":
 		if e.complexity.QuestionTemplate.Options == nil {
 			break
 		}
 
 		return e.complexity.QuestionTemplate.Options(childComplexity), true
-
-	case "QuestionTemplate.text":
-		if e.complexity.QuestionTemplate.Text == nil {
-			break
-		}
-
-		return e.complexity.QuestionTemplate.Text(childComplexity), true
 
 	case "Subscription.currentTime":
 		if e.complexity.Subscription.CurrentTime == nil {
@@ -1353,14 +1292,6 @@ func (ec *executionContext) fieldContext_Answer_questions(_ context.Context, fie
 			switch field.Name {
 			case "_id":
 				return ec.fieldContext_Question__id(ctx, field)
-			case "name":
-				return ec.fieldContext_Question_name(ctx, field)
-			case "note":
-				return ec.fieldContext_Question_note(ctx, field)
-			case "text":
-				return ec.fieldContext_Question_text(ctx, field)
-			case "media":
-				return ec.fieldContext_Question_media(ctx, field)
 			case "blocks":
 				return ec.fieldContext_Question_blocks(ctx, field)
 			case "options":
@@ -1903,14 +1834,6 @@ func (ec *executionContext) fieldContext_Exam_questions(_ context.Context, field
 			switch field.Name {
 			case "_id":
 				return ec.fieldContext_Question__id(ctx, field)
-			case "name":
-				return ec.fieldContext_Question_name(ctx, field)
-			case "note":
-				return ec.fieldContext_Question_note(ctx, field)
-			case "text":
-				return ec.fieldContext_Question_text(ctx, field)
-			case "media":
-				return ec.fieldContext_Question_media(ctx, field)
 			case "blocks":
 				return ec.fieldContext_Question_blocks(ctx, field)
 			case "options":
@@ -3260,14 +3183,8 @@ func (ec *executionContext) fieldContext_Query_questionTemplates(_ context.Conte
 			switch field.Name {
 			case "_id":
 				return ec.fieldContext_QuestionTemplate__id(ctx, field)
-			case "name":
-				return ec.fieldContext_QuestionTemplate_name(ctx, field)
-			case "note":
-				return ec.fieldContext_QuestionTemplate_note(ctx, field)
-			case "text":
-				return ec.fieldContext_QuestionTemplate_text(ctx, field)
-			case "media":
-				return ec.fieldContext_QuestionTemplate_media(ctx, field)
+			case "code":
+				return ec.fieldContext_QuestionTemplate_code(ctx, field)
 			case "blocks":
 				return ec.fieldContext_QuestionTemplate_blocks(ctx, field)
 			case "options":
@@ -3666,178 +3583,6 @@ func (ec *executionContext) fieldContext_Question__id(_ context.Context, field g
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ObjectID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Question_name(ctx context.Context, field graphql.CollectedField, obj *entity.Question) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Question_name(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Name, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Question_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Question",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Question_note(ctx context.Context, field graphql.CollectedField, obj *entity.Question) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Question_note(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Note, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Question_note(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Question",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Question_text(ctx context.Context, field graphql.CollectedField, obj *entity.Question) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Question_text(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Text, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Question_text(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Question",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Question_media(ctx context.Context, field graphql.CollectedField, obj *entity.Question) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Question_media(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Media, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*entity.Media)
-	fc.Result = res
-	return ec.marshalOMedia2ᚖlearningᚑserverᚋentityᚐMedia(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Question_media(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Question",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "_id":
-				return ec.fieldContext_Media__id(ctx, field)
-			case "type":
-				return ec.fieldContext_Media_type(ctx, field)
-			case "url":
-				return ec.fieldContext_Media_url(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Media", field.Name)
 		},
 	}
 	return fc, nil
@@ -4357,8 +4102,8 @@ func (ec *executionContext) fieldContext_QuestionTemplate__id(_ context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _QuestionTemplate_name(ctx context.Context, field graphql.CollectedField, obj *entity.QuestionTemplate) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_QuestionTemplate_name(ctx, field)
+func (ec *executionContext) _QuestionTemplate_code(ctx context.Context, field graphql.CollectedField, obj *entity.QuestionTemplate) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QuestionTemplate_code(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -4371,7 +4116,7 @@ func (ec *executionContext) _QuestionTemplate_name(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Name, nil
+		return obj.Code, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4385,7 +4130,7 @@ func (ec *executionContext) _QuestionTemplate_name(ctx context.Context, field gr
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_QuestionTemplate_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_QuestionTemplate_code(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "QuestionTemplate",
 		Field:      field,
@@ -4393,137 +4138,6 @@ func (ec *executionContext) fieldContext_QuestionTemplate_name(_ context.Context
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _QuestionTemplate_note(ctx context.Context, field graphql.CollectedField, obj *entity.QuestionTemplate) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_QuestionTemplate_note(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Note, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_QuestionTemplate_note(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "QuestionTemplate",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _QuestionTemplate_text(ctx context.Context, field graphql.CollectedField, obj *entity.QuestionTemplate) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_QuestionTemplate_text(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Text, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_QuestionTemplate_text(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "QuestionTemplate",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _QuestionTemplate_media(ctx context.Context, field graphql.CollectedField, obj *entity.QuestionTemplate) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_QuestionTemplate_media(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Media, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*entity.Media)
-	fc.Result = res
-	return ec.marshalOMedia2ᚖlearningᚑserverᚋentityᚐMedia(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_QuestionTemplate_media(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "QuestionTemplate",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "_id":
-				return ec.fieldContext_Media__id(ctx, field)
-			case "type":
-				return ec.fieldContext_Media_type(ctx, field)
-			case "url":
-				return ec.fieldContext_Media_url(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Media", field.Name)
 		},
 	}
 	return fc, nil
@@ -6857,7 +6471,7 @@ func (ec *executionContext) unmarshalInputQuestionInput(ctx context.Context, obj
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"_id", "name", "note", "text", "media", "blocks", "options", "correctOption"}
+	fieldsInOrder := [...]string{"_id", "blocks", "options", "correctOption"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -6871,36 +6485,6 @@ func (ec *executionContext) unmarshalInputQuestionInput(ctx context.Context, obj
 				return it, err
 			}
 			it.ID = data
-		case "name":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
-			data, err := ec.unmarshalOString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Name = data
-		case "note":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("note"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Note = data
-		case "text":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("text"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Text = data
-		case "media":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("media"))
-			data, err := ec.unmarshalOMediaInput2ᚖlearningᚑserverᚋentityᚐMediaInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.QuestionInput().Media(ctx, &it, data); err != nil {
-				return it, err
-			}
 		case "blocks":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("blocks"))
 			data, err := ec.unmarshalOBlockInput2ᚕlearningᚑserverᚋentityᚐBlockInput(ctx, v)
@@ -7592,14 +7176,6 @@ func (ec *executionContext) _Question(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "name":
-			out.Values[i] = ec._Question_name(ctx, field, obj)
-		case "note":
-			out.Values[i] = ec._Question_note(ctx, field, obj)
-		case "text":
-			out.Values[i] = ec._Question_text(ctx, field, obj)
-		case "media":
-			out.Values[i] = ec._Question_media(ctx, field, obj)
 		case "blocks":
 			out.Values[i] = ec._Question_blocks(ctx, field, obj)
 		case "options":
@@ -7783,14 +7359,8 @@ func (ec *executionContext) _QuestionTemplate(ctx context.Context, sel ast.Selec
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "name":
-			out.Values[i] = ec._QuestionTemplate_name(ctx, field, obj)
-		case "note":
-			out.Values[i] = ec._QuestionTemplate_note(ctx, field, obj)
-		case "text":
-			out.Values[i] = ec._QuestionTemplate_text(ctx, field, obj)
-		case "media":
-			out.Values[i] = ec._QuestionTemplate_media(ctx, field, obj)
+		case "code":
+			out.Values[i] = ec._QuestionTemplate_code(ctx, field, obj)
 		case "blocks":
 			out.Values[i] = ec._QuestionTemplate_blocks(ctx, field, obj)
 		case "options":

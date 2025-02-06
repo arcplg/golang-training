@@ -13,26 +13,26 @@
       </div>
       <div class="inner">
         <div class="left">
-            <ul>
+            <!-- <ul>
               <li v-for="item,key in pageQuestion.exam?.questions">
                   <div>{{ item.text }}</div>
               </li>
-            </ul>
+            </ul> -->
         </div>
         <div class="right">
           <Questions
             v-for="item,key in pageQuestion.exam?.questions"
               :key="key"
               :index="key+1"
-              :type="item.name.toString()"
+              :type="item.code.toString()"
               :data="item"
           />
           <div>
             <h2>Add question</h2>
             <form action="">
               <div v-for="template in pageQuestion.templates">
-                <input type="radio" :id="template.name.toString()" :value="template" v-model="pageQuestion.questionTemplate" />
-                <label for="one">{{template.name}}</label>
+                <input type="radio" :id="template.code.toString()" :value="template" v-model="pageQuestion.questionTemplate" />
+                <label for="one">{{template.code}}</label>
               </div>
               <div>
                 <button @click.prevent="submit">Submit</button>
@@ -72,12 +72,9 @@ const pageQuestion = ref<PageQuestion>({
     deletedAt: null,
   },
   questionTemplate: {
-    _id: null,
-    name: '',
-    note: null,
-    text: null,
-    media: null,
-    blocks: null,
+    code: '',
+    blocks: [],
+    options: [],
   },
 })
 

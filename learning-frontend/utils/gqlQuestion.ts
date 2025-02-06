@@ -16,14 +16,7 @@ export const queryDetailExam = gql`
         deletedAt
         questions {
             _id
-            name
-            note
-            text
-            media {
-                _id
-                type
-                url
-            }
+            code
             blocks {
                 _id
                 label
@@ -48,33 +41,37 @@ export const queryDetailExam = gql`
         }
     }
     questionTemplates {
-        _id
-        name
-        note
-        text
-        media {
-            _id
-            type
-            url
-        }
+        code
         blocks {
-            _id
             label
             text
             media {
-                _id
                 type
                 url
+            },
+            blocks {
+                label
+                text
+                media {
+                    type
+                    url
+                },
             }
         }
         options {
-            _id
             label
             text
             media {
-                _id
                 type
                 url
+            },
+            blocks {
+                label
+                text
+                media {
+                    type
+                    url
+                },
             }
         }
     }

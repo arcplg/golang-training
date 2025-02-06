@@ -9,7 +9,7 @@ interface Block {
   label: String,
   text: String,
   media: Media,
-  block: Block[],
+  blocks: Block[],
 }
 interface Exam {
   _id: String
@@ -32,17 +32,14 @@ interface Answer {
   _id: String
   user: User
   lock: Boolean
-  questions: [Question]
+  questions: Question[]
   startAt: Date
   endAt: Date
 }
 
 interface Question {
   _id: String
-  name: String
-  note: String
-  text: String
-  media: Media
+  code: String
   blocks: [Block]
   options: [Block]
   publishedAt: Date
@@ -53,11 +50,7 @@ interface Question {
 }
 
 interface QuestionTemplate {
-  _id: ?String
-  name: String
-  note: ?String
-  text: ?String
-  media: ?Media
-  blocks: [Block]
-  options: [Block]
+  code: String
+  blocks: Block[]
+  options: Block[]
 }

@@ -125,6 +125,7 @@ type ComplexityRoot struct {
 
 	Question struct {
 		Blocks        func(childComplexity int) int
+		Code          func(childComplexity int) int
 		CorrectOption func(childComplexity int) int
 		CreatedAt     func(childComplexity int) int
 		CreatedBy     func(childComplexity int) int
@@ -575,6 +576,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Question.Blocks(childComplexity), true
+
+	case "Question.code":
+		if e.complexity.Question.Code == nil {
+			break
+		}
+
+		return e.complexity.Question.Code(childComplexity), true
 
 	case "Question.correctOption":
 		if e.complexity.Question.CorrectOption == nil {
@@ -1292,6 +1300,8 @@ func (ec *executionContext) fieldContext_Answer_questions(_ context.Context, fie
 			switch field.Name {
 			case "_id":
 				return ec.fieldContext_Question__id(ctx, field)
+			case "code":
+				return ec.fieldContext_Question_code(ctx, field)
 			case "blocks":
 				return ec.fieldContext_Question_blocks(ctx, field)
 			case "options":
@@ -1834,6 +1844,8 @@ func (ec *executionContext) fieldContext_Exam_questions(_ context.Context, field
 			switch field.Name {
 			case "_id":
 				return ec.fieldContext_Question__id(ctx, field)
+			case "code":
+				return ec.fieldContext_Question_code(ctx, field)
 			case "blocks":
 				return ec.fieldContext_Question_blocks(ctx, field)
 			case "options":
@@ -3583,6 +3595,47 @@ func (ec *executionContext) fieldContext_Question__id(_ context.Context, field g
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ObjectID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Question_code(ctx context.Context, field graphql.CollectedField, obj *entity.Question) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Question_code(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Code, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Question_code(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Question",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -6471,20 +6524,20 @@ func (ec *executionContext) unmarshalInputQuestionInput(ctx context.Context, obj
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"_id", "blocks", "options", "correctOption"}
+	fieldsInOrder := [...]string{"code", "blocks", "options", "correctOption"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "_id":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("_id"))
+		case "code":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("code"))
 			data, err := ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.ID = data
+			it.Code = data
 		case "blocks":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("blocks"))
 			data, err := ec.unmarshalOBlockInput2ᚕlearningᚑserverᚋentityᚐBlockInput(ctx, v)
@@ -7176,6 +7229,8 @@ func (ec *executionContext) _Question(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
+		case "code":
+			out.Values[i] = ec._Question_code(ctx, field, obj)
 		case "blocks":
 			out.Values[i] = ec._Question_blocks(ctx, field, obj)
 		case "options":

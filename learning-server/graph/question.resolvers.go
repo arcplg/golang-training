@@ -139,8 +139,8 @@ type subscriptionResolver struct{ *Resolver }
 //    it when you're done.
 //  - You have helper methods in this file. Move them out to keep these resolver files clean.
 /*
-	func (r *questionInputResolver) Media(ctx context.Context, obj *entity.QuestionInput, data *entity.MediaInput) error {
-	return nil
+	func (r *questionInputResolver) Code(ctx context.Context, obj *entity.QuestionInput, data *string) error {
+	panic(fmt.Errorf("not implemented: Code - code"))
 }
 func (r *Resolver) QuestionInput() QuestionInputResolver { return &questionInputResolver{r} }
 type questionInputResolver struct{ *Resolver }

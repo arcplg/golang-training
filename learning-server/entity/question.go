@@ -60,6 +60,7 @@ type Answer struct {
 
 type Question struct {
 	ID            bson.ObjectID  `bson:"_id"`
+	Code          string         `bson:"code"`
 	Blocks        []Block        `bson:"blocks"`
 	Options       []Block        `bson:"options"`
 	CorrectOption []Block        `bson:"correctOption"`
@@ -72,6 +73,7 @@ type Question struct {
 }
 type QuestionInput struct {
 	ID            string       `bson:"_id"`
+	Code          string       `bson:"code"`
 	Blocks        []BlockInput `bson:"blocks"`
 	Options       []BlockInput `bson:"options"`
 	CorrectOption []BlockInput `bson:"correctOption"`

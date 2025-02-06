@@ -47,6 +47,7 @@ type Answer {
 
 type Question {
   _id: ObjectID!
+  code: String
   blocks: [Block]
   options: [Block]
   correctOption: [Block]
@@ -91,7 +92,7 @@ input ExamInput {
 
 
 input QuestionInput {
-  _id: String
+  code: String
   blocks: [BlockInput]
   options: [BlockInput]
   correctOption: [BlockInput]

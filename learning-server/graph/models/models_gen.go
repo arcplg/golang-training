@@ -7,3 +7,11 @@ type Mutation struct {
 
 type Query struct {
 }
+
+type Subscription struct {
+}
+
+type Time struct {
+	UnixTime  int    `json:"unixTime"`
+	TimeStamp string `json:"timeStamp"`
+}

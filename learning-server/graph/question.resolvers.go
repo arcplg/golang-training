@@ -8,6 +8,7 @@ import (
 	"context"
 	"fmt"
 	"learning-server/entity"
+	"learning-server/graph/models"
 	"learning-server/internal/services"
 	"time"
 )
@@ -77,6 +78,39 @@ func (r *questionResolver) DeletedBy(ctx context.Context, obj *entity.Question) 
 	panic(fmt.Errorf("not implemented: DeletedBy - deletedBy"))
 }
 
+// CurrentTime is the resolver for the currentTime field.
+func (r *subscriptionResolver) CurrentTime(ctx context.Context) (<-chan *models.Time, error) {
+	ch := make(chan *models.Time)
+
+	go func() {
+		defer close(ch)
+
+		for {
+			time.Sleep(13 * time.Second)
+			fmt.Println("Tick")
+
+			currentTime := time.Now()
+
+			t := &models.Time{
+				UnixTime:  int(currentTime.Unix()),
+				TimeStamp: currentTime.Format(time.RFC3339),
+			}
+
+			select {
+			case <-ctx.Done():
+				// Exit on cancellation
+				fmt.Println("Subscription closed.")
+				return
+
+			case ch <- t:
+				// Our message went through, do nothing
+			}
+
+		}
+	}()
+	return ch, nil
+}
+
 // Media is the resolver for the media field.
 func (r *questionInputResolver) Media(ctx context.Context, obj *entity.QuestionInput, data *entity.MediaInput) error {
 	return nil
@@ -94,6 +128,9 @@ func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 // Question returns QuestionResolver implementation.
 func (r *Resolver) Question() QuestionResolver { return &questionResolver{r} }
 
+// Subscription returns SubscriptionResolver implementation.
+func (r *Resolver) Subscription() SubscriptionResolver { return &subscriptionResolver{r} }
+
 // QuestionInput returns QuestionInputResolver implementation.
 func (r *Resolver) QuestionInput() QuestionInputResolver { return &questionInputResolver{r} }
 
@@ -101,4 +138,5 @@ type answerResolver struct{ *Resolver }
 type examResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 type questionResolver struct{ *Resolver }
+type subscriptionResolver struct{ *Resolver }
 type questionInputResolver struct{ *Resolver }

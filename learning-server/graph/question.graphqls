@@ -118,3 +118,12 @@ extend type Mutation {
   createExam(input: ExamInput!): Exam!
   addQuestionIntoExam(id: String!, input: QuestionInput!): Exam!
 }
+
+type Time {
+  unixTime: Int!
+  timeStamp: String!
+}
+
+type Subscription {
+  currentTime: Time!
+}

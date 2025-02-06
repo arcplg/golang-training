@@ -2,10 +2,12 @@ package services
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"learning-server/entity"
 	"learning-server/internal/db"
 	"learning-server/internal/validation"
+	"log"
 	"time"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
@@ -164,8 +166,11 @@ func AddQuestionIntoExam(ctx context.Context, examId string, input entity.Questi
 			if input.Blocks == nil {
 				return []entity.Block{}
 			}
+			if len(input.Blocks) == 0 {
+				return []entity.Block{}
+			}
 			var blocks []entity.Block
-			for _, item := range input.Options {
+			for _, item := range input.Blocks {
 				block := entity.Block{
 					ID:     bson.NewObjectID(),
 					Label:  item.Label,
@@ -178,6 +183,9 @@ func AddQuestionIntoExam(ctx context.Context, examId string, input entity.Questi
 		}(),
 		Options: func() []entity.Block {
 			if input.Options == nil {
+				return []entity.Block{}
+			}
+			if len(input.Options) == 0 {
 				return []entity.Block{}
 			}
 			var blocks []entity.Block
@@ -193,11 +201,14 @@ func AddQuestionIntoExam(ctx context.Context, examId string, input entity.Questi
 			return blocks
 		}(),
 		CorrectOption: func() []entity.Block {
-			if input.Options == nil {
+			if input.CorrectOption == nil {
+				return []entity.Block{}
+			}
+			if len(input.CorrectOption) == 0 {
 				return []entity.Block{}
 			}
 			var blocks []entity.Block
-			for _, item := range input.Options {
+			for _, item := range input.CorrectOption {
 				block := entity.Block{
 					ID:     bson.NewObjectID(),
 					Label:  item.Label,
@@ -211,7 +222,8 @@ func AddQuestionIntoExam(ctx context.Context, examId string, input entity.Questi
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-
+	jsonPretty, _ := json.MarshalIndent(question, "", "  ")
+	log.Println("DB:", string(jsonPretty))
 	update := bson.M{
 		"$push": bson.M{
 			"questions": question,
@@ -227,8 +239,11 @@ func AddQuestionIntoExam(ctx context.Context, examId string, input entity.Questi
 	return &exam, nil
 }
 
-func RecursionToBlock(blocks []*entity.BlockInput) []entity.Block {
+func RecursionToBlock(blocks []entity.BlockInput) []entity.Block {
 	if blocks == nil {
+		return []entity.Block{}
+	}
+	if len(blocks) == 0 {
 		return []entity.Block{}
 	}
 	var convertedBlocks []entity.Block

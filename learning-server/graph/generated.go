@@ -6531,7 +6531,7 @@ func (ec *executionContext) unmarshalInputBlockInput(ctx context.Context, obj in
 			it.Media = data
 		case "blocks":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("blocks"))
-			data, err := ec.unmarshalOBlockInput2ᚕᚖlearningᚑserverᚋentityᚐBlockInput(ctx, v)
+			data, err := ec.unmarshalOBlockInput2ᚕlearningᚑserverᚋentityᚐBlockInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8774,34 +8774,6 @@ func (ec *executionContext) unmarshalOBlockInput2ᚕlearningᚑserverᚋentity�
 		}
 	}
 	return res, nil
-}
-
-func (ec *executionContext) unmarshalOBlockInput2ᚕᚖlearningᚑserverᚋentityᚐBlockInput(ctx context.Context, v interface{}) ([]*entity.BlockInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]*entity.BlockInput, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOBlockInput2ᚖlearningᚑserverᚋentityᚐBlockInput(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) unmarshalOBlockInput2ᚖlearningᚑserverᚋentityᚐBlockInput(ctx context.Context, v interface{}) (*entity.BlockInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputBlockInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v interface{}) (bool, error) {

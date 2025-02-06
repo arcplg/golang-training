@@ -7,11 +7,6 @@ type Media {
   url: String
 }
 
-input MediaInput {
-  _id: String
-  type: String
-  url: String
-}
 
 type Block {
   _id: ObjectID!
@@ -19,13 +14,6 @@ type Block {
   text: String,
   media: Media,
   blocks: [Block]
-}
-input BlockInput {
-  _id: String
-  label: String,
-  text: String,
-  media: MediaInput,
-  blocks: [BlockInput]
 }
 
 type Exam {
@@ -47,14 +35,6 @@ type Exam {
   deletedBy: User
 }
 
-input ExamInput {
-  title: String!
-  description: String
-  thumbnailUrl: String
-  anyTime: Boolean
-  startAt: DateTime
-  endAt: DateTime
-}
 
 type Answer {
   _id: ObjectID!
@@ -82,16 +62,6 @@ type Question {
   deletedAt: DateTime
   deletedBy: User
 }
-input QuestionInput {
-  _id: String
-  name: String
-  note: String
-  text: String
-  media: MediaInput
-  blocks: [BlockInput]
-  options: [BlockInput]
-  correctOption: [BlockInput]
-}
 
 type QuestionTemplate {
   _id: ObjectID!
@@ -101,6 +71,41 @@ type QuestionTemplate {
   media: Media
   blocks: [Block]
   options: [Block]
+}
+
+input BlockInput {
+  _id: String
+  label: String,
+  text: String,
+  media: MediaInput,
+  blocks: [BlockInput]
+}
+
+input MediaInput {
+  _id: String
+  type: String
+  url: String
+}
+
+input ExamInput {
+  title: String!
+  description: String
+  thumbnailUrl: String
+  anyTime: Boolean
+  startAt: DateTime
+  endAt: DateTime
+}
+
+
+input QuestionInput {
+  _id: String
+  name: String
+  note: String
+  text: String
+  media: MediaInput
+  blocks: [BlockInput]
+  options: [BlockInput]
+  correctOption: [BlockInput]
 }
 
 extend type Query {

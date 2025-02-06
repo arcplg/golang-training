@@ -18,7 +18,7 @@ type Block struct {
 	Label  *string       `bson:"label"`
 	Text   *string       `bson:"text"`
 	Media  *Media        `bson:"media"`
-	Blocks []Block       `bson:"block"`
+	Blocks []Block       `bson:"blocks"`
 }
 
 type Exam struct {
@@ -86,11 +86,11 @@ type QuestionInput struct {
 }
 
 type BlockInput struct {
-	ID     *string       `bson:"_id,omitempty"`
-	Label  *string       `bson:"label,omitempty"`
-	Text   *string       `bson:"text,omitempty"`
-	Media  *MediaInput   `bson:"media,omitempty"`
-	Blocks []*BlockInput `bson:"blocks,omitempty"`
+	ID     *string      `bson:"_id,omitempty"`
+	Label  *string      `bson:"label,omitempty"`
+	Text   *string      `bson:"text,omitempty"`
+	Media  *MediaInput  `bson:"media,omitempty"`
+	Blocks []BlockInput `bson:"blocks"`
 }
 
 type MediaInput struct {

@@ -9,7 +9,6 @@ import (
 	"errors"
 	"fmt"
 	"learning-server/entity"
-	"learning-server/graph/models"
 	"learning-server/graph/scalar"
 	"strconv"
 	"sync"
@@ -195,10 +194,7 @@ type UserResolver interface {
 }
 
 type QuestionInputResolver interface {
-	Media(ctx context.Context, obj *entity.QuestionInput, data *models.MediaInput) error
-	Blocks(ctx context.Context, obj *entity.QuestionInput, data []*models.BlockInput) error
-	Options(ctx context.Context, obj *entity.QuestionInput, data []*models.BlockInput) error
-	CorrectOption(ctx context.Context, obj *entity.QuestionInput, data []*models.BlockInput) error
+	Media(ctx context.Context, obj *entity.QuestionInput, data *entity.MediaInput) error
 }
 
 type executableSchema struct {
@@ -6491,8 +6487,8 @@ func (ec *executionContext) fieldContext___Type_specifiedByURL(_ context.Context
 
 // region    **************************** input.gotpl *****************************
 
-func (ec *executionContext) unmarshalInputBlockInput(ctx context.Context, obj interface{}) (models.BlockInput, error) {
-	var it models.BlockInput
+func (ec *executionContext) unmarshalInputBlockInput(ctx context.Context, obj interface{}) (entity.BlockInput, error) {
+	var it entity.BlockInput
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -6528,14 +6524,14 @@ func (ec *executionContext) unmarshalInputBlockInput(ctx context.Context, obj in
 			it.Text = data
 		case "media":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("media"))
-			data, err := ec.unmarshalOMediaInput2ᚖlearningᚑserverᚋgraphᚋmodelsᚐMediaInput(ctx, v)
+			data, err := ec.unmarshalOMediaInput2ᚖlearningᚑserverᚋentityᚐMediaInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Media = data
 		case "blocks":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("blocks"))
-			data, err := ec.unmarshalOBlockInput2ᚕᚖlearningᚑserverᚋgraphᚋmodelsᚐBlockInput(ctx, v)
+			data, err := ec.unmarshalOBlockInput2ᚕᚖlearningᚑserverᚋentityᚐBlockInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6608,8 +6604,8 @@ func (ec *executionContext) unmarshalInputExamInput(ctx context.Context, obj int
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputMediaInput(ctx context.Context, obj interface{}) (models.MediaInput, error) {
-	var it models.MediaInput
+func (ec *executionContext) unmarshalInputMediaInput(ctx context.Context, obj interface{}) (entity.MediaInput, error) {
+	var it entity.MediaInput
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -6693,7 +6689,7 @@ func (ec *executionContext) unmarshalInputQuestionInput(ctx context.Context, obj
 			it.Text = data
 		case "media":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("media"))
-			data, err := ec.unmarshalOMediaInput2ᚖlearningᚑserverᚋgraphᚋmodelsᚐMediaInput(ctx, v)
+			data, err := ec.unmarshalOMediaInput2ᚖlearningᚑserverᚋentityᚐMediaInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6702,31 +6698,25 @@ func (ec *executionContext) unmarshalInputQuestionInput(ctx context.Context, obj
 			}
 		case "blocks":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("blocks"))
-			data, err := ec.unmarshalOBlockInput2ᚕᚖlearningᚑserverᚋgraphᚋmodelsᚐBlockInput(ctx, v)
+			data, err := ec.unmarshalOBlockInput2ᚕlearningᚑserverᚋentityᚐBlockInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			if err = ec.resolvers.QuestionInput().Blocks(ctx, &it, data); err != nil {
-				return it, err
-			}
+			it.Blocks = data
 		case "options":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("options"))
-			data, err := ec.unmarshalOBlockInput2ᚕᚖlearningᚑserverᚋgraphᚋmodelsᚐBlockInput(ctx, v)
+			data, err := ec.unmarshalOBlockInput2ᚕlearningᚑserverᚋentityᚐBlockInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			if err = ec.resolvers.QuestionInput().Options(ctx, &it, data); err != nil {
-				return it, err
-			}
+			it.Options = data
 		case "correctOption":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("correctOption"))
-			data, err := ec.unmarshalOBlockInput2ᚕᚖlearningᚑserverᚋgraphᚋmodelsᚐBlockInput(ctx, v)
+			data, err := ec.unmarshalOBlockInput2ᚕlearningᚑserverᚋentityᚐBlockInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			if err = ec.resolvers.QuestionInput().CorrectOption(ctx, &it, data); err != nil {
-				return it, err
-			}
+			it.CorrectOption = data
 		}
 	}
 
@@ -8761,7 +8751,12 @@ func (ec *executionContext) marshalOBlock2ᚕlearningᚑserverᚋentityᚐBlock(
 	return ret
 }
 
-func (ec *executionContext) unmarshalOBlockInput2ᚕᚖlearningᚑserverᚋgraphᚋmodelsᚐBlockInput(ctx context.Context, v interface{}) ([]*models.BlockInput, error) {
+func (ec *executionContext) unmarshalOBlockInput2learningᚑserverᚋentityᚐBlockInput(ctx context.Context, v interface{}) (entity.BlockInput, error) {
+	res, err := ec.unmarshalInputBlockInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOBlockInput2ᚕlearningᚑserverᚋentityᚐBlockInput(ctx context.Context, v interface{}) ([]entity.BlockInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -8770,10 +8765,10 @@ func (ec *executionContext) unmarshalOBlockInput2ᚕᚖlearningᚑserverᚋgraph
 		vSlice = graphql.CoerceList(v)
 	}
 	var err error
-	res := make([]*models.BlockInput, len(vSlice))
+	res := make([]entity.BlockInput, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOBlockInput2ᚖlearningᚑserverᚋgraphᚋmodelsᚐBlockInput(ctx, vSlice[i])
+		res[i], err = ec.unmarshalOBlockInput2learningᚑserverᚋentityᚐBlockInput(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -8781,7 +8776,27 @@ func (ec *executionContext) unmarshalOBlockInput2ᚕᚖlearningᚑserverᚋgraph
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOBlockInput2ᚖlearningᚑserverᚋgraphᚋmodelsᚐBlockInput(ctx context.Context, v interface{}) (*models.BlockInput, error) {
+func (ec *executionContext) unmarshalOBlockInput2ᚕᚖlearningᚑserverᚋentityᚐBlockInput(ctx context.Context, v interface{}) ([]*entity.BlockInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*entity.BlockInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOBlockInput2ᚖlearningᚑserverᚋentityᚐBlockInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOBlockInput2ᚖlearningᚑserverᚋentityᚐBlockInput(ctx context.Context, v interface{}) (*entity.BlockInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -8848,7 +8863,7 @@ func (ec *executionContext) marshalOMedia2ᚖlearningᚑserverᚋentityᚐMedia(
 	return ec._Media(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOMediaInput2ᚖlearningᚑserverᚋgraphᚋmodelsᚐMediaInput(ctx context.Context, v interface{}) (*models.MediaInput, error) {
+func (ec *executionContext) unmarshalOMediaInput2ᚖlearningᚑserverᚋentityᚐMediaInput(ctx context.Context, v interface{}) (*entity.MediaInput, error) {
 	if v == nil {
 		return nil, nil
 	}

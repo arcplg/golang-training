@@ -75,14 +75,28 @@ type Question struct {
 	DeletedBy     *bson.ObjectID `bson:"DeletedBy"`
 }
 type QuestionInput struct {
-	ID            string  `bson:"_id"`
-	Name          string  `bson:"name"`
-	Note          *string `bson:"note"`
-	Text          *string `bson:"text"`
-	Media         *Media  `bson:"media"`
-	Blocks        []Block `bson:"blocks"`
-	Options       []Block `bson:"options"`
-	CorrectOption []Block `bson:"correctOption"`
+	ID            string       `bson:"_id"`
+	Name          string       `bson:"name"`
+	Note          *string      `bson:"note"`
+	Text          *string      `bson:"text"`
+	Media         *Media       `bson:"media"`
+	Blocks        []BlockInput `bson:"blocks"`
+	Options       []BlockInput `bson:"options"`
+	CorrectOption []BlockInput `bson:"correctOption"`
+}
+
+type BlockInput struct {
+	ID     *string       `bson:"_id,omitempty"`
+	Label  *string       `bson:"label,omitempty"`
+	Text   *string       `bson:"text,omitempty"`
+	Media  *MediaInput   `bson:"media,omitempty"`
+	Blocks []*BlockInput `bson:"blocks,omitempty"`
+}
+
+type MediaInput struct {
+	ID   *string `bson:"_id,omitempty"`
+	Type *string `bson:"type,omitempty"`
+	URL  *string `bson:"url,omitempty"`
 }
 
 type QuestionTemplate struct {

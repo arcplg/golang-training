@@ -164,18 +164,52 @@ func AddQuestionIntoExam(ctx context.Context, examId string, input entity.Questi
 			if input.Blocks == nil {
 				return []entity.Block{}
 			}
-			return input.Blocks
+			var blocks []entity.Block
+			for _, item := range input.Options {
+				block := entity.Block{
+					ID:     bson.NewObjectID(),
+					Label:  item.Label,
+					Text:   item.Text,
+					Blocks: RecursionToBlock(item.Blocks),
+				}
+				blocks = append(blocks, block)
+			}
+			return blocks
 		}(),
 		Options: func() []entity.Block {
-			fmt.Println(input.Options)
 			if input.Options == nil {
 				return []entity.Block{}
 			}
-			return input.Options
+			var blocks []entity.Block
+			for _, item := range input.Options {
+				block := entity.Block{
+					ID:     bson.NewObjectID(),
+					Label:  item.Label,
+					Text:   item.Text,
+					Blocks: RecursionToBlock(item.Blocks),
+				}
+				blocks = append(blocks, block)
+			}
+			return blocks
 		}(),
-		CorrectOption: []entity.Block{},
-		CreatedAt:     time.Now(),
-		UpdatedAt:     time.Now(),
+		CorrectOption: func() []entity.Block {
+			if input.Options == nil {
+				return []entity.Block{}
+			}
+			var blocks []entity.Block
+			for _, item := range input.Options {
+				block := entity.Block{
+					ID:     bson.NewObjectID(),
+					Label:  item.Label,
+					Text:   item.Text,
+					Blocks: RecursionToBlock(item.Blocks),
+				}
+				blocks = append(blocks, block)
+			}
+			return blocks
+		}(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}
 
 	update := bson.M{
@@ -191,4 +225,21 @@ func AddQuestionIntoExam(ctx context.Context, examId string, input entity.Questi
 	}
 
 	return &exam, nil
+}
+
+func RecursionToBlock(blocks []*entity.BlockInput) []entity.Block {
+	if blocks == nil {
+		return []entity.Block{}
+	}
+	var convertedBlocks []entity.Block
+	for _, blockInput := range blocks {
+		convertedBlock := entity.Block{
+			ID:     bson.NewObjectID(),
+			Label:  blockInput.Label,
+			Text:   blockInput.Text,
+			Blocks: RecursionToBlock(blockInput.Blocks),
+		}
+		convertedBlocks = append(convertedBlocks, convertedBlock)
+	}
+	return convertedBlocks
 }

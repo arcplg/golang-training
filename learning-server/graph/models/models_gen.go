@@ -2,20 +2,6 @@
 
 package models
 
-type BlockInput struct {
-	ID     *string       `json:"_id,omitempty"`
-	Label  *string       `json:"label,omitempty"`
-	Text   *string       `json:"text,omitempty"`
-	Media  *MediaInput   `json:"media,omitempty"`
-	Blocks []*BlockInput `json:"blocks,omitempty"`
-}
-
-type MediaInput struct {
-	ID   *string `json:"_id,omitempty"`
-	Type *string `json:"type,omitempty"`
-	URL  *string `json:"url,omitempty"`
-}
-
 type Mutation struct {
 }
 

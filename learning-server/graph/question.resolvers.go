@@ -8,7 +8,6 @@ import (
 	"context"
 	"fmt"
 	"learning-server/entity"
-	"learning-server/graph/models"
 	"learning-server/internal/services"
 	"time"
 )
@@ -79,23 +78,8 @@ func (r *questionResolver) DeletedBy(ctx context.Context, obj *entity.Question) 
 }
 
 // Media is the resolver for the media field.
-func (r *questionInputResolver) Media(ctx context.Context, obj *entity.QuestionInput, data *models.MediaInput) error {
+func (r *questionInputResolver) Media(ctx context.Context, obj *entity.QuestionInput, data *entity.MediaInput) error {
 	return nil
-}
-
-// Blocks is the resolver for the blocks field.
-func (r *questionInputResolver) Blocks(ctx context.Context, obj *entity.QuestionInput, data []*models.BlockInput) error {
-	return nil
-}
-
-// Options is the resolver for the options field.
-func (r *questionInputResolver) Options(ctx context.Context, obj *entity.QuestionInput, data []*models.BlockInput) error {
-	return nil
-}
-
-// CorrectOption is the resolver for the correctOption field.
-func (r *questionInputResolver) CorrectOption(ctx context.Context, obj *entity.QuestionInput, data []*models.BlockInput) error {
-	panic(fmt.Errorf("not implemented: CorrectOption - correctOption"))
 }
 
 // Answer returns AnswerResolver implementation.
@@ -118,3 +102,21 @@ type examResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 type questionResolver struct{ *Resolver }
 type questionInputResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//    it when you're done.
+//  - You have helper methods in this file. Move them out to keep these resolver files clean.
+/*
+	func (r *questionInputResolver) Blocks(ctx context.Context, obj *entity.QuestionInput, data []*entity.BlockInput) error {
+	return nil
+}
+func (r *questionInputResolver) Options(ctx context.Context, obj *entity.QuestionInput, data []*entity.BlockInput) error {
+	return nil
+}
+func (r *questionInputResolver) CorrectOption(ctx context.Context, obj *entity.QuestionInput, data []*entity.BlockInput) error {
+	panic(fmt.Errorf("not implemented: CorrectOption - correctOption"))
+}
+*/

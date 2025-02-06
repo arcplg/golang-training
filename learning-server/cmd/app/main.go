@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"os/signal"
 	"syscall"
 	"time"
@@ -32,6 +33,13 @@ func gracefulShutdown(apiServer *http.Server, done chan bool) {
 }
 
 func main() {
+	LOG_FILE := fmt.Sprintf("tmp/app-%s.log", time.Now().Format("2006-01-02"))
+	file, e := os.OpenFile(LOG_FILE, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if e != nil {
+		log.Fatal(e)
+	}
+	defer file.Close()
+	log.SetOutput(file)
 
 	server := server.NewServer()
 

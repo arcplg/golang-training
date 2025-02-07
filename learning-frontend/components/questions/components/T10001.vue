@@ -2,14 +2,13 @@
     <div class="card" :id="props.data._id.toString()">
         <span>Question {{ index }}: </span>
         <div class="card-title">
-            <h2><input type="text" name="A" v-model="props.data.text"></h2>
-            <div>{{ props.data.note }}</div>
+            <div v-for="block, key in props.data.blocks" :key="key">
+                <Block :label="block.label.toString()" :data="block"/>
+            </div>
         </div>
         <div class="card-inner">
-            <div class="" v-for="item,key in options" :key="key">
-                <input type="radio">
-                <label>{{ item.label }}</label>
-                <input type="text" v-model="item.text">
+            <div class="" v-for="block,key in options" :key="key">
+                <Block :label="block.label.toString()" :data="block"/>
             </div>
         </div>
     </div>
@@ -29,7 +28,6 @@ const props = defineProps({
 })
 
 const options = ref(props.data.options)
-
 </script>
 
 <style lang="scss" scoped>

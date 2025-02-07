@@ -29,7 +29,20 @@ export const queryDetailExam = gql`
             }
             options {
                 _id
+                label
                 text
+                media {
+                    type
+                    url
+                },
+                blocks {
+                    label
+                    text
+                    media {
+                        type
+                        url
+                    },
+                }
             }
             correctOption {
                 _id
